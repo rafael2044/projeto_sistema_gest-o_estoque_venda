@@ -74,3 +74,43 @@ def categoria_exists(nome:str):
         return True
     return False
 
+
+#table.unidades
+def insert_medida(nome:str, unidade : str):
+    with db_conectar() as con:
+        with con.cursor() as cur:
+            sql = "INSERT INTO medida (nome, unidade) VALUES (%s, %s)"
+            if medida_exists(nome):
+                return False
+            cur.execute(sql, (nome, unidade))
+        con.commit()
+        return True
+    
+def select_medida_por_nome(nome:str):
+    with db_conectar() as con:
+        with con.cursor() as cur:
+            sql = 'SELECT id, nome, unidade FROM medida WHERE nome = %s'
+            cur.execute(sql,(nome, ))
+            result = cur.fetchall()
+            return result
+
+def select_medida_nome_por_un(un:str):
+    with db_conectar() as con:
+        with con.cursor() as cur:
+            sql = 'SELECT nome FROM medida WHERE unidade = %s'
+            cur.execute(sql,(un, ))
+            result = cur.fetchall()
+            return result
+
+def select_all_medida():
+    with db_conectar() as con:
+        with con.cursor() as cur:
+            sql = 'SELECT * FROM medida'
+            cur.execute(sql)
+            result = cur.fetchall()
+            return result
+
+def medida_exists(nome:str):
+    if select_categoria(nome):
+        return True
+    return False
