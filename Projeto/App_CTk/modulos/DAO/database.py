@@ -17,6 +17,13 @@ class DataBase:
                         senha VARCHAR(68) NOT NULL
                     );'''
             
+            sql_fornecedor = '''CREATE TABLE IF NOT EXISTS fornecedor (
+                                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                                    nome TEXT NOT NULL,
+                                    contato TEXT,
+                                    endereco TEXT
+                                );'''
+            
             sql_produto= '''CREATE TABLE IF NOT EXISTS produto (
                                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                                 descricao TEXT NOT NULL,
@@ -34,11 +41,9 @@ class DataBase:
                                 FOREIGN KEY (id_produto) REFERENCES produto (id)
                             );'''
             cur.execute(sql_user)
+            cur.execute(sql_fornecedor)
             cur.execute(sql_produto)
             cur.execute(sql_estoque)
             con.commit()
-
             
     
-    
-DataBase()

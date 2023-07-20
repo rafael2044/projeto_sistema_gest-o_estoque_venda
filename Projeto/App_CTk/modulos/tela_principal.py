@@ -19,7 +19,7 @@ class TelaPrincipal(CTk):
         
     def center_window(self):
         HEIGHT = 800
-        WEIDTH = 1080
+        WEIDTH = 1065
         
         W_HEIGHT = self.winfo_screenheight()
         W_WEIDTH = self.winfo_screenwidth()
@@ -31,16 +31,16 @@ class TelaPrincipal(CTk):
     
     def loader_widgets(self):
         self.loader_menu()
-        f_button_menu = CTkFrame(self, height=100, width=1000)
-        f_info = CTkFrame(self, height=100, width=1000)
-        f_tabela = CTkFrame(self, height=0, width=1000)
-        f_scroll = CTkFrame(self, height=10, width=1000)
+        f_button_menu = CTkFrame(self)
+        f_info = CTkFrame(self)
+        f_tabela = CTkFrame(self)
+        f_scroll = CTkFrame(self, height=10)
         
         
         self.usuario = CTkLabel(f_info, text=' '*50, font=('Segoe UI', 12, 'bold'))
         
         self.tv_tabela = Treeview(f_tabela, columns=('id', 'cod_barra', 'descricao', 'preco_un', 'fornecedor','quant_min', 'quant_atual', 'quant_max'),
-                                  height=100)
+                                  )
         self.tv_tabela.heading('#0', text='')
         self.tv_tabela.heading('id', text='ID')
         self.tv_tabela.heading('cod_barra', text='Cod. Barra')
@@ -51,25 +51,25 @@ class TelaPrincipal(CTk):
         self.tv_tabela.heading('quant_atual', text='Quant. Atual')
         self.tv_tabela.heading('quant_max', text='Quant. Max')
         
-        self.tv_tabela.column('#0', width=2, minwidth=2, stretch=False)
-        self.tv_tabela.column('id', width=50, stretch=False)
-        self.tv_tabela.column('cod_barra', width=100, stretch=False)
-        self.tv_tabela.column('descricao', width=300, stretch=False)
-        self.tv_tabela.column('preco_un', width=100, stretch=False)
-        self.tv_tabela.column('fornecedor', width=150, stretch=False)
-        self.tv_tabela.column('quant_min', width=100, stretch=False)
-        self.tv_tabela.column('quant_atual', width=100, stretch=False)
-        self.tv_tabela.column('quant_max', width=100, stretch=False)
+        self.tv_tabela.column('#0', width=2, minwidth=2, stretch=True)
+        self.tv_tabela.column('id', width=50, stretch=True, minwidth=30)
+        self.tv_tabela.column('cod_barra', width=100, stretch=True, minwidth=100)
+        self.tv_tabela.column('descricao', width=300, stretch=False, minwidth=30)
+        self.tv_tabela.column('preco_un', width=100, stretch=True, minwidth=100)
+        self.tv_tabela.column('fornecedor', width=175, stretch=False, minwidth=175)
+        self.tv_tabela.column('quant_min', width=100, stretch=True, minwidth=100)
+        self.tv_tabela.column('quant_atual', width=100, stretch=True, minwidth=100)
+        self.tv_tabela.column('quant_max', width=100, stretch=True, minwidth=100)
         
         self.scrollbar_vertical = Scrollbar(f_tabela, orient='vertical', command=self.tv_tabela.yview)
         self.scrollbar_horizontal = Scrollbar(f_scroll, orient='horizontal', command=self.tv_tabela.xview)
         self.tv_tabela.configure(xscrollcommand=self.scrollbar_horizontal.set)
         self.tv_tabela.configure(yscrollcommand=self.scrollbar_vertical.set)
         
-        f_button_menu.pack(padx=10, pady=5, anchor='w')
-        f_info.pack(padx=10, anchor='w')
-        f_tabela.pack(padx=10, pady=5, anchor='w')
-        f_scroll.pack(padx=10, pady=5, anchor='w')
+        f_button_menu.pack(padx=10, pady=5, anchor='w', fill='x')
+        f_info.pack(padx=10, anchor='w', fill='x')
+        f_tabela.pack(padx=10, pady=0, anchor='w', fill='both', expand=True)
+        f_scroll.pack(padx=10, pady=0, fill='x')
         
         
         CTkButton(f_button_menu, text='Cadastrar Produto', image=PhotoImage(data=icon_add_produto),
@@ -78,9 +78,9 @@ class TelaPrincipal(CTk):
         CTkLabel(f_info, text='Estoque Atual', font=('Segoe UI', 19, 'bold')).pack(side='left', padx=10)
         CTkLabel(f_info, text='Usuario Logado:', font=('Segoe UI', 12, 'bold')).pack(side='right')
         
-        self.tv_tabela.pack(pady=10)
-        self.scrollbar_vertical.pack(side='left', fill='y')
-
+        self.tv_tabela.pack(side='left', fill='both')
+        self.scrollbar_vertical.pack(fill='y', expand=True, anchor='w')
+        f_scroll.pack(padx=10, pady=0, fill='x')
         self.scrollbar_horizontal.pack(fill='x')
         
     def loader_menu(self):

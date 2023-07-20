@@ -43,6 +43,6 @@ class usuarioDAO(DataBase):
                     return True
             return False            
         
-print(usuarioDAO().insert_usuario('admin', 'admin'))
+usuarioDAO().insert_usuario('admin', 'admin')
                 
 

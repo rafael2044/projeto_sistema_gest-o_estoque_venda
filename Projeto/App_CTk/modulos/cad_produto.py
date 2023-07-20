@@ -10,7 +10,7 @@ class CadProduto(CTkToplevel):
         self.after(100, self.lift)
         self.protocol('WM_DELETE_WINDOW', self.destroy)
     def center_window(self):
-        HEIGHT = 650
+        HEIGHT = 750
         WEIDTH = 700
         
         W_HEIGHT = self.winfo_screenheight()
@@ -49,7 +49,7 @@ class CadProduto(CTkToplevel):
         
         self.quantidade_max = CTkEntry(self.tab_cad, width=50, font=self.font_entry)
         
-        self.fornecedor = CTkComboBox(self.tab_cad, values='', font=self.font_label)
+        self.fornecedor = CTkComboBox(self.tab_cad, values='', font=self.font_label, state='readonly')
         
         self.cod_barra.bind('<KeyPress>', self.validar_codBarra)
         self.quantidade_min.bind('<KeyPress>', self.validar_quant_min)
