@@ -1,6 +1,6 @@
 from customtkinter import CTkToplevel, CTkFrame, CTkEntry, CTkButton, CTk, CTkLabel, CTkFont
-import modulos.cursors as cursor
 from modulos.pop_up import AlertMessage
+from modulos.DAO.usuarioDAO import usuarioDAO
 class Login(CTkToplevel):
     def __init__(self, master):
         CTkToplevel.__init__(self)
@@ -8,6 +8,7 @@ class Login(CTkToplevel):
         self.center_window()
         self.resizable(False, False)
         self.tela_login()
+        self.after(100, self.lift)
         self.grab_set()
         self.user.focus_force()
         self.protocol('WM_DELETE_WINDOW', self.sair)
@@ -51,7 +52,7 @@ class Login(CTkToplevel):
         user = self.user.get()
         password = self.password.get()
         
-        if cursor.validate_usuario(user, password):
+        if usuarioDAO.validar_usuario(user, password):
             self.withdraw()
             self.user.delete(0, 'end')
             self.password.delete(0, 'end')
