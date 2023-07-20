@@ -1,5 +1,6 @@
 from customtkinter import CTkToplevel, CTkFrame, CTkEntry, CTkLabel, CTkButton, CTkComboBox, CTkTabview, CTkFont
-from tkinter.ttk import Treeview
+from tkinter.ttk import Treeview, Scrollbar
+from modulos.DAO.fornecedorDAO import fornecedorDAO
 class WFornecedor(CTkToplevel):
     def __init__(self):
         CTkToplevel.__init__(self, takefocus=True)
@@ -11,7 +12,7 @@ class WFornecedor(CTkToplevel):
         self.protocol('WM_DELETE_WINDOW', self.destroy)
     def center_window(self):
         HEIGHT = 750
-        WEIDTH = 700
+        WEIDTH = 750
         
         W_HEIGHT = self.winfo_screenheight()
         W_WEIDTH = self.winfo_screenwidth()
@@ -57,7 +58,8 @@ class WFornecedor(CTkToplevel):
     def loader_w_tab_pesq(self):
         self.pesquisa = CTkEntry(self.tab_pesq, placeholder_text='Nome do Produto', width=150, font=self.font_entry)
 
-        self.tv_tabela = Treeview(self.tab_pesq, columns=('id', 'nome', 'contato','endereco'))
+        f_tabela = CTkFrame(self.tab_pesq, fg_color='transparent')
+        self.tv_tabela = Treeview(f_tabela, columns=('id', 'nome', 'contato','endereco'))
         self.tv_tabela.column('#0', width=2, stretch=True, minwidth=2) 
         self.tv_tabela.column('id', width=50, stretch=True, minwidth=50)
         self.tv_tabela.column('nome', width=300, stretch=False, minwidth=300)
@@ -70,11 +72,27 @@ class WFornecedor(CTkToplevel):
         self.tv_tabela.heading('contato', text='Contato')
         self.tv_tabela.heading('endereco', text='Endereço')
         
-        self.pesquisa.pack(pady=5)
-        self.tv_tabela.pack(fill='both', expand=True)
+        self.scrollbar_vertical = Scrollbar(f_tabela, orient='vertical', command=self.tv_tabela.yview)
+        self.scrollbar_horizontal = Scrollbar(self.tab_pesq, orient='horizontal', command=self.tv_tabela.xview)
+        self.tv_tabela.configure(xscrollcommand=self.scrollbar_horizontal.set)
+        self.tv_tabela.configure(yscrollcommand=self.scrollbar_vertical.set)
         
-    def carregar_tab_fornecedores(self):
-        pass
+        
+        self.pesquisa.pack(pady=5)
+        f_tabela.pack(fill='both', expand=True)
+        self.tv_tabela.pack(fill='both', expand=True, side='left', anchor='w')
+        self.scrollbar_vertical.pack(anchor='w', fill='y', expand=True)
+        self.scrollbar_horizontal.pack(fill='x', anchor='s')
+        
+        self.carregar_tabela_fornecedores()
+        
+    def carregar_tabela_fornecedores(self):
+        result = fornecedorDAO.select_all_fornecedores()
+        
+        [self.tv_tabela.delete(x) for x in self.tv_tabela.get_children()]
+        
+        for f in result:
+            self.tv_tabela.insert('', 'end', values=f)
     
     def pesquisar_fornecedor(self):
         pass
