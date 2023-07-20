@@ -1,6 +1,7 @@
 from customtkinter import CTkToplevel, CTkFrame, CTkEntry, CTkButton, CTk, CTkLabel, CTkFont
 from modulos.login import Login
 from modulos.cad_produto import CadProduto
+from modulos.cad_categoria import CadCategoria
 from tkinter.ttk import Treeview
 from tkinter import Menu, PhotoImage
 from modulos.img import *
@@ -59,7 +60,7 @@ class TelaPrincipal(CTk):
         CTkButton(f_button_menu, text='Cadastrar Produto', image=PhotoImage(data=icon_add_produto),
                   compound='top', command=self.open_cad_prod).pack(side='left', padx=10)
         CTkButton(f_button_menu, text='Cadastrar Categoria', image=PhotoImage(data=icon_add_categoria),
-                  compound='top').pack(side='left')
+                  compound='top', command=self.open_cad_cate).pack(side='left')
         CTkButton(f_button_menu, text='Cadastrar Unidade', image=PhotoImage(data=icon_add_medida),
                   compound='top').pack(side='left', padx=10)
         f_info.pack(padx=10, fill='x', side='top')
@@ -91,7 +92,13 @@ class TelaPrincipal(CTk):
     def open_cad_prod(self):
         if self.cad_prod is None or not self.cad_prod.winfo_exists():
             self.cad_prod = CadProduto()
-            self.cad_prod.lift()
         else:
             self.cad_prod.lift()
+    
+    def open_cad_cate(self):
+        if self.cad_cat is None or not self.cad_cat.winfo_exists():
+            self.cad_cat = CadCategoria()
+            
+        else:
+            self.cad_cat.lift()
         

@@ -78,7 +78,7 @@ class CadProduto(CTkToplevel):
     def loader_w_tab_pesq(self):
         self.pesquisa = CTkEntry(self.tab_cad, placeholder_text='Nome do Produto', width=150, font=self.font_entry)
 
-        self.tv_estoque = Treeview(self.tab_pesq, columns=)
+        
         
         
     def validate_codBarra(self, event):
