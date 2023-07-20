@@ -79,9 +79,6 @@ class CadProduto(CTkToplevel):
     def loader_w_tab_pesq(self):
         self.pesquisa = CTkEntry(self.tab_cad, placeholder_text='Nome do Produto', width=150, font=self.font_entry)
 
-        
-        
-        
     def validar_codBarra(self, event):
         text = self.cod_barra.get()
         if len(text) > 0:

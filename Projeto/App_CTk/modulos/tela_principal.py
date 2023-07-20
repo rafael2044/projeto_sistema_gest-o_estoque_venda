@@ -1,6 +1,7 @@
 from customtkinter import CTkFrame, CTkButton, CTk, CTkLabel
 from modulos.login import Login
 from modulos.cad_produto import CadProduto
+from modulos.w_fornecedor import WFornecedor
 from tkinter.ttk import Treeview, Scrollbar
 from tkinter import Menu, PhotoImage
 from modulos.img import *
@@ -11,7 +12,7 @@ class TelaPrincipal(CTk):
         self.center_window()
         self.loader_widgets()
         self.cad_prod = None
-        self.cad_cat = None
+        self.w_fornecedor = None
         self.cad_un = None
         self.login = Login(self)
         self.login.focus_set()
@@ -74,6 +75,8 @@ class TelaPrincipal(CTk):
         
         CTkButton(f_button_menu, text='Cadastrar Produto', image=PhotoImage(data=icon_add_produto),
                   compound='top', command=self.open_cad_prod).pack(side='left', padx=10)
+        CTkButton(f_button_menu, text='Fornecedores', image=PhotoImage(data=icon_fornecedor),
+                  compound='top', command=self.open_fornecedor).pack(side='left', padx=10)
         self.usuario.pack(side='right', padx=10)
         CTkLabel(f_info, text='Estoque Atual', font=('Segoe UI', 19, 'bold')).pack(side='left', padx=10)
         CTkLabel(f_info, text='Usuario Logado:', font=('Segoe UI', 12, 'bold')).pack(side='right')
@@ -108,3 +111,8 @@ class TelaPrincipal(CTk):
         else:
             self.cad_prod.lift()
     
+    def open_fornecedor(self):
+        if self.w_fornecedor is None or not self.w_fornecedor.winfo_exists():
+            self.w_fornecedor = WFornecedor()
+        else:
+            self.w_fornecedor.lift()
