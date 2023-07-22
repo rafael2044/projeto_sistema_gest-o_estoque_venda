@@ -1,6 +1,7 @@
 from customtkinter import CTkToplevel, CTkFrame, CTkEntry, CTkLabel, CTkButton, CTkComboBox, CTkTabview, CTkFont
-from tkinter.ttk import Treeview, Scrollbar
+from tkinter.ttk import Treeview, Scrollbar, Style
 from modulos.DAO.fornecedorDAO import fornecedorDAO
+from modulos.pop_up import AlertMessage
 class WFornecedor(CTkToplevel):
     def __init__(self):
         CTkToplevel.__init__(self, takefocus=True)
@@ -27,7 +28,6 @@ class WFornecedor(CTkToplevel):
         self.font_entry = CTkFont('Segoe UI', size=15)
         self.font_button = CTkFont('Segoe UI', size=15, weight='bold')
         
-        
         tabv_main = CTkTabview(self, corner_radius=20)
         tabv_main._segmented_button.configure(font=self.font_label)
         self.tab_pesq = tabv_main.add('Pesquisar')
@@ -42,7 +42,7 @@ class WFornecedor(CTkToplevel):
     
         self.contato = CTkEntry(self.tab_cad, width=200, font=self.font_entry, placeholder_text='Digite o Contato...')
         
-        self.endereço = CTkEntry(self.tab_cad, font=self.font_entry, placeholder_text='Digite o Endereço...')
+        self.endereco = CTkEntry(self.tab_cad, font=self.font_entry, placeholder_text='Digite o Endereço...')
         
         
         CTkLabel(self.tab_cad, text='Fornecedor', font=self.font_label).pack(padx=10, anchor='w', pady=10)
@@ -50,12 +50,17 @@ class WFornecedor(CTkToplevel):
         CTkLabel(self.tab_cad, text='Contato', font=self.font_label).pack(padx=10, anchor='w', pady=10)
         self.contato.pack(padx=10, anchor='w')
         CTkLabel(self.tab_cad, text='Endereço', font=self.font_label).pack(padx=10, anchor='w', pady=10)
-        self.endereço.pack(padx=10, anchor='w', fill='x')
+        self.endereco.pack(padx=10, anchor='w', fill='x')
       
         
-        CTkButton(self.tab_cad, text='Cadastrar', font=self.font_button).pack(anchor='w', padx=10, pady=20)
+        CTkButton(self.tab_cad, text='Cadastrar', font=self.font_button, command=self.cadastrar_fornecedor).pack(anchor='w', padx=10, pady=20)
         
     def loader_w_tab_pesq(self):
+        self.style = Style()
+        self.style.configure('Treeview', font=('Segoe UI', 15), rowheight=30)
+        self.style.configure('Treeview.Heading', font=('Segoe UI', 13))
+        self.style.layout('Treeview', [('Treeview.treearea', {'sticky':'nswe'})])
+        
         self.pesquisa = CTkEntry(self.tab_pesq, placeholder_text='Nome do Produto', width=150, font=self.font_entry)
 
         f_tabela = CTkFrame(self.tab_pesq, fg_color='transparent')
@@ -78,13 +83,20 @@ class WFornecedor(CTkToplevel):
         self.tv_tabela.configure(yscrollcommand=self.scrollbar_vertical.set)
         
         
+        self.bt_delete = CTkButton(self.tab_pesq, state='disabled', text='Excluir', command=self.deletar_fornecedor)
+        
         self.pesquisa.pack(pady=5)
         f_tabela.pack(fill='both', expand=True)
         self.tv_tabela.pack(fill='both', expand=True, side='left', anchor='w')
         self.scrollbar_vertical.pack(anchor='w', fill='y', expand=True)
         self.scrollbar_horizontal.pack(fill='x', anchor='s')
+        self.bt_delete.pack(anchor='e', padx=10)
+        
+        
+        
         
         self.carregar_tabela_fornecedores()
+        self.tv_tabela.bind('<<TreeviewSelect>>', self.item_selecionado)
         
     def carregar_tabela_fornecedores(self):
         result = fornecedorDAO.select_all_fornecedores()
@@ -98,5 +110,25 @@ class WFornecedor(CTkToplevel):
         pass
     
     def cadastrar_fornecedor(self):
+        nome = self.nome.get()
+        contato = self.contato.get()
+        endereco = self.endereco.get()
+        
+        if nome and contato:
+            if fornecedorDAO.insert_fornecedor(nome, contato, endereco):
+                AlertMessage('Cadastro', 'Cadastro Realizado com Sucesso!')
+                self.carregar_tabela_fornecedores()
+            else:
+                AlertMessage('Cadastro', 'Erro ao realizar cadastro!')
+
+    def deletar_fornecedor(self):
         pass
+
+    def item_selecionado(self, event):
+        item = self.tv_tabela.selection()[0]
+        if item:
+            self.bt_delete.configure(state='enabled')
+        
+        
+        
     

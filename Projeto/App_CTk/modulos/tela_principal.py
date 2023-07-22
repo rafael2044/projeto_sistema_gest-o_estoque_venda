@@ -2,7 +2,7 @@ from customtkinter import CTkFrame, CTkButton, CTk, CTkLabel
 from modulos.login import Login
 from modulos.cad_produto import CadProduto
 from modulos.w_fornecedor import WFornecedor
-from tkinter.ttk import Treeview, Scrollbar
+from tkinter.ttk import Treeview, Scrollbar, Style
 from tkinter import Menu, PhotoImage
 from modulos.img import *
 class TelaPrincipal(CTk):
@@ -32,6 +32,9 @@ class TelaPrincipal(CTk):
     
     def loader_widgets(self):
         self.loader_menu()
+        self.style = Style()
+        self.style.configure('Treeview', font=('Segoe UI', 15))
+        self.style.configure('Treeview.Heading', font=('Segoe UI', 13))
         f_button_menu = CTkFrame(self)
         f_info = CTkFrame(self)
         f_tabela = CTkFrame(self)
