@@ -16,20 +16,20 @@ class DialogoSimNao(CTkToplevel):
         self.wait_window()
         
     def center_window(self):
-        HEIGHT = 100
-        WEIDTH = 300
+        self.HEIGHT = 100
+        self.WEIDTH = 450
         
         W_HEIGHT = self.winfo_screenheight()
         W_WEIDTH = self.winfo_screenwidth()
         
-        X = (W_WEIDTH - WEIDTH)//2
-        Y = (W_HEIGHT - HEIGHT)//2
+        X = (W_WEIDTH - self.WEIDTH)//2
+        Y = (W_HEIGHT - self.HEIGHT)//2
         
-        self.geometry(f'{WEIDTH}x{HEIGHT}+{X}+{Y}+') 
+        self.geometry(f'{self.WEIDTH}x{self.HEIGHT}+{X}+{Y}+') 
         
     def carregar_widgets(self):
         self.font_label = CTkFont('Segoe UI', size=15, weight='bold')
-        CTkLabel(self, text=self.mensagem, font=self.font_label).pack(padx=10, pady=5, anchor='center')
+        CTkLabel(self, text=self.mensagem, font=self.font_label, wraplength=self.WEIDTH).pack(padx=10, pady=5, anchor='center')
         frame = CTkFrame(self, fg_color='transparent')
         frame.pack(padx=0, pady=10)
         CTkButton(frame, text='Sim', command=self.opcao_sim, width=100, font=self.font_label).pack(padx=10, anchor='center', side='left')

@@ -3,18 +3,20 @@ from tkinter.ttk import Treeview, Scrollbar, Style
 from modulos.DAO.fornecedorDAO import fornecedorDAO
 from modulos.MensagemAlerta import MensagemAlerta
 from modulos.DialogoSimNao import DialogoSimNao
+from tkinter import PhotoImage
+from modulos.img import icon_pesquisa
 class WFornecedor(CTkToplevel):
     def __init__(self):
         CTkToplevel.__init__(self, takefocus=True)
         self.lift()
         self.title('Fornecedores')
-        self.center_window()
-        self.loader_widgets()
+        self.centralizar_janela()
+        self.carregar_widgets()
         self.after(100, self.lift)
         self.protocol('WM_DELETE_WINDOW', self.destroy)
-    def center_window(self):
-        HEIGHT = 750
-        WEIDTH = 750
+    def centralizar_janela(self):
+        HEIGHT =750
+        WEIDTH = 850
         
         W_HEIGHT = self.winfo_screenheight()
         W_WEIDTH = self.winfo_screenwidth()
@@ -24,7 +26,7 @@ class WFornecedor(CTkToplevel):
         
         self.geometry(f'{WEIDTH}x{HEIGHT}+{X}+{Y}+')
         
-    def loader_widgets(self):
+    def carregar_widgets(self):
         self.font_label = CTkFont('Segoe UI', size=15, weight='bold')
         self.font_entry = CTkFont('Segoe UI', size=15)
         self.font_button = CTkFont('Segoe UI', size=15, weight='bold')
@@ -34,10 +36,10 @@ class WFornecedor(CTkToplevel):
         self.tab_pesq = tabv_main.add('Pesquisar')
         self.tab_cad = tabv_main.add('Cadastrar') 
         tabv_main.pack(expand=True, fill='both', padx=10, pady=10)
-        self.loader_w_tab_cad()
-        self.loader_w_tab_pesq()
+        self.carregar_w_tab_cad()
+        self.carregar_w_tab_pesq()
         
-    def loader_w_tab_cad(self):
+    def carregar_w_tab_cad(self):
         
         self.nome = CTkEntry(self.tab_cad, placeholder_text='Digite o nome do Fornecedor...', font=self.font_entry)
     
@@ -56,13 +58,14 @@ class WFornecedor(CTkToplevel):
         
         CTkButton(self.tab_cad, text='Cadastrar', font=self.font_button, command=self.cadastrar_fornecedor).pack(anchor='w', padx=10, pady=20)
         
-    def loader_w_tab_pesq(self):
+    def carregar_w_tab_pesq(self):
         self.style = Style()
         self.style.configure('Treeview', font=('Segoe UI', 15), rowheight=30)
         self.style.configure('Treeview.Heading', font=('Segoe UI', 13))
         self.style.layout('Treeview', [('Treeview.treearea', {'sticky':'nswe'})])
+        f_pesquisa = CTkFrame(self.tab_pesq, corner_radius=25)
         
-        self.pesquisa = CTkEntry(self.tab_pesq, placeholder_text='Nome do Produto', width=150, font=self.font_entry)
+        self.pesquisa = CTkEntry(f_pesquisa, placeholder_text='Nome do Produto', width=150, font=self.font_entry)
 
         f_tabela = CTkFrame(self.tab_pesq, fg_color='transparent')
         self.tv_tabela = Treeview(f_tabela, columns=('id', 'nome', 'contato','endereco'))
@@ -85,21 +88,22 @@ class WFornecedor(CTkToplevel):
         
         
         self.bt_delete = CTkButton(self.tab_pesq, state='disabled', text='Excluir', command=self.deletar_fornecedor)
-        
-        self.pesquisa.pack(pady=5)
+        f_pesquisa.pack(fill='x', pady=10)
+        self.pesquisa.pack(fill='x',side='left', expand=True, padx=(10,5))
+        CTkButton(f_pesquisa, text='', image=PhotoImage(data=icon_pesquisa)).pack(anchor='e', padx=(5,10))
         f_tabela.pack(fill='both', expand=True)
-        self.tv_tabela.pack(fill='both', expand=True, side='left', anchor='w')
-        self.scrollbar_vertical.pack(anchor='w', fill='y', expand=True)
-        self.scrollbar_horizontal.pack(fill='x', anchor='s')
-        self.bt_delete.pack(anchor='e', padx=10)
+        self.tv_tabela.pack(fill='both', expand=True, side='left', anchor='w', padx=(10,0))
+        self.scrollbar_vertical.pack(anchor='w', fill='y', expand=True, padx=(0, 10))
+        self.scrollbar_horizontal.pack(fill='x', anchor='s', padx=10)
+        self.bt_delete.pack(anchor='e', padx=10, pady=10)
         
         
         
         
-        self.carregar_tabela_fornecedores()
-        self.tv_tabela.bind('<<TreeviewSelect>>', self.item_selecionado)
+        self.carregar_tab_fornecedores()
+        self.tv_tabela.bind('<<TreeviewSelect>>', self.linha_selecionado)
         self.bind('<Button-1>', self.desabilitar_del)
-    def carregar_tabela_fornecedores(self):
+    def carregar_tab_fornecedores(self):
         result = fornecedorDAO.select_all_fornecedores()
         
         [self.tv_tabela.delete(x) for x in self.tv_tabela.get_children()]
@@ -114,22 +118,23 @@ class WFornecedor(CTkToplevel):
         nome = self.nome.get()
         contato = self.contato.get()
         endereco = self.endereco.get()
-        
-        if nome and contato:
-            if fornecedorDAO.insert_fornecedor(nome, contato, endereco):
+        match (fornecedorDAO.insert_fornecedor(nome, contato, endereco)):
+            case 1:
                 MensagemAlerta('Cadastro', 'Cadastro Realizado com Sucesso!')
-                self.carregar_tabela_fornecedores()
-            else:
-                MensagemAlerta('Cadastro', 'Erro ao realizar cadastro!')
+                self.carregar_tab_fornecedores()
+            case 2:
+                MensagemAlerta('Erro ao Cadastrar', 'Fornecedor já existe!')
+            case 3:
+                MensagemAlerta('Erro ao Cadastrar', 'Nome ou Contato Inválidos!')
 
     def deletar_fornecedor(self):
-        op = DialogoSimNao('Alerta!', 'Deseja Excluir o fornecedor selecionado?')
-        if op:
-            name = self.tv_tabela.item(self.item[0], 'values')[1]
-            print(name)
+        nome = self.tv_tabela.item(self.item[0], 'values')[1]
+        op = DialogoSimNao('Alerta!', f'Deseja Excluir o fornecedor {nome}?')
+        if op.opcao:
+            fornecedorDAO.delete_fornecedor(nome)
+            self.carregar_tab_fornecedores()
 
-
-    def item_selecionado(self, event):
+    def linha_selecionado(self, event):
         self.item = self.tv_tabela.selection()
         if self.item:
             self.bt_delete.configure(state='enabled')

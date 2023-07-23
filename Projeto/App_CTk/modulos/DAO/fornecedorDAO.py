@@ -6,14 +6,20 @@ class fornecedorDAO(DataBase):
         
     @classmethod
     def insert_fornecedor(cls, nome:str, contato:str, endereco:str):
+        '''1 - Cadastrado com sucesso
+           2 - Fornecedor já existe
+           3 - Nome ou Contato invalidos
+           '''
         with cls.return_con(cls) as con:
             cur = con.cursor()
-            if nome and contato and not cls.fornecedor_existe(nome):
-                sql = f'''INSERT INTO fornecedor (nome, contato, endereco) VALUES (?,?,?);'''
-                cur.execute(sql,(nome, contato, endereco))
-                con.commit()
-                return True
-            return False
+            if nome and contato:
+                if not cls.fornecedor_existe(nome):
+                    sql = f'''INSERT INTO fornecedor (nome, contato, endereco) VALUES (?,?,?);'''
+                    cur.execute(sql,(nome, contato, endereco))
+                    con.commit()
+                    return 1
+                return 2
+            return 3
         
     @classmethod  
     def fornecedor_existe(cls, nome:str):
@@ -37,5 +43,14 @@ class fornecedorDAO(DataBase):
                 sql = '''SELECT nome, contato, endereco FROM fornecedor WHERE nome = ?;'''
                 return cur.execute(sql, (nome, ))
             
+    @classmethod
+    def delete_fornecedor(cls, nome:str):
+        with cls.return_con(cls) as con:
+            cur = con.cursor()
+            sql = "DELETE FROM fornecedor WHERE nome = ?"
+            cur.execute(sql, (nome, ))
+            con.commit()
+            return True
+
                 
 
