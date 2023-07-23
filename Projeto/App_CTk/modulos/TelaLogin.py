@@ -15,7 +15,7 @@ class Login(CTkToplevel):
         self.bind('<Return>', self.logar)
         
     def center_window(self):
-        HEIGHT = 240
+        HEIGHT = 260
         WEIDTH = 300
         
         W_HEIGHT = self.winfo_screenheight()
@@ -27,17 +27,17 @@ class Login(CTkToplevel):
         self.geometry(f'{WEIDTH}x{HEIGHT}+{X}+{Y}+')    
     
     def tela_login(self):
-        font_label = CTkFont('Segoe UI', size=15, weight='bold')
+        font_label = CTkFont('Segoe UI', size=18, weight='bold')
         font_entry = CTkFont('Segoe UI', size=15)
-        font_button = CTkFont('Segoe UI', size=15, weight='bold')
+        font_button = CTkFont('Segoe UI', size=18, weight='bold')
         
         f_main = CTkFrame(self)
         f_button = CTkFrame(f_main, fg_color='transparent')
-        self.user = CTkEntry(f_main, placeholder_text='Digite o nome de Usuario...', width=250, height=30, font=font_entry, takefocus=True)
-        self.password = CTkEntry(f_main, show='*', placeholder_text='Digite sua senha...', width=250, height=30, font=font_entry)
+        self.user = CTkEntry(f_main, placeholder_text='Digite o nome de Usuario...', width=250, height=40, font=font_entry, takefocus=True)
+        self.password = CTkEntry(f_main, show='*', placeholder_text='Digite sua senha...', width=250, height=40, font=font_entry)
         
-        self.bt_entrar = CTkButton(f_button, text='Entrar', font=font_button, command=self.logar)
-        self.bt_sair = CTkButton(f_button, text='Sair', font=font_button, command=self.sair)
+        self.bt_entrar = CTkButton(f_button, text='Entrar', font=font_button, command=self.logar, height=40)
+        self.bt_sair = CTkButton(f_button, text='Sair', font=font_button, command=self.sair,height=40)
         
         f_main.pack(padx=10,pady=10, expand=True, fill = 'both')
         CTkLabel(f_main, text='Usuario', font=font_label).pack(padx=10, pady=5, anchor='w')

@@ -42,6 +42,13 @@ class fornecedorDAO(DataBase):
             if nome:
                 sql = '''SELECT nome, contato, endereco FROM fornecedor WHERE nome = ?;'''
                 return cur.execute(sql, (nome, ))
+    @classmethod
+    def select_like_fornecedor(cls, nome:str):
+       with cls.return_con(cls) as con:
+            cur = con.cursor()
+            if nome:
+                sql = '''SELECT id, nome, contato, endereco endereco FROM fornecedor WHERE nome LIKE ?;'''
+                return list(cur.execute(sql, (nome+'%', )).fetchall())
             
     @classmethod
     def delete_fornecedor(cls, nome:str):

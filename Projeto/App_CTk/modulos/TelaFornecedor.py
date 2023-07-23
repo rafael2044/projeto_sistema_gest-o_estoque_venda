@@ -4,7 +4,8 @@ from modulos.DAO.fornecedorDAO import fornecedorDAO
 from modulos.MensagemAlerta import MensagemAlerta
 from modulos.DialogoSimNao import DialogoSimNao
 from tkinter import PhotoImage
-from modulos.img import icon_pesquisa
+from modulos.img import icon_pesquisa, icon_atualizar, icon_excluir
+
 class WFornecedor(CTkToplevel):
     def __init__(self):
         CTkToplevel.__init__(self, takefocus=True)
@@ -29,7 +30,7 @@ class WFornecedor(CTkToplevel):
     def carregar_widgets(self):
         self.font_label = CTkFont('Segoe UI', size=15, weight='bold')
         self.font_entry = CTkFont('Segoe UI', size=15)
-        self.font_button = CTkFont('Segoe UI', size=15, weight='bold')
+        self.font_button = CTkFont('Segoe UI', size=18, weight='bold')
         
         tabv_main = CTkTabview(self, corner_radius=20)
         tabv_main._segmented_button.configure(font=self.font_label)
@@ -63,9 +64,9 @@ class WFornecedor(CTkToplevel):
         self.style.configure('Treeview', font=('Segoe UI', 15), rowheight=30)
         self.style.configure('Treeview.Heading', font=('Segoe UI', 13))
         self.style.layout('Treeview', [('Treeview.treearea', {'sticky':'nswe'})])
-        f_pesquisa = CTkFrame(self.tab_pesq, corner_radius=25)
+        f_pesquisa = CTkFrame(self.tab_pesq, corner_radius=25, fg_color='transparent')
         
-        self.pesquisa = CTkEntry(f_pesquisa, placeholder_text='Nome do Produto', width=150, font=self.font_entry)
+        self.pesquisa = CTkEntry(f_pesquisa, placeholder_text='Nome do Produto', width=150,height=40, font=self.font_entry)
 
         f_tabela = CTkFrame(self.tab_pesq, fg_color='transparent')
         self.tv_tabela = Treeview(f_tabela, columns=('id', 'nome', 'contato','endereco'))
@@ -87,10 +88,11 @@ class WFornecedor(CTkToplevel):
         self.tv_tabela.configure(yscrollcommand=self.scrollbar_vertical.set)
         
         
-        self.bt_delete = CTkButton(self.tab_pesq, state='disabled', text='Excluir', command=self.deletar_fornecedor)
+        self.bt_delete = CTkButton(self.tab_pesq, state='disabled', text='', image=PhotoImage(data=icon_excluir),width=40,fg_color='gray', command=self.deletar_fornecedor)
         f_pesquisa.pack(fill='x', pady=10)
         self.pesquisa.pack(fill='x',side='left', expand=True, padx=(10,5))
-        CTkButton(f_pesquisa, text='', image=PhotoImage(data=icon_pesquisa)).pack(anchor='e', padx=(5,10))
+        CTkButton(f_pesquisa, text='', image=PhotoImage(data=icon_pesquisa), width=50,height=40, command=self.pesquisar_fornecedor).pack(side='left', padx=(5,5))
+        CTkButton(f_pesquisa, text='', image=PhotoImage(data=icon_atualizar), width=50,height=40, command=self.atualizar_tabela).pack(side='left', padx=(5,10))
         f_tabela.pack(fill='both', expand=True)
         self.tv_tabela.pack(fill='both', expand=True, side='left', anchor='w', padx=(10,0))
         self.scrollbar_vertical.pack(anchor='w', fill='y', expand=True, padx=(0, 10))
@@ -103,8 +105,10 @@ class WFornecedor(CTkToplevel):
         self.carregar_tab_fornecedores()
         self.tv_tabela.bind('<<TreeviewSelect>>', self.linha_selecionado)
         self.bind('<Button-1>', self.desabilitar_del)
-    def carregar_tab_fornecedores(self):
-        result = fornecedorDAO.select_all_fornecedores()
+    def carregar_tab_fornecedores(self, lista=None):
+        result = lista
+        if not lista:
+            result = fornecedorDAO.select_all_fornecedores()
         
         [self.tv_tabela.delete(x) for x in self.tv_tabela.get_children()]
         
@@ -112,8 +116,11 @@ class WFornecedor(CTkToplevel):
             self.tv_tabela.insert('', 'end', values=f)
     
     def pesquisar_fornecedor(self):
-        pass
-    
+        nome = self.pesquisa.get()
+        if nome:
+            result = fornecedorDAO.select_like_fornecedor(nome)
+            self.carregar_tab_fornecedores(result)
+            
     def cadastrar_fornecedor(self):
         nome = self.nome.get()
         contato = self.contato.get()
@@ -138,13 +145,17 @@ class WFornecedor(CTkToplevel):
         self.item = self.tv_tabela.selection()
         if self.item:
             self.bt_delete.configure(state='enabled')
+            self.bt_delete.configure(fg_color=("#3a7ebf", "#1f538d"))
     
     def desabilitar_del(self, event):
         widget = self.focus_get()
         if event.widget not in (self.tv_tabela, self.bt_delete) and widget is self.tv_tabela:
             self.bt_delete.configure(state='disabled')
+            self.bt_delete.configure(fg_color='gray')
             self.tv_tabela.selection_set()
         
-        
+    def atualizar_tabela(self):
+        self.pesquisa.delete(0,'end')
+        self.carregar_tab_fornecedores() 
         
     
