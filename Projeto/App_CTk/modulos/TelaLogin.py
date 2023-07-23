@@ -1,5 +1,5 @@
 from customtkinter import CTkToplevel, CTkFrame, CTkEntry, CTkButton, CTk, CTkLabel, CTkFont
-from modulos.pop_up import AlertMessage
+from modulos.MensagemAlerta import MensagemAlerta
 from modulos.DAO.usuarioDAO import usuarioDAO
 class Login(CTkToplevel):
     def __init__(self, master):
@@ -60,7 +60,7 @@ class Login(CTkToplevel):
             self.master.focus_set()
             self.master.usuario.configure(text=user)
         else:
-            AlertMessage('Login Invalido', 'Usuario ou Senha invalidos!')
+            MensagemAlerta('Login Invalido', 'Usuario ou Senha invalidos!')
         
     def sair(self):
         self.quit()

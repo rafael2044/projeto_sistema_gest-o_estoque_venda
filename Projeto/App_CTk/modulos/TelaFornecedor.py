@@ -1,7 +1,8 @@
 from customtkinter import CTkToplevel, CTkFrame, CTkEntry, CTkLabel, CTkButton, CTkComboBox, CTkTabview, CTkFont
 from tkinter.ttk import Treeview, Scrollbar, Style
 from modulos.DAO.fornecedorDAO import fornecedorDAO
-from modulos.pop_up import AlertMessage
+from modulos.MensagemAlerta import MensagemAlerta
+from modulos.DialogoSimNao import DialogoSimNao
 class WFornecedor(CTkToplevel):
     def __init__(self):
         CTkToplevel.__init__(self, takefocus=True)
@@ -97,7 +98,7 @@ class WFornecedor(CTkToplevel):
         
         self.carregar_tabela_fornecedores()
         self.tv_tabela.bind('<<TreeviewSelect>>', self.item_selecionado)
-        
+        self.bind('<Button-1>', self.desabilitar_del)
     def carregar_tabela_fornecedores(self):
         result = fornecedorDAO.select_all_fornecedores()
         
@@ -116,18 +117,28 @@ class WFornecedor(CTkToplevel):
         
         if nome and contato:
             if fornecedorDAO.insert_fornecedor(nome, contato, endereco):
-                AlertMessage('Cadastro', 'Cadastro Realizado com Sucesso!')
+                MensagemAlerta('Cadastro', 'Cadastro Realizado com Sucesso!')
                 self.carregar_tabela_fornecedores()
             else:
-                AlertMessage('Cadastro', 'Erro ao realizar cadastro!')
+                MensagemAlerta('Cadastro', 'Erro ao realizar cadastro!')
 
     def deletar_fornecedor(self):
-        pass
+        op = DialogoSimNao('Alerta!', 'Deseja Excluir o fornecedor selecionado?')
+        if op:
+            name = self.tv_tabela.item(self.item[0], 'values')[1]
+            print(name)
+
 
     def item_selecionado(self, event):
-        item = self.tv_tabela.selection()[0]
-        if item:
+        self.item = self.tv_tabela.selection()
+        if self.item:
             self.bt_delete.configure(state='enabled')
+    
+    def desabilitar_del(self, event):
+        widget = self.focus_get()
+        if event.widget not in (self.tv_tabela, self.bt_delete) and widget is self.tv_tabela:
+            self.bt_delete.configure(state='disabled')
+            self.tv_tabela.selection_set()
         
         
         

@@ -1,7 +1,7 @@
 from customtkinter import CTkFrame, CTkButton, CTk, CTkLabel
-from modulos.login import Login
-from modulos.cad_produto import CadProduto
-from modulos.w_fornecedor import WFornecedor
+from modulos.TelaLogin import Login
+from modulos.TelaCadProduto import CadProduto
+from modulos.TelaFornecedor import WFornecedor
 from tkinter.ttk import Treeview, Scrollbar, Style
 from tkinter import Menu, PhotoImage
 from modulos.img import *

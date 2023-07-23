@@ -1,4 +1,4 @@
-from modulos.tela_principal import TelaPrincipal
+from modulos.TelaInicial import TelaPrincipal
 
 
 app = TelaPrincipal()
