@@ -5,16 +5,15 @@ class Login(CTkToplevel):
     def __init__(self, master):
         CTkToplevel.__init__(self)
         self.title('Login Sistema')
-        self.center_window()
+        self.centralizar_janela()
         self.resizable(False, False)
-        self.tela_login()
-        self.after(100, self.lift)
+        self.carregar_widgets()
         self.grab_set()
-        self.user.focus_force()
+        self.user.focus_set()
         self.protocol('WM_DELETE_WINDOW', self.sair)
         self.bind('<Return>', self.logar)
         
-    def center_window(self):
+    def centralizar_janela(self):
         HEIGHT = 260
         WEIDTH = 300
         
@@ -26,15 +25,15 @@ class Login(CTkToplevel):
         
         self.geometry(f'{WEIDTH}x{HEIGHT}+{X}+{Y}+')    
     
-    def tela_login(self):
+    def carregar_widgets(self):
         font_label = CTkFont('Segoe UI', size=18, weight='bold')
-        font_entry = CTkFont('Segoe UI', size=15)
+        font_entry = CTkFont('Segoe UI', size=16)
         font_button = CTkFont('Segoe UI', size=18, weight='bold')
         
         f_main = CTkFrame(self)
         f_button = CTkFrame(f_main, fg_color='transparent')
-        self.user = CTkEntry(f_main, placeholder_text='Digite o nome de Usuario...', width=250, height=40, font=font_entry, takefocus=True)
-        self.password = CTkEntry(f_main, show='*', placeholder_text='Digite sua senha...', width=250, height=40, font=font_entry)
+        self.user = CTkEntry(f_main, placeholder_text='Digite o Usuario...', width=250, height=40, font=font_entry, takefocus=True)
+        self.password = CTkEntry(f_main, show='*', placeholder_text='Digite a Senha...', width=250, height=40, font=font_entry)
         
         self.bt_entrar = CTkButton(f_button, text='Entrar', font=font_button, command=self.logar, height=40)
         self.bt_sair = CTkButton(f_button, text='Sair', font=font_button, command=self.sair,height=40)

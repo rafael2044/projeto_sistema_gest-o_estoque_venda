@@ -1,4 +1,4 @@
-from customtkinter import CTkFrame, CTkButton, CTk, CTkLabel
+from customtkinter import CTkFrame, CTkButton, CTk, CTkLabel, CTkFont
 from modulos.TelaLogin import Login
 from modulos.TelaCadProduto import CadProduto
 from modulos.TelaFornecedor import WFornecedor
@@ -6,19 +6,19 @@ from tkinter.ttk import Treeview, Scrollbar, Style
 from tkinter import Menu, PhotoImage
 from modulos.img import *
 class TelaPrincipal(CTk):
+    
     def __init__(self):
         CTk.__init__(self)
         self.title('Sistema')
-        self.center_window()
-        self.loader_widgets()
+        self.centralizar_janela()
+        self.carregar_widgets()
         self.cad_prod = None
         self.w_fornecedor = None
         self.cad_un = None
         self.login = Login(self)
-        self.login.focus_set()
+        self.login.transient(self)
         
-        
-    def center_window(self):
+    def centralizar_janela(self):
         HEIGHT = 800
         WEIDTH = 1065
         
@@ -30,8 +30,8 @@ class TelaPrincipal(CTk):
         
         self.geometry(f'{WEIDTH}x{HEIGHT}+{X}+{Y}+')
     
-    def loader_widgets(self):
-        self.loader_menu()
+    def carregar_widgets(self):
+        self.carregar_menu()
         self.style = Style()
         self.style.configure('Treeview', font=('Segoe UI', 15))
         self.style.configure('Treeview.Heading', font=('Segoe UI', 13))
@@ -39,7 +39,8 @@ class TelaPrincipal(CTk):
         f_info = CTkFrame(self)
         f_tabela = CTkFrame(self)
         f_scroll = CTkFrame(self, height=10)
-        
+        self.font_button = CTkFont('Segoe UI', size=18, weight='bold')
+
         
         self.usuario = CTkLabel(f_info, text=' '*50, font=('Segoe UI', 12, 'bold'))
         
@@ -77,9 +78,9 @@ class TelaPrincipal(CTk):
         
         
         CTkButton(f_button_menu, text='Cadastrar Produto', image=PhotoImage(data=icon_add_produto),
-                  compound='top', command=self.open_cad_prod).pack(side='left', padx=10)
+                  compound='top', command=self.abrir_tela_cadProd, font=self.font_button).pack(side='left', padx=10)
         CTkButton(f_button_menu, text='Fornecedores', image=PhotoImage(data=icon_fornecedor),
-                  compound='top', command=self.open_fornecedor).pack(side='left', padx=10)
+                  compound='top', command=self.abrir_tela_fornecedor, font=self.font_button).pack(side='left', padx=10)
         self.usuario.pack(side='right', padx=10)
         CTkLabel(f_info, text='Estoque Atual', font=('Segoe UI', 19, 'bold')).pack(side='left', padx=10)
         CTkLabel(f_info, text='Usuario Logado:', font=('Segoe UI', 12, 'bold')).pack(side='right')
@@ -89,13 +90,13 @@ class TelaPrincipal(CTk):
         f_scroll.pack(padx=10, pady=0, fill='x')
         self.scrollbar_horizontal.pack(fill='x')
         
-    def loader_menu(self):
+    def carregar_menu(self):
         self.menubar = Menu(self, font=('Segoe UI', 14))
         self.configure(menu=self.menubar)
         cad_menu = Menu(self.menubar, font=('Segoe UI', 10))
-        cad_menu.add_command(label='Produto')
-        cad_menu.add_command(label='Categoria')
-        cad_menu.add_command(label='Unidade')
+        cad_menu.add_command(label='Produto', command=self.abrir_tela_cadProd)
+        cad_menu.add_command(label='Fornecedor', command=self.abrir_tela_fornecedor)
+
         
         sair_menu = Menu(self.menubar, font=('Segoe UI', 14))
         sair_menu.add_command(label='Logout', command=self.sair)
@@ -108,14 +109,16 @@ class TelaPrincipal(CTk):
         self.login.user.focus_force()
         self.login.grab_set()
     
-    def open_cad_prod(self):
+    def abrir_tela_cadProd(self):
         if self.cad_prod is None or not self.cad_prod.winfo_exists():
             self.cad_prod = CadProduto()
+            self.cad_prod.transient(self)
         else:
             self.cad_prod.lift()
     
-    def open_fornecedor(self):
+    def abrir_tela_fornecedor(self):
         if self.w_fornecedor is None or not self.w_fornecedor.winfo_exists():
             self.w_fornecedor = WFornecedor()
+            self.w_fornecedor.transient(self)
         else:
             self.w_fornecedor.lift()

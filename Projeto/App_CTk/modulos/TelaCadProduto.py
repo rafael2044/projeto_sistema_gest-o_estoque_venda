@@ -1,16 +1,17 @@
 from customtkinter import CTkToplevel, CTkFrame, CTkEntry, CTkLabel, CTkButton, CTkComboBox, CTkTabview, CTkFont
 from tkinter.ttk import Treeview
 class CadProduto(CTkToplevel):
+    
     def __init__(self):
         CTkToplevel.__init__(self, takefocus=True)
         self.lift()
         self.title('Cadastrar Novo Produto')
-        self.center_window()
-        self.loader_widgets()
-        self.after(100, self.lift)
+        self.centralizar_janela()
+        self.carreagar_widgets()
         self.protocol('WM_DELETE_WINDOW', self.destroy)
-    def center_window(self):
-        HEIGHT = 750
+        
+    def centralizar_janela(self):
+        HEIGHT = 800
         WEIDTH = 700
         
         W_HEIGHT = self.winfo_screenheight()
@@ -21,10 +22,10 @@ class CadProduto(CTkToplevel):
         
         self.geometry(f'{WEIDTH}x{HEIGHT}+{X}+{Y}+')
         
-    def loader_widgets(self):
-        self.font_label = CTkFont('Segoe UI', size=15, weight='bold')
-        self.font_entry = CTkFont('Segoe UI', size=15)
-        self.font_button = CTkFont('Segoe UI', size=15, weight='bold')
+    def carreagar_widgets(self):
+        self.font_label = CTkFont('Segoe UI', size=18, weight='bold')
+        self.font_entry = CTkFont('Segoe UI', size=16)
+        self.font_button = CTkFont('Segoe UI', size=18, weight='bold')
         
         
         tabv_main = CTkTabview(self, corner_radius=20)
@@ -32,24 +33,24 @@ class CadProduto(CTkToplevel):
         self.tab_cad = tabv_main.add('Cadastrar')
         self.tab_pesq = tabv_main.add('Pesquisar') 
         tabv_main.pack(expand=True, fill='both', padx=10, pady=10)
-        self.loader_w_tab_cad()
+        self.carregar_w_tab_cad()
         
-    def loader_w_tab_cad(self):
+    def carregar_w_tab_cad(self):
         
-        self.cod_barra = CTkEntry(self.tab_cad, placeholder_text='Codigo de Barra...', width=150, font=self.font_entry)
+        self.cod_barra = CTkEntry(self.tab_cad, placeholder_text='Codigo de Barra...', width=150, font=self.font_entry, height=40)
 
-        self.descricao = CTkEntry(self.tab_cad, placeholder_text='Descrição do Produto...', width=550, font=self.font_entry)
+        self.descricao = CTkEntry(self.tab_cad, placeholder_text='Descrição do Produto...', width=550, font=self.font_entry, height=40)
     
-        self.preco_uni = CTkEntry(self.tab_cad, width=100, font=self.font_entry, placeholder_text='R$...')
+        self.preco_uni = CTkEntry(self.tab_cad, width=100, font=self.font_entry, placeholder_text='R$...', height=40)
         
         
-        self.quantidade_min = CTkEntry(self.tab_cad, width=50, font=self.font_entry)
+        self.quantidade_min = CTkEntry(self.tab_cad, width=50, font=self.font_entry, height=40)
         
-        self.quantidade_atual = CTkEntry(self.tab_cad, width=50, font=self.font_entry)
+        self.quantidade_atual = CTkEntry(self.tab_cad, width=50, font=self.font_entry, height=40)
         
-        self.quantidade_max = CTkEntry(self.tab_cad, width=50, font=self.font_entry)
+        self.quantidade_max = CTkEntry(self.tab_cad, width=50, font=self.font_entry, height=40)
         
-        self.fornecedor = CTkComboBox(self.tab_cad, values='', font=self.font_label, state='readonly')
+        self.fornecedor = CTkComboBox(self.tab_cad, values='', font=self.font_label, state='readonly', height=40)
         
         self.cod_barra.bind('<KeyPress>', self.validar_codBarra)
         self.quantidade_min.bind('<KeyPress>', self.validar_quant_min)
@@ -74,9 +75,9 @@ class CadProduto(CTkToplevel):
         self.fornecedor.pack(anchor='w', padx=10)
         
         
-        CTkButton(self.tab_cad, text='Cadastrar', font=self.font_button).pack(anchor='w', padx=10, pady=20)
+        CTkButton(self.tab_cad, text='Cadastrar', font=self.font_button, height=40).pack(anchor='w', padx=10, pady=20)
         
-    def loader_w_tab_pesq(self):
+    def carregar_w_tab_pesq(self):
         self.pesquisa = CTkEntry(self.tab_cad, placeholder_text='Nome do Produto', width=150, font=self.font_entry)
 
     def validar_codBarra(self, event):

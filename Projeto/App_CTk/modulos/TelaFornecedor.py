@@ -7,14 +7,15 @@ from tkinter import PhotoImage
 from modulos.img import icon_pesquisa, icon_atualizar, icon_excluir
 
 class WFornecedor(CTkToplevel):
+    
     def __init__(self):
         CTkToplevel.__init__(self, takefocus=True)
         self.lift()
         self.title('Fornecedores')
         self.centralizar_janela()
         self.carregar_widgets()
-        self.after(100, self.lift)
         self.protocol('WM_DELETE_WINDOW', self.destroy)
+        
     def centralizar_janela(self):
         HEIGHT =750
         WEIDTH = 850
@@ -28,8 +29,8 @@ class WFornecedor(CTkToplevel):
         self.geometry(f'{WEIDTH}x{HEIGHT}+{X}+{Y}+')
         
     def carregar_widgets(self):
-        self.font_label = CTkFont('Segoe UI', size=15, weight='bold')
-        self.font_entry = CTkFont('Segoe UI', size=15)
+        self.font_label = CTkFont('Segoe UI', size=18, weight='bold')
+        self.font_entry = CTkFont('Segoe UI', size=16)
         self.font_button = CTkFont('Segoe UI', size=18, weight='bold')
         
         tabv_main = CTkTabview(self, corner_radius=20)
@@ -42,11 +43,11 @@ class WFornecedor(CTkToplevel):
         
     def carregar_w_tab_cad(self):
         
-        self.nome = CTkEntry(self.tab_cad, placeholder_text='Digite o nome do Fornecedor...', font=self.font_entry)
+        self.nome = CTkEntry(self.tab_cad, placeholder_text='Digite o nome do Fornecedor...', font=self.font_entry, height=40)
     
-        self.contato = CTkEntry(self.tab_cad, width=200, font=self.font_entry, placeholder_text='Digite o Contato...')
+        self.contato = CTkEntry(self.tab_cad, width=200, font=self.font_entry, placeholder_text='Digite o Contato...', height=40)
         
-        self.endereco = CTkEntry(self.tab_cad, font=self.font_entry, placeholder_text='Digite o Endereço...')
+        self.endereco = CTkEntry(self.tab_cad, font=self.font_entry, placeholder_text='Digite o Endereço...', height=40)
         
         
         CTkLabel(self.tab_cad, text='Fornecedor', font=self.font_label).pack(padx=10, anchor='w', pady=10)
@@ -57,7 +58,7 @@ class WFornecedor(CTkToplevel):
         self.endereco.pack(padx=10, anchor='w', fill='x')
       
         
-        CTkButton(self.tab_cad, text='Cadastrar', font=self.font_button, command=self.cadastrar_fornecedor).pack(anchor='w', padx=10, pady=20)
+        CTkButton(self.tab_cad, text='Cadastrar', font=self.font_button, command=self.cadastrar_fornecedor, height=40).pack(anchor='w', padx=10, pady=20)
         
     def carregar_w_tab_pesq(self):
         self.style = Style()
@@ -105,6 +106,7 @@ class WFornecedor(CTkToplevel):
         self.carregar_tab_fornecedores()
         self.tv_tabela.bind('<<TreeviewSelect>>', self.linha_selecionado)
         self.bind('<Button-1>', self.desabilitar_del)
+        
     def carregar_tab_fornecedores(self, lista=None):
         result = lista
         if not lista:
