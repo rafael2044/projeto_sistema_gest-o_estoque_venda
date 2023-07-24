@@ -24,7 +24,7 @@ class WFornecedor(CTkToplevel):
         W_WEIDTH = self.winfo_screenwidth()
         
         X = int((W_WEIDTH - WEIDTH)//2)
-        Y = int(W_HEIGHT - HEIGHT*1.5)
+        Y = int(W_HEIGHT - HEIGHT*1.3)
         
         self.geometry(f'{WEIDTH}x{HEIGHT}+{X}+{Y}+')
         
@@ -97,7 +97,7 @@ class WFornecedor(CTkToplevel):
         f_tabela.pack(fill='both', expand=True)
         self.tv_tabela.pack(fill='both', expand=True, side='left', anchor='w', padx=(10,0))
         self.scrollbar_vertical.pack(anchor='w', fill='y', expand=True, padx=(0, 10))
-        self.scrollbar_horizontal.pack(fill='x', anchor='s', padx=10)
+        self.scrollbar_horizontal.pack(fill='x', anchor='s', padx=10, pady=(0,5))
         self.bt_delete.pack(anchor='e', padx=10, pady=10)
         
         
@@ -150,8 +150,7 @@ class WFornecedor(CTkToplevel):
             self.bt_delete.configure(fg_color=("#3a7ebf", "#1f538d"))
     
     def desabilitar_del(self, event):
-        widget = self.focus_get()
-        if event.widget not in (self.tv_tabela, self.bt_delete) and widget is self.tv_tabela:
+        if event.widget not in (self.tv_tabela, self.bt_delete) and self.focus_get() is self.tv_tabela:
             self.bt_delete.configure(state='disabled')
             self.bt_delete.configure(fg_color='gray')
             self.tv_tabela.selection_set()

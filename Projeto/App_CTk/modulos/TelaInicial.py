@@ -5,6 +5,7 @@ from modulos.TelaFornecedor import WFornecedor
 from tkinter.ttk import Treeview, Scrollbar, Style
 from tkinter import Menu, PhotoImage
 from modulos.img import *
+from modulos.DAO.estoqueDAO import estoqueDAO
 class TelaPrincipal(CTk):
     
     def __init__(self):
@@ -33,7 +34,7 @@ class TelaPrincipal(CTk):
     def carregar_widgets(self):
         self.carregar_menu()
         self.style = Style()
-        self.style.configure('Treeview', font=('Segoe UI', 15))
+        self.style.configure('Treeview', font=('Segoe UI', 15), rowheight=30)
         self.style.configure('Treeview.Heading', font=('Segoe UI', 13))
         f_button_menu = CTkFrame(self)
         f_info = CTkFrame(self)
@@ -58,12 +59,12 @@ class TelaPrincipal(CTk):
         
         self.tv_tabela.column('#0', width=2, minwidth=2, stretch=True)
         self.tv_tabela.column('id', width=50, stretch=True, minwidth=30)
-        self.tv_tabela.column('cod_barra', width=100, stretch=True, minwidth=100)
+        self.tv_tabela.column('cod_barra', width=175, stretch=True, minwidth=100)
         self.tv_tabela.column('descricao', width=300, stretch=False, minwidth=30)
         self.tv_tabela.column('preco_un', width=100, stretch=True, minwidth=100)
         self.tv_tabela.column('fornecedor', width=175, stretch=False, minwidth=175)
         self.tv_tabela.column('quant_min', width=100, stretch=True, minwidth=100)
-        self.tv_tabela.column('quant_atual', width=100, stretch=True, minwidth=100)
+        self.tv_tabela.column('quant_atual', width=110, stretch=True, minwidth=100)
         self.tv_tabela.column('quant_max', width=100, stretch=True, minwidth=100)
         
         self.scrollbar_vertical = Scrollbar(f_tabela, orient='vertical', command=self.tv_tabela.yview)
@@ -89,6 +90,7 @@ class TelaPrincipal(CTk):
         self.scrollbar_vertical.pack(fill='y', expand=True, anchor='w')
         f_scroll.pack(padx=10, pady=0, fill='x')
         self.scrollbar_horizontal.pack(fill='x')
+        self.carregar_estoque()
         
     def carregar_menu(self):
         self.menubar = Menu(self, font=('Segoe UI', 14))
@@ -103,6 +105,12 @@ class TelaPrincipal(CTk):
         
         self.menubar.add_cascade(label='Cadastrar', menu=cad_menu)
         self.menubar.add_cascade(label='Sair', menu=sair_menu)
+        
+    def carregar_estoque(self):
+        estoque = estoqueDAO().select_all_produto_estoque()
+        [self.tv_tabela.delete(x) for x in self.tv_tabela.get_children()]
+        if estoque:
+            [self.tv_tabela.insert('', 'end', values=p) for p in estoque]
         
     def sair(self):
         self.login.deiconify()

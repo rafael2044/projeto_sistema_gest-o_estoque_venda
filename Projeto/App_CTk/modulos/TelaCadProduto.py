@@ -1,5 +1,9 @@
 from customtkinter import CTkToplevel, CTkFrame, CTkEntry, CTkLabel, CTkButton, CTkComboBox, CTkTabview, CTkFont
 from tkinter.ttk import Treeview
+from modulos.DAO.fornecedorDAO import fornecedorDAO
+from modulos.DAO.produtoDAO import produtoDAO
+from modulos.DAO.estoqueDAO import estoqueDAO
+from modulos.MensagemAlerta import MensagemAlerta
 class CadProduto(CTkToplevel):
     
     def __init__(self):
@@ -18,7 +22,7 @@ class CadProduto(CTkToplevel):
         W_WEIDTH = self.winfo_screenwidth()
         
         X = int((W_WEIDTH - WEIDTH)//2)
-        Y = int(W_HEIGHT - HEIGHT*1.5)
+        Y = int(W_HEIGHT - HEIGHT*1.3)
         
         self.geometry(f'{WEIDTH}x{HEIGHT}+{X}+{Y}+')
         
@@ -34,7 +38,7 @@ class CadProduto(CTkToplevel):
         self.tab_pesq = tabv_main.add('Pesquisar') 
         tabv_main.pack(expand=True, fill='both', padx=10, pady=10)
         self.carregar_w_tab_cad()
-        
+    
     def carregar_w_tab_cad(self):
         
         self.cod_barra = CTkEntry(self.tab_cad, placeholder_text='Codigo de Barra...', width=150, font=self.font_entry, height=40)
@@ -50,7 +54,7 @@ class CadProduto(CTkToplevel):
         
         self.quantidade_max = CTkEntry(self.tab_cad, width=50, font=self.font_entry, height=40)
         
-        self.fornecedor = CTkComboBox(self.tab_cad, values='', font=self.font_label, state='readonly', height=40)
+        self.fornecedor = CTkComboBox(self.tab_cad, values=self.carregar_fornecedores(), font=self.font_label, state='readonly', height=40, width=350)
         
         self.cod_barra.bind('<KeyPress>', self.validar_codBarra)
         self.quantidade_min.bind('<KeyPress>', self.validar_quant_min)
@@ -75,10 +79,56 @@ class CadProduto(CTkToplevel):
         self.fornecedor.pack(anchor='w', padx=10)
         
         
-        CTkButton(self.tab_cad, text='Cadastrar', font=self.font_button, height=40).pack(anchor='w', padx=10, pady=20)
+        CTkButton(self.tab_cad, text='Cadastrar', font=self.font_button, height=40, command=self.cadastrar_produto).pack(anchor='w', padx=10, pady=20)
         
     def carregar_w_tab_pesq(self):
         self.pesquisa = CTkEntry(self.tab_cad, placeholder_text='Nome do Produto', width=150, font=self.font_entry)
+
+    def carregar_fornecedores(self):
+        result = fornecedorDAO.select_all_name_fornecedores()
+        fornecedores = []
+        if result:
+            for f in result:
+                fornecedores.append(f[0])
+            
+        return fornecedores
+
+    def cadastrar_produto(self):
+        cod_barra = self.cod_barra.get()
+        descricao = self.descricao.get()
+        preco_un = float(self.preco_uni.get().replace(',', '.'))
+        quant_min = int(self.quantidade_min.get())
+        quant_atual = int(self.quantidade_atual.get())
+        quant_max = int(self.quantidade_max.get())
+        id_fornecedor = int(fornecedorDAO.select_id_fornecedor(self.fornecedor.get())[0])
+        
+        
+        match produtoDAO.insert_produto(descricao, id_fornecedor, preco_un, cod_barra):
+            case 1:
+                id_produto = int(produtoDAO.select_id_produto(cod_barra)[0])
+                match estoqueDAO.insert_produto_estoque(id_produto, quant_min, quant_atual, quant_max):
+                    case 1:
+                        MensagemAlerta('Sucesso!', 'O produto foi cadastrado em estoque com sucesso!')
+                        self.limpar_entrys()
+                    case 2:
+                        MensagemAlerta('Erro!', 'O produto ja existe no estoque!')
+                    case 3:
+                        MensagemAlerta('Erro!', 'Os campos nao foram preenchidos corretamente!')
+            case 2:
+                MensagemAlerta('Erro!', 'O produto ja existe no estoque!')
+            case 3:
+                MensagemAlerta('Erro!', 'Os campos nao foram preenchidos corretamente!')
+        
+        
+    def limpar_entrys(self):
+        self.cod_barra.delete(0, 'end')
+        self.descricao.delete(0, 'end')
+        self.preco_uni.delete(0, 'end')
+        self.quantidade_min.delete(0, 'end')
+        self.quantidade_atual.delete(0, 'end')
+        self.quantidade_max.delete(0, 'end')
+                        
+       
 
     def validar_codBarra(self, event):
         text = self.cod_barra.get()

@@ -27,9 +27,12 @@ class DataBase:
             sql_produto= '''CREATE TABLE IF NOT EXISTS produto (
                                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                                 descricao TEXT NOT NULL,
-                                fornecedor TEXT,
+                                id_fornecedor INTEGER DEFAULT 0 NOT NULL,
                                 preco_unitario REAL NOT NULL,
-                                codigo_de_barra TEXT(13) CHECK(length(codigo_de_barra) = 13)
+                                codigo_de_barra TEXT(13) CHECK(length(codigo_de_barra) = 13),
+                                FOREIGN KEY (id_fornecedor) REFERENCES fornecedor (id)
+                                                            ON UPDATE CASCADE
+                                                            ON DELETE SET DEFAULT
                             );'''
             sql_estoque='''CREATE TABLE IF NOT EXISTS estoque (
                                 id INTEGER PRIMARY KEY AUTOINCREMENT,
