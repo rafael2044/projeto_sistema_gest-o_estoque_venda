@@ -1,10 +1,11 @@
 from customtkinter import CTkToplevel, CTkFrame, CTkEntry, CTkLabel, CTkButton, CTkComboBox, CTkTabview, CTkFont
 from tkinter.ttk import Treeview, Scrollbar, Style
 from modulos.DAO.fornecedorDAO import fornecedorDAO
+from modulos.TelaEditarFornecedor import EditarFornecedor
 from modulos.MensagemAlerta import MensagemAlerta
 from modulos.DialogoSimNao import DialogoSimNao
 from tkinter import PhotoImage
-from modulos.img import icon_pesquisa, icon_atualizar, icon_excluir
+from modulos.img import icon_pesquisa, icon_atualizar, icon_excluir, icon_editar
 
 class WFornecedor(CTkToplevel):
     
@@ -90,6 +91,7 @@ class WFornecedor(CTkToplevel):
         
         
         self.bt_delete = CTkButton(self.tab_pesq, state='disabled', text='', image=PhotoImage(data=icon_excluir),width=40,fg_color='gray', command=self.deletar_fornecedor)
+        self.bt_editar = CTkButton(self.tab_pesq, state='disabled', text='', image=PhotoImage(data=icon_editar),command=self.editar_fornecedor, width=40,fg_color='gray')
         f_pesquisa.pack(fill='x', pady=10)
         self.pesquisa.pack(fill='x',side='left', expand=True, padx=(10,5))
         CTkButton(f_pesquisa, text='', image=PhotoImage(data=icon_pesquisa), width=50,height=40, command=self.pesquisar_fornecedor).pack(side='left', padx=(5,5))
@@ -98,14 +100,12 @@ class WFornecedor(CTkToplevel):
         self.tv_tabela.pack(fill='both', expand=True, side='left', anchor='w', padx=(10,0))
         self.scrollbar_vertical.pack(anchor='w', fill='y', expand=True, padx=(0, 10))
         self.scrollbar_horizontal.pack(fill='x', anchor='s', padx=10, pady=(0,5))
-        self.bt_delete.pack(anchor='e', padx=10, pady=10)
-        
-        
-        
-        
+        self.bt_editar.pack(anchor='e',side='right', padx=10)
+        self.bt_delete.pack(anchor='e',side='right', padx=10, pady=10)
+
         self.carregar_tab_fornecedores()
         self.tv_tabela.bind('<<TreeviewSelect>>', self.linha_selecionado)
-        self.bind('<Button-1>', self.desabilitar_del)
+        self.bind('<Button-1>', self.desabilitar_botoes)
         
     def carregar_tab_fornecedores(self, lista=None):
         result = lista
@@ -136,6 +136,11 @@ class WFornecedor(CTkToplevel):
             case 3:
                 MensagemAlerta('Erro ao Cadastrar', 'Nome ou Contato Inválidos!')
 
+    def editar_fornecedor(self):
+        dados = self.tv_tabela.item(self.item[0], 'values')
+        EditarFornecedor(self, dados)
+        
+
     def deletar_fornecedor(self):
         nome = self.tv_tabela.item(self.item[0], 'values')[1]
         op = DialogoSimNao('Alerta!', f'Deseja Excluir o fornecedor {nome}?')
@@ -148,11 +153,15 @@ class WFornecedor(CTkToplevel):
         if self.item:
             self.bt_delete.configure(state='enabled')
             self.bt_delete.configure(fg_color=("#3a7ebf", "#1f538d"))
+            self.bt_editar.configure(state='enabled')
+            self.bt_editar.configure(fg_color=("#3a7ebf", "#1f538d"))
     
-    def desabilitar_del(self, event):
-        if event.widget not in (self.tv_tabela, self.bt_delete) and self.focus_get() is self.tv_tabela:
+    def desabilitar_botoes(self, event):
+        if event.widget not in (self.tv_tabela, self.bt_delete, self.bt_editar) and self.focus_get() is self.tv_tabela:
             self.bt_delete.configure(state='disabled')
             self.bt_delete.configure(fg_color='gray')
+            self.bt_editar.configure(state='disabled')
+            self.bt_editar.configure(fg_color='gray')
             self.tv_tabela.selection_set()
         
     def atualizar_tabela(self):

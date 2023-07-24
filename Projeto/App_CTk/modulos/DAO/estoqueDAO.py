@@ -52,5 +52,3 @@ class estoqueDAO(DataBase):
             cur.execute(sql, (id, ))
             con.commit()
             return True
-
-print(estoqueDAO.select_all_produto_estoque())

@@ -4,6 +4,7 @@ from modulos.DAO.usuarioDAO import usuarioDAO
 class Login(CTkToplevel):
     def __init__(self, master):
         CTkToplevel.__init__(self)
+        self.master = master
         self.title('Login Sistema')
         self.centralizar_janela()
         self.resizable(False, False)
@@ -58,6 +59,7 @@ class Login(CTkToplevel):
             self.grab_release()
             self.master.focus_set()
             self.master.usuario.configure(text=user)
+            self.master.carregar_estoque()
         else:
             MensagemAlerta('Login Invalido', 'Usuario ou Senha invalidos!')
         

@@ -16,7 +16,7 @@ class MensagemAlerta(CTkToplevel):
         
     def center_window(self):
         HEIGHT = 75
-        WEIDTH = 300
+        WEIDTH = 350
         
         W_HEIGHT = self.winfo_screenheight()
         W_WEIDTH = self.winfo_screenwidth()

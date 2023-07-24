@@ -34,8 +34,11 @@ class TelaPrincipal(CTk):
     def carregar_widgets(self):
         self.carregar_menu()
         self.style = Style()
+        self.style.theme_use('clam')
         self.style.configure('Treeview', font=('Segoe UI', 15), rowheight=30)
-        self.style.configure('Treeview.Heading', font=('Segoe UI', 13))
+        self.style.configure('Treeview.Heading', font=('Segoe UI', 13, 'bold'))
+        self.style.layout("Treeview", [('Treeview.treearea', {'sticky': 'nswe'})])
+        
         f_button_menu = CTkFrame(self)
         f_info = CTkFrame(self)
         f_tabela = CTkFrame(self)
@@ -46,7 +49,7 @@ class TelaPrincipal(CTk):
         self.usuario = CTkLabel(f_info, text=' '*50, font=('Segoe UI', 12, 'bold'))
         
         self.tv_tabela = Treeview(f_tabela, columns=('id', 'cod_barra', 'descricao', 'preco_un', 'fornecedor','quant_min', 'quant_atual', 'quant_max'),
-                                  )
+                                  selectmode='browse')
         self.tv_tabela.heading('#0', text='')
         self.tv_tabela.heading('id', text='ID')
         self.tv_tabela.heading('cod_barra', text='Cod. Barra')
@@ -58,14 +61,14 @@ class TelaPrincipal(CTk):
         self.tv_tabela.heading('quant_max', text='Quant. Max')
         
         self.tv_tabela.column('#0', width=2, minwidth=2, stretch=True)
-        self.tv_tabela.column('id', width=50, stretch=True, minwidth=30)
-        self.tv_tabela.column('cod_barra', width=175, stretch=True, minwidth=100)
-        self.tv_tabela.column('descricao', width=300, stretch=False, minwidth=30)
-        self.tv_tabela.column('preco_un', width=100, stretch=True, minwidth=100)
+        self.tv_tabela.column('id', width=50, stretch=True, minwidth=50, anchor='center')
+        self.tv_tabela.column('cod_barra', width=175, stretch=True, minwidth=175, anchor='center')
+        self.tv_tabela.column('descricao', width=300, stretch=False, minwidth=300)
+        self.tv_tabela.column('preco_un', width=150, stretch=True, minwidth=150, anchor='center')
         self.tv_tabela.column('fornecedor', width=175, stretch=False, minwidth=175)
-        self.tv_tabela.column('quant_min', width=100, stretch=True, minwidth=100)
-        self.tv_tabela.column('quant_atual', width=110, stretch=True, minwidth=100)
-        self.tv_tabela.column('quant_max', width=100, stretch=True, minwidth=100)
+        self.tv_tabela.column('quant_min', width=100, stretch=True, minwidth=100, anchor='center')
+        self.tv_tabela.column('quant_atual', width=115, stretch=True, minwidth=115, anchor='center')
+        self.tv_tabela.column('quant_max', width=110, stretch=True, minwidth=110, anchor='center')
         
         self.scrollbar_vertical = Scrollbar(f_tabela, orient='vertical', command=self.tv_tabela.yview)
         self.scrollbar_horizontal = Scrollbar(f_scroll, orient='horizontal', command=self.tv_tabela.xview)
@@ -90,7 +93,6 @@ class TelaPrincipal(CTk):
         self.scrollbar_vertical.pack(fill='y', expand=True, anchor='w')
         f_scroll.pack(padx=10, pady=0, fill='x')
         self.scrollbar_horizontal.pack(fill='x')
-        self.carregar_estoque()
         
     def carregar_menu(self):
         self.menubar = Menu(self, font=('Segoe UI', 14))

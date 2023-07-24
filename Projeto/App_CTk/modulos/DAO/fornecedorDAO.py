@@ -42,7 +42,6 @@ class fornecedorDAO(DataBase):
             sql = '''SELECT nome FROM fornecedor'''
             return list(cur.execute(sql).fetchall())
             
-
     @classmethod
     def select_fornecedor(cls, nome:str):
         with cls.return_con(cls) as con:
@@ -58,6 +57,7 @@ class fornecedorDAO(DataBase):
             if nome:
                 sql = '''SELECT id FROM fornecedor WHERE nome = ?;'''
                 return cur.execute(sql, (nome, )).fetchone()
+    
     @classmethod
     def select_like_fornecedor(cls, nome:str):
        with cls.return_con(cls) as con:
@@ -75,3 +75,11 @@ class fornecedorDAO(DataBase):
             con.commit()
             return True
 
+    @classmethod
+    def atualizar_fornecedor(cls, id:int, nome:str, contato:str, endereco:str):
+        with cls.return_con(cls) as con:
+            cur = con.cursor()
+            sql = "UPDATE fornecedor SET nome = ?, contato= ?, endereco = ? WHERE id = ?"
+            cur.execute(sql, (nome, contato, endereco, id))
+            con.commit()
+            return True
