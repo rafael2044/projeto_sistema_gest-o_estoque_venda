@@ -122,7 +122,7 @@ class TelaPrincipal(CTk):
     def abrir_tela_cadProd(self):
         if self.cad_prod is None or not self.cad_prod.winfo_exists():
             self.cad_prod = CadProduto()
-            self.cad_prod.transient(self)
+            self.cad_prod.lift()
         else:
             self.cad_prod.lift()
     

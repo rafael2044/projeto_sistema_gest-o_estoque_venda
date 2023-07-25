@@ -13,7 +13,7 @@ class EditarFornecedor(CTkToplevel):
         self.protocol('WM_DELETE_WINDOW', self.destroy)
         
     def centralizar_janela(self):
-        HEIGHT =500
+        HEIGHT =350
         WEIDTH = 450
         
         W_HEIGHT = self.winfo_screenheight()
@@ -45,9 +45,10 @@ class EditarFornecedor(CTkToplevel):
         self.endereco.pack(padx=10, anchor='w', fill='x')
       
         
-        CTkButton(frame, text='Salvar Alteracoes', font=self.font_button, height=40, command=self.salvar_alterecoes).pack(anchor='w', padx=10, pady=20)
+        CTkButton(frame, text='Salvar Alteracoes', font=self.font_button, height=40, command=self.salvar_alterecoes).pack(anchor='w', padx=10, pady=20, side='left')
+        CTkButton(frame, text='Cancelar', font=self.font_button, height=40, command=self.destroy).pack(anchor='w', padx=10, pady=20, side='left')
+
         self.carregar_dados()
-        print(self.dados)
         
     def carregar_dados(self):
         self.nome.insert(0, self.dados[1])
