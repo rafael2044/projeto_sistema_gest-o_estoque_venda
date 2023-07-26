@@ -8,7 +8,7 @@ class CadProduto(CTkToplevel):
     
     def __init__(self):
         CTkToplevel.__init__(self, takefocus=True)
-        self.lift()
+        self.after(100, self.lift)
         self.title('Cadastrar Novo Produto')
         self.centralizar_janela()
         self.carreagar_widgets()
@@ -22,7 +22,7 @@ class CadProduto(CTkToplevel):
         W_WEIDTH = self.winfo_screenwidth()
         
         X = int((W_WEIDTH - WEIDTH)//2)
-        Y = int(W_HEIGHT - HEIGHT*1.3)
+        Y = int((W_HEIGHT - HEIGHT)//4.5)
         
         self.geometry(f'{WEIDTH}x{HEIGHT}+{X}+{Y}+')
         

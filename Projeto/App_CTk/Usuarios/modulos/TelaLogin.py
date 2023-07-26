@@ -52,10 +52,10 @@ class Login(CTkToplevel):
     def logar(self, event=None):
         user = self.user.get()
         password = self.password.get()
-        
+
         if usuarioDAO.validar_usuario(user, password):
             self.withdraw()
-            self.master.nivel_usuario = int(usuarioDAO.select_tipo_usuario(user)[0])
+            self.master.nivel_usuario = usuarioDAO.select_tipo_usuario(user)[0]
             self.user.delete(0, 'end')
             self.password.delete(0, 'end')
             self.grab_release()

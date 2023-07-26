@@ -21,7 +21,23 @@ class usuarioDAO(DataBase):
                     return 1
                 return 2
             return 3
+    @classmethod
+    def insert_tipo(cls, id:int , nome:str):
+        with cls.return_con(cls) as con:
+            cur=con.cursor()
+            if nome:
+                sql = '''INSERT INTO tipo (id, nome) VALUES (?,?);'''
+                cur.execute(sql, (id, nome))
+                con.commit()
+                return 1
         
+    @classmethod
+    def select_all_tipo(cls):
+        with cls.return_con(cls) as con:
+            cur = con.cursor()
+            sql = '''SELECT * FROM tipo;'''
+            return cur.execute(sql).fetchall()
+            
     @classmethod  
     def usuario_existe(cls, usuario:str):
         result = list(cls.select_usuario(usuario))
@@ -39,15 +55,24 @@ class usuarioDAO(DataBase):
     def select_all_usuario(cls):
         with cls.return_con(cls) as con:
             cur = con.cursor()
-            sql = '''SELECT id, usuario, tipo FROM usuario;'''
+            sql = '''SELECT u.id, u.usuario, t.nome FROM usuario as u
+                     INNER JOIN tipo as t ON u.tipo = t.id;'''
             return cur.execute(sql).fetchall()
     
+    @classmethod
+    def select_id_tipo(cls, nome:str):
+        with cls.return_con(cls) as con:
+            cur = con.cursor()
+            sql = '''SELECT id FROM tipo WHERE nome = ?'''
+            return cur.execute(sql, (nome, )).fetchone()
     
     @classmethod
     def select_tipo_usuario(cls, usuario:str):
         with cls.return_con(cls) as con:
             cur = con.cursor()
-            sql = '''SELECT tipo FROM usuario WHERE usuario = ?'''
+            sql = '''SELECT t.nome FROM usuario
+                     INNER JOIN tipo as t ON usuario.tipo = t.id
+                     WHERE usuario = ?'''
             return cur.execute(sql, (usuario,)).fetchone()
     
     @classmethod
@@ -61,5 +86,3 @@ class usuarioDAO(DataBase):
                 if len(result) == 1:
                     return True
             return False            
-              
-

@@ -25,6 +25,7 @@ class estoqueDAO(DataBase):
     def produto_existe(cls, id_produto:int):
         result = list(cls.select_produto_estoque(id_produto))
         if len(result) > 0:
+            print(result)
             return True
         return False
 

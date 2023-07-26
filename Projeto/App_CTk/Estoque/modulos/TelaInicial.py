@@ -16,8 +16,8 @@ class TelaPrincipal(CTk):
         self.cad_prod = None
         self.w_fornecedor = None
         self.cad_un = None
-        self.login = Login(self)
-        self.login.transient(self)
+        #self.login = Login(self)
+        #self.login.transient(self)
         
     def centralizar_janela(self):
         HEIGHT = 800
@@ -122,13 +122,13 @@ class TelaPrincipal(CTk):
     def abrir_tela_cadProd(self):
         if self.cad_prod is None or not self.cad_prod.winfo_exists():
             self.cad_prod = CadProduto()
-            self.cad_prod.lift()
+            self.cad_prod.transient(self)
         else:
-            self.cad_prod.lift()
+            self.cad_prod.after(100, self.cad_prod.lift)
     
     def abrir_tela_fornecedor(self):
         if self.w_fornecedor is None or not self.w_fornecedor.winfo_exists():
             self.w_fornecedor = WFornecedor()
             self.w_fornecedor.transient(self)
         else:
-            self.w_fornecedor.lift()
+            self.w_fornecedor.after(100, self.w_fornecedor.lift)

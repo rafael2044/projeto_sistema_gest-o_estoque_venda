@@ -96,9 +96,7 @@ class TelaPrincipal(CTk):
    
    
     def carregar_usuarios(self):
-        tipos = {1:'Padrão', 2:'Administrador'}
-        lista_usuarios = [list(x) for x in usuarioDAO.select_all_usuario()]
-        usuarios = [[tipos[y] if i == 2 else y for i,y in enumerate(x)] for x in lista_usuarios]
+        usuarios = usuarioDAO.select_all_usuario()
         [self.tv_tabela.delete(x) for x in self.tv_tabela.get_children()]
         if usuarios:
             [self.tv_tabela.insert('', 'end', values=p) for p in usuarios]
@@ -110,12 +108,12 @@ class TelaPrincipal(CTk):
     
 
     def verificar_nivel(self):
-        if self.nivel_usuario == 2:
+        if self.nivel_usuario == 'Administrador':
             self.bt_cad.configure(state='enabled')
             self.bt_reset.configure(state='enabled')
             
     def abrir_janela_cadastro(self):
-        if self.cad_usuario is None or self.cad_usuario.winfo_exists():
+        if self.cad_usuario is None or not self.cad_usuario.winfo_exists():
             self.cad_usuario = CadUsuario(self)
         else:
             self.cad_usuario.lift()

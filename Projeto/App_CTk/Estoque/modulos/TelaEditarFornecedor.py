@@ -6,7 +6,7 @@ class EditarFornecedor(CTkToplevel):
         CTkToplevel.__init__(self)
         self.master =master
         self.dados = list(dados)
-        self.lift()
+        self.after(100, self.lift)
         self.title('Editar Fornecedor')
         self.centralizar_janela()
         self.carregar_widgets()
@@ -16,11 +16,8 @@ class EditarFornecedor(CTkToplevel):
         HEIGHT =350
         WEIDTH = 450
         
-        W_HEIGHT = self.winfo_screenheight()
-        W_WEIDTH = self.winfo_screenwidth()
-        
-        X = int((W_WEIDTH - WEIDTH)//2)
-        Y = int(W_HEIGHT - HEIGHT*1.3)
+        X = int(self.master.winfo_x() + WEIDTH//2)
+        Y = self.master.winfo_y()
         
         self.geometry(f'{WEIDTH}x{HEIGHT}+{X}+{Y}+')
         

@@ -6,13 +6,13 @@ class usuarioDAO(DataBase):
         DataBase.__init__(self)
         
     @classmethod
-    def insert_usuario(cls, usuario:str, senha:str):
+    def insert_usuario(cls, usuario:str, senha:str, tipo:int):
         with cls.return_con(cls) as con:
             cur = con.cursor()
             if usuario and senha and not cls.usuario_existe(usuario):
                 senha_sha256 = sha256(senha.encode()).hexdigest()
-                sql = f'''INSERT INTO usuario (usuario, senha) VALUES (?,?);'''
-                cur.execute(sql,(usuario, senha_sha256))
+                sql = f'''INSERT INTO usuario (usuario, senha, tipo) VALUES (?,?,?);'''
+                cur.execute(sql,(usuario, senha_sha256, tipo))
                 con.commit()
                 return True
             return False
@@ -42,7 +42,6 @@ class usuarioDAO(DataBase):
                 if len(result) == 1:
                     return True
             return False            
-        
-usuarioDAO().insert_usuario('admin', 'admin')
+
                 
 

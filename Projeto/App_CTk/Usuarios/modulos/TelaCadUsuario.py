@@ -29,13 +29,13 @@ class CadUsuario(CTkToplevel):
         font_entry = CTkFont('Segoe UI', size=16)
         font_button = CTkFont('Segoe UI', size=18, weight='bold')
         
-        self.tipos = {'Padrão':1, 'Administrador':2}
+        self.tipos = usuarioDAO.select_all_tipo()
         
         f_main = CTkFrame(self)
         f_button = CTkFrame(f_main, fg_color='transparent')
         self.user = CTkEntry(f_main, placeholder_text='Digite o Usuario...', width=250, height=40, font=font_entry)
         self.password = CTkEntry(f_main, show='*', placeholder_text='Digite a Senha...', width=250, height=40, font=font_entry)
-        self.cb_tipo = CTkComboBox(f_main, values=[x for x in self.tipos], font=font_label, state='readonly')
+        self.cb_tipo = CTkComboBox(f_main, values=[x[1] for x in self.tipos], font=font_label, state='readonly')
         self.bt_cadastrar = CTkButton(f_button, text='Cadastrar', font=font_button, command=self.cadastrar, height=40)
         self.bt_sair = CTkButton(f_button, text='Sair', font=font_button, command=self.sair,height=40)
         
@@ -53,7 +53,7 @@ class CadUsuario(CTkToplevel):
     def cadastrar(self, event=None):
         user = self.user.get()
         password = self.password.get()
-        tipo = self.tipos[self.cb_tipo.get()]
+        tipo = usuarioDAO.select_id_tipo(self.cb_tipo.get())[0]
         
         match usuarioDAO.insert_usuario(user, password, tipo):
             

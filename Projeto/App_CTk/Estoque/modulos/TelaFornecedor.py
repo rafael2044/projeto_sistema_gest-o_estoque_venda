@@ -11,21 +11,21 @@ class WFornecedor(CTkToplevel):
     
     def __init__(self):
         CTkToplevel.__init__(self, takefocus=True)
-        self.lift()
+        self.after(100, self.lift)
         self.title('Fornecedores')
         self.centralizar_janela()
         self.carregar_widgets()
         self.protocol('WM_DELETE_WINDOW', self.destroy)
         
     def centralizar_janela(self):
-        HEIGHT =750
+        HEIGHT = 750
         WEIDTH = 850
         
         W_HEIGHT = self.winfo_screenheight()
         W_WEIDTH = self.winfo_screenwidth()
         
         X = int((W_WEIDTH - WEIDTH)//2)
-        Y = int(W_HEIGHT - HEIGHT*1.3)
+        Y = int((W_HEIGHT - HEIGHT)//4.5)
         
         self.geometry(f'{WEIDTH}x{HEIGHT}+{X}+{Y}+')
         
@@ -92,8 +92,8 @@ class WFornecedor(CTkToplevel):
         
         self.bt_delete = CTkButton(self.tab_pesq, state='disabled', text='', image=PhotoImage(data=icon_excluir),width=40,fg_color='gray', command=self.deletar_fornecedor)
         self.bt_editar = CTkButton(self.tab_pesq, state='disabled', text='', image=PhotoImage(data=icon_editar),command=self.editar_fornecedor, width=40,fg_color='gray')
-        f_pesquisa.pack(fill='x', pady=10)
-        self.pesquisa.pack(fill='x',side='left', expand=True, padx=(10,5))
+        f_pesquisa.pack(fill='x', pady=(2,5))
+        self.pesquisa.pack(fill='x',side='left', expand=True, padx=(10,5), pady=(1,1))
         CTkButton(f_pesquisa, text='', image=PhotoImage(data=icon_pesquisa), width=50,height=40, command=self.pesquisar_fornecedor).pack(side='left', padx=(5,5))
         CTkButton(f_pesquisa, text='', image=PhotoImage(data=icon_atualizar), width=50,height=40, command=self.atualizar_tabela).pack(side='left', padx=(5,10))
         f_tabela.pack(fill='both', expand=True)
