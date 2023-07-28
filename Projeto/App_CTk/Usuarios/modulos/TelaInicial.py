@@ -1,6 +1,7 @@
 from customtkinter import CTkFrame, CTkButton, CTk, CTkLabel, CTkFont
 from modulos.TelaLogin import Login
 from modulos.TelaCadUsuario import CadUsuario
+from modulos.TelaResetarSenha import ResetarSenha
 from modulos.DAO.usuarioDAO import usuarioDAO
 from tkinter.ttk import Treeview, Scrollbar, Style
 from tkinter import Menu, PhotoImage
@@ -14,6 +15,7 @@ class TelaPrincipal(CTk):
         self.login = Login(self)
         self.nivel_usuario = None
         self.cad_usuario = None
+        self.resetar_senha = None
         
     def centralizar_janela(self):
         HEIGHT = 500
@@ -70,7 +72,7 @@ class TelaPrincipal(CTk):
         
         self.bt_cad = CTkButton(f_button_menu, text='Cadastrar Usuario', command=self.abrir_janela_cadastro, font=self.font_button, state='disabled')
         self.bt_cad.pack(side='left', padx=10)
-        self.bt_reset = CTkButton(f_button_menu, text='Resetar Senha', font=self.font_button, state='disabled')
+        self.bt_reset = CTkButton(f_button_menu, text='Resetar Senha', font=self.font_button, state='disabled', command=self.abrir_janela_resetar_senha)
         self.bt_reset.pack(side='left', padx=10)
         self.usuario.pack(side='right', padx=10)
         CTkLabel(f_info, text='Usuarios Ativoss', font=('Segoe UI', 19, 'bold')).pack(side='left', padx=10)
@@ -117,3 +119,10 @@ class TelaPrincipal(CTk):
             self.cad_usuario = CadUsuario(self)
         else:
             self.cad_usuario.lift()
+            
+    def abrir_janela_resetar_senha(self):
+        if self.resetar_senha is None or not self.resetar_senha.winfo_exists():
+            self.resetar_senha = ResetarSenha(self)
+        else:
+            self.resetar_senha.lift()
+            

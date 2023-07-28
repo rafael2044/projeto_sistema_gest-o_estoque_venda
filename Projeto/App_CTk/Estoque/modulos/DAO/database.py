@@ -19,8 +19,10 @@ class DataBase:
             sql_user = '''CREATE TABLE IF NOT EXISTS usuario (
                         id INTEGER PRIMARY KEY AUTOINCREMENT,
                         usuario TEXT NOT NULL,
-                        senha VARCHAR(68) NOT NULL,
+                        senha VARCHAR(68),
                         tipo INTEGER DEFAULT 0 NOT NULL,
+                        usuario_novo INTEGER DEFAULT 1 NOT NULL,
+                        CHECK(usuario_novo = 0 OR usuario_novo = 1)
                         FOREIGN KEY (tipo) REFERENCES tipo (id)
                                            ON UPDATE CASCADE
                                            ON DELETE SET DEFAULT

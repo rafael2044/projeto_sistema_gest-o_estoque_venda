@@ -34,7 +34,6 @@ class CadUsuario(CTkToplevel):
         f_main = CTkFrame(self)
         f_button = CTkFrame(f_main, fg_color='transparent')
         self.user = CTkEntry(f_main, placeholder_text='Digite o Usuario...', width=250, height=40, font=font_entry)
-        self.password = CTkEntry(f_main, show='*', placeholder_text='Digite a Senha...', width=250, height=40, font=font_entry)
         self.cb_tipo = CTkComboBox(f_main, values=[x[1] for x in self.tipos], font=font_label, state='readonly')
         self.bt_cadastrar = CTkButton(f_button, text='Cadastrar', font=font_button, command=self.cadastrar, height=40)
         self.bt_sair = CTkButton(f_button, text='Sair', font=font_button, command=self.sair,height=40)
@@ -42,8 +41,6 @@ class CadUsuario(CTkToplevel):
         f_main.pack(padx=10,pady=10, expand=True, fill = 'both')
         CTkLabel(f_main, text='Usuario', font=font_label).pack(padx=10, pady=5, anchor='w')
         self.user.pack(padx=10, anchor='w')
-        CTkLabel(f_main, text='Senha',font=font_label).pack(padx=10, pady=5, anchor='w')
-        self.password.pack(padx=10, anchor='w')
         CTkLabel(f_main, text='Tipo', font=font_label).pack(padx=10, pady=5, anchor='w')
         self.cb_tipo.pack(padx=10, anchor='w')
         f_button.pack(padx=10, pady=20)
@@ -52,10 +49,9 @@ class CadUsuario(CTkToplevel):
         
     def cadastrar(self, event=None):
         user = self.user.get()
-        password = self.password.get()
         tipo = usuarioDAO.select_id_tipo(self.cb_tipo.get())[0]
         
-        match usuarioDAO.insert_usuario(user, password, tipo):
+        match usuarioDAO.insert_usuario(user, tipo):
             
             case 1:
                 MensagemAlerta('Sucesso', 'Usuario cadastrado com sucesso!')
