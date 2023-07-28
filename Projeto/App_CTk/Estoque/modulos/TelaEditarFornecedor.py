@@ -1,6 +1,6 @@
 from customtkinter import CTkToplevel, CTkFrame, CTkEntry, CTkLabel, CTkButton, CTkComboBox, CTkTabview, CTkFont
-from modulos.DAO.fornecedorDAO import fornecedorDAO
-from modulos.MensagemAlerta import MensagemAlerta
+from DAO.fornecedorDAO import fornecedorDAO
+from Estoque.modulos.MensagemAlerta import MensagemAlerta
 class EditarFornecedor(CTkToplevel):
     def __init__(self, master, dados:list):
         CTkToplevel.__init__(self)

@@ -1,11 +1,11 @@
 from customtkinter import CTkFrame, CTkButton, CTk, CTkLabel, CTkFont
-from modulos.TelaLogin import Login
-from modulos.TelaCadProduto import CadProduto
-from modulos.TelaFornecedor import WFornecedor
+from Estoque.modulos.TelaLogin import Login
+from Estoque.modulos.TelaCadProduto import CadProduto
+from Estoque.modulos.TelaFornecedor import WFornecedor
 from tkinter.ttk import Treeview, Scrollbar, Style
 from tkinter import Menu, PhotoImage
-from modulos.img import *
-from modulos.DAO.estoqueDAO import estoqueDAO
+from Estoque.modulos.img import *
+from DAO.estoqueDAO import estoqueDAO
 class TelaPrincipal(CTk):
     
     def __init__(self):

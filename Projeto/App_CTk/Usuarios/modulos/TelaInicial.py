@@ -1,8 +1,8 @@
 from customtkinter import CTkFrame, CTkButton, CTk, CTkLabel, CTkFont
-from modulos.TelaLogin import Login
-from modulos.TelaCadUsuario import CadUsuario
-from modulos.TelaResetarSenha import ResetarSenha
-from modulos.DAO.usuarioDAO import usuarioDAO
+from Usuarios.modulos.TelaLogin import Login
+from Usuarios.modulos.TelaCadUsuario import CadUsuario
+from Usuarios.modulos.TelaResetarSenha import ResetarSenha
+from DAO.usuarioDAO import usuarioDAO
 from tkinter.ttk import Treeview, Scrollbar, Style
 from tkinter import Menu, PhotoImage
 class TelaPrincipal(CTk):

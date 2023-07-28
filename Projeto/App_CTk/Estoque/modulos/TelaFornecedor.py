@@ -1,11 +1,11 @@
 from customtkinter import CTkToplevel, CTkFrame, CTkEntry, CTkLabel, CTkButton, CTkComboBox, CTkTabview, CTkFont
 from tkinter.ttk import Treeview, Scrollbar, Style
-from modulos.DAO.fornecedorDAO import fornecedorDAO
-from modulos.TelaEditarFornecedor import EditarFornecedor
-from modulos.MensagemAlerta import MensagemAlerta
-from modulos.DialogoSimNao import DialogoSimNao
+from DAO.fornecedorDAO import fornecedorDAO
+from Estoque.modulos.TelaEditarFornecedor import EditarFornecedor
+from Estoque.modulos.MensagemAlerta import MensagemAlerta
+from Estoque.modulos.DialogoSimNao import DialogoSimNao
 from tkinter import PhotoImage
-from modulos.img import icon_pesquisa, icon_atualizar, icon_excluir, icon_editar
+from Estoque.modulos.img import icon_pesquisa, icon_atualizar, icon_excluir, icon_editar
 
 class WFornecedor(CTkToplevel):
     

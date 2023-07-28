@@ -1,9 +1,9 @@
 from customtkinter import CTkToplevel, CTkFrame, CTkEntry, CTkLabel, CTkButton, CTkComboBox, CTkTabview, CTkFont
 from tkinter.ttk import Treeview
-from modulos.DAO.fornecedorDAO import fornecedorDAO
-from modulos.DAO.produtoDAO import produtoDAO
-from modulos.DAO.estoqueDAO import estoqueDAO
-from modulos.MensagemAlerta import MensagemAlerta
+from DAO.fornecedorDAO import fornecedorDAO
+from DAO.produtoDAO import produtoDAO
+from DAO.estoqueDAO import estoqueDAO
+from Estoque.modulos.MensagemAlerta import MensagemAlerta
 class CadProduto(CTkToplevel):
     
     def __init__(self):

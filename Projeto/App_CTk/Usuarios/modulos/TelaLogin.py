@@ -1,6 +1,6 @@
 from customtkinter import CTkToplevel, CTkFrame, CTkEntry, CTkButton, CTk, CTkLabel, CTkFont
-from modulos.MensagemAlerta import MensagemAlerta
-from modulos.DAO.usuarioDAO import usuarioDAO
+from Usuarios.modulos.MensagemAlerta import MensagemAlerta
+from DAO.usuarioDAO import usuarioDAO
 class Login(CTkToplevel):
     def __init__(self, master):
         CTkToplevel.__init__(self)
