@@ -22,6 +22,15 @@ class usuarioDAO(DataBase):
             return 3
     
     @classmethod
+    def deletar_usuario(cls, id:int):
+        with cls.return_con(cls) as con:
+            cur = con.cursor()
+            sql = '''DELETE FROM usuario WHERE id = ?'''
+            cur.execute(sql, (int(id), ))
+            con.commit()
+            return True
+        return False
+    @classmethod
     def select_usuario(cls, usuario:str):
         with cls.return_con(cls) as con:
             cur = con.cursor()
@@ -162,5 +171,5 @@ class usuarioDAO(DataBase):
             self.insert_tipo('1', 'Administrador')
             self.insert_tipo('2', 'Padrao')
             
-            
+    
 print(usuarioDAO().criar_admin())

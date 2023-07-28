@@ -63,6 +63,7 @@ class Login(CTkToplevel):
             self.master.usuario.configure(text=user)
             self.master.verificar_nivel()
             self.master.carregar_usuarios()
+            print(self.master.nivel_usuario)
         else:
             MensagemAlerta('Login Invalido', 'Usuario ou Senha invalidos!')
         

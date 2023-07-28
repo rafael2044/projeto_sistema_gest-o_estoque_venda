@@ -3,6 +3,7 @@ from Usuarios.modulos.TelaLogin import Login
 from Usuarios.modulos.TelaCadUsuario import CadUsuario
 from Usuarios.modulos.TelaResetarSenha import ResetarSenha
 from Usuarios.modulos.TelaEditarUsuario import EditarUsuario
+from Usuarios.modulos.MensagemAlerta import MensagemAlerta
 from DAO.usuarioDAO import usuarioDAO
 from Imagens.img import icon_editar, icon_excluir
 from tkinter.ttk import Treeview, Scrollbar, Style
@@ -80,7 +81,7 @@ class TelaPrincipal(CTk):
         self.bt_reset = CTkButton(f_button_top_menu, text='Resetar Senha', font=self.font_button, state='disabled', command=self.abrir_janela_resetar_senha)
         self.bt_reset.pack(side='left', padx=10)
         
-        self.bt_delete = CTkButton(f_button_bottom, state='disabled', text='', image=PhotoImage(data=icon_excluir),width=40,fg_color='gray')
+        self.bt_delete = CTkButton(f_button_bottom, state='disabled', command=self.deletar_usuario, text='', image=PhotoImage(data=icon_excluir),width=40,fg_color='gray')
         self.bt_editar = CTkButton(f_button_bottom, state='disabled', command=self.abrir_janela_editar_usuario, text='', image=PhotoImage(data=icon_editar), width=40,fg_color='gray')
         
         self.usuario.pack(side='right', padx=10)
@@ -111,7 +112,6 @@ class TelaPrincipal(CTk):
         self.menubar.add_cascade(label='Cadastrar', menu=cad_menu)
         self.menubar.add_cascade(label='Sair', menu=sair_menu)
    
-   
     def carregar_usuarios(self):
         usuarios = usuarioDAO.select_all_usuario()
         [self.tv_tabela.delete(x) for x in self.tv_tabela.get_children()]
@@ -123,12 +123,14 @@ class TelaPrincipal(CTk):
         self.login.user.focus_force()
         self.login.grab_set()
     
-
     def verificar_nivel(self):
         if self.nivel_usuario == 'Administrador':
             self.bt_cad.configure(state='enabled')
             self.bt_reset.configure(state='enabled')
-            
+        else:
+            self.bt_cad.configure(state='disabled')
+            self.bt_reset.configure(state='disabled')
+        
     def abrir_janela_cadastro(self):
         if self.cad_usuario is None or not self.cad_usuario.winfo_exists():
             self.cad_usuario = CadUsuario(self)
@@ -148,19 +150,29 @@ class TelaPrincipal(CTk):
         else:
             self.editar_usuario.lift()
     
+    def deletar_usuario(self):
+        self.id = self.tv_tabela.item(self.usuario_dados[0], 'values')[0]
+        print(self.id)
+        if usuarioDAO.deletar_usuario(self.id):
+            MensagemAlerta('Sucesso!', 'Usuario Excluido com sucesso!')
+            self.carregar_usuarios()
+        else:
+            MensagemAlerta('Erro', 'Falha ao tentar excluir usuario!')
+    
     def usuario_selecionado(self, event):
         self.usuario_dados = self.tv_tabela.selection()
-        if self.usuario_dados:
+        if self.usuario_dados and self.nivel_usuario == 'Administrador':
             self.bt_delete.configure(state='enabled')
             self.bt_delete.configure(fg_color=("#3a7ebf", "#1f538d"))
             self.bt_editar.configure(state='enabled')
             self.bt_editar.configure(fg_color=("#3a7ebf", "#1f538d"))
     
     def desabilitar_botoes(self, event):
-        if event.widget not in (self.tv_tabela, self.bt_delete, self.bt_editar) and self.focus_get() is self.tv_tabela:
+        if event.widget not in (self.tv_tabela, self.bt_delete, self.bt_editar) and self.focus_get() is self.tv_tabela and self.nivel_usuario == 'Administrador':
             self.bt_delete.configure(state='disabled')
             self.bt_delete.configure(fg_color='gray')
             self.bt_editar.configure(state='disabled')
             self.bt_editar.configure(fg_color='gray')
             self.tv_tabela.selection_set()
+            
             
