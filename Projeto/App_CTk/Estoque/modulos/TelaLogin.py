@@ -54,6 +54,7 @@ class Login(CTkToplevel):
         
         if usuarioDAO.validar_usuario(user, password):
             self.withdraw()
+            self.tipo_usuario = usuarioDAO.select_tipo_usuario(user)[0]
             self.user.delete(0, 'end')
             self.password.delete(0, 'end')
             self.grab_release()

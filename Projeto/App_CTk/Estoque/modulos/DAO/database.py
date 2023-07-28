@@ -11,12 +11,19 @@ class DataBase:
     def create_tables(self):
         with self.return_con() as con:
             cur = con.cursor()
+            
+            sql_tipo = '''CREATE TABLE IF NOT EXISTS tipo (
+                          id INTEGER PRIMARY KEY,
+                          nome VARCHAR(20) NOT NULL);'''
+            
             sql_user = '''CREATE TABLE IF NOT EXISTS usuario (
                         id INTEGER PRIMARY KEY AUTOINCREMENT,
                         usuario TEXT NOT NULL,
                         senha VARCHAR(68) NOT NULL,
-                        tipo INTEGER NOT NULL
-                        
+                        tipo INTEGER DEFAULT 0 NOT NULL,
+                        FOREIGN KEY (tipo) REFERENCES tipo (id)
+                                           ON UPDATE CASCADE
+                                           ON DELETE SET DEFAULT
                     );'''
             
             sql_fornecedor = '''CREATE TABLE IF NOT EXISTS fornecedor (
@@ -46,6 +53,7 @@ class DataBase:
                                 CHECK(quant_disp >= quant_min AND quant_disp <= quant_max),
                                 FOREIGN KEY (id_produto) REFERENCES produto (id)
                             );'''
+            cur.execute(sql_tipo)
             cur.execute(sql_user)
             cur.execute(sql_fornecedor)
             cur.execute(sql_produto)

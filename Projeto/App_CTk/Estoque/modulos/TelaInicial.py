@@ -16,8 +16,9 @@ class TelaPrincipal(CTk):
         self.cad_prod = None
         self.w_fornecedor = None
         self.cad_un = None
-        #self.login = Login(self)
-        #self.login.transient(self)
+        self.tipo_usuario = None
+        self.login = Login(self)
+        self.login.transient(self)
         
     def centralizar_janela(self):
         HEIGHT = 800
@@ -113,7 +114,7 @@ class TelaPrincipal(CTk):
         [self.tv_tabela.delete(x) for x in self.tv_tabela.get_children()]
         if estoque:
             [self.tv_tabela.insert('', 'end', values=p) for p in estoque]
-        
+    
     def sair(self):
         self.login.deiconify()
         self.login.user.focus_force()
