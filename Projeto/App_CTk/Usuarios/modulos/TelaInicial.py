@@ -2,7 +2,9 @@ from customtkinter import CTkFrame, CTkButton, CTk, CTkLabel, CTkFont
 from Usuarios.modulos.TelaLogin import Login
 from Usuarios.modulos.TelaCadUsuario import CadUsuario
 from Usuarios.modulos.TelaResetarSenha import ResetarSenha
+from Usuarios.modulos.TelaEditarUsuario import EditarUsuario
 from DAO.usuarioDAO import usuarioDAO
+from Imagens.img import icon_editar, icon_excluir
 from tkinter.ttk import Treeview, Scrollbar, Style
 from tkinter import Menu, PhotoImage
 class TelaPrincipal(CTk):
@@ -16,6 +18,7 @@ class TelaPrincipal(CTk):
         self.nivel_usuario = None
         self.cad_usuario = None
         self.resetar_senha = None
+        self.editar_usuario = None
         
     def centralizar_janela(self):
         HEIGHT = 500
@@ -37,10 +40,12 @@ class TelaPrincipal(CTk):
         self.style.configure('Treeview.Heading', font=('Segoe UI', 13, 'bold'))
         self.style.layout("Treeview", [('Treeview.treearea', {'sticky': 'nswe'})])
         
-        f_button_menu = CTkFrame(self)
+        f_button_top_menu = CTkFrame(self)
         f_info = CTkFrame(self)
         f_tabela = CTkFrame(self)
         f_scroll = CTkFrame(self, height=10)
+        f_button_bottom = CTkFrame(self)
+        
         self.font_button = CTkFont('Segoe UI', size=18, weight='bold')
 
         
@@ -64,16 +69,20 @@ class TelaPrincipal(CTk):
         self.tv_tabela.configure(xscrollcommand=self.scrollbar_horizontal.set)
         self.tv_tabela.configure(yscrollcommand=self.scrollbar_vertical.set)
         
-        f_button_menu.pack(padx=10, pady=5, anchor='w', fill='x')
+        f_button_top_menu.pack(padx=10, pady=5, anchor='w', fill='x')
         f_info.pack(padx=10, anchor='w', fill='x')
         f_tabela.pack(padx=10, pady=0, anchor='w', fill='both', expand=True)
         f_scroll.pack(padx=10, pady=0, fill='x')
         
         
-        self.bt_cad = CTkButton(f_button_menu, text='Cadastrar Usuario', command=self.abrir_janela_cadastro, font=self.font_button, state='disabled')
+        self.bt_cad = CTkButton(f_button_top_menu, text='Cadastrar Usuario', command=self.abrir_janela_cadastro, font=self.font_button, state='disabled')
         self.bt_cad.pack(side='left', padx=10)
-        self.bt_reset = CTkButton(f_button_menu, text='Resetar Senha', font=self.font_button, state='disabled', command=self.abrir_janela_resetar_senha)
+        self.bt_reset = CTkButton(f_button_top_menu, text='Resetar Senha', font=self.font_button, state='disabled', command=self.abrir_janela_resetar_senha)
         self.bt_reset.pack(side='left', padx=10)
+        
+        self.bt_delete = CTkButton(f_button_bottom, state='disabled', text='', image=PhotoImage(data=icon_excluir),width=40,fg_color='gray')
+        self.bt_editar = CTkButton(f_button_bottom, state='disabled', command=self.abrir_janela_editar_usuario, text='', image=PhotoImage(data=icon_editar), width=40,fg_color='gray')
+        
         self.usuario.pack(side='right', padx=10)
         CTkLabel(f_info, text='Usuarios Ativoss', font=('Segoe UI', 19, 'bold')).pack(side='left', padx=10)
         CTkLabel(f_info, text='Usuario Logado:', font=('Segoe UI', 12, 'bold')).pack(side='right')
@@ -82,6 +91,12 @@ class TelaPrincipal(CTk):
         self.scrollbar_vertical.pack(fill='y', expand=True, anchor='w')
         f_scroll.pack(padx=10, pady=0, fill='x')
         self.scrollbar_horizontal.pack(fill='x')
+        
+        f_button_bottom.pack(padx=10, pady=5, anchor='w', fill='x')
+        self.bt_delete.pack(side='right')
+        self.bt_editar.pack(side='right', padx=10)
+        self.tv_tabela.bind('<<TreeviewSelect>>', self.usuario_selecionado)
+        self.bind('<Button-1>', self.desabilitar_botoes)
         
     def carregar_menu(self):
         self.menubar = Menu(self, font=('Segoe UI', 14))
@@ -125,4 +140,27 @@ class TelaPrincipal(CTk):
             self.resetar_senha = ResetarSenha(self)
         else:
             self.resetar_senha.lift()
+            
+    def abrir_janela_editar_usuario(self):
+        dados = self.tv_tabela.item(self.usuario_dados[0], 'values')
+        if self.editar_usuario is None or not self.editar_usuario.winfo_exists():
+            self.editar_usuario = EditarUsuario(self, dados)
+        else:
+            self.editar_usuario.lift()
+    
+    def usuario_selecionado(self, event):
+        self.usuario_dados = self.tv_tabela.selection()
+        if self.usuario_dados:
+            self.bt_delete.configure(state='enabled')
+            self.bt_delete.configure(fg_color=("#3a7ebf", "#1f538d"))
+            self.bt_editar.configure(state='enabled')
+            self.bt_editar.configure(fg_color=("#3a7ebf", "#1f538d"))
+    
+    def desabilitar_botoes(self, event):
+        if event.widget not in (self.tv_tabela, self.bt_delete, self.bt_editar) and self.focus_get() is self.tv_tabela:
+            self.bt_delete.configure(state='disabled')
+            self.bt_delete.configure(fg_color='gray')
+            self.bt_editar.configure(state='disabled')
+            self.bt_editar.configure(fg_color='gray')
+            self.tv_tabela.selection_set()
             

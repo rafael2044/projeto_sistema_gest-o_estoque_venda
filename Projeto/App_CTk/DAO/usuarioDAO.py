@@ -27,7 +27,7 @@ class usuarioDAO(DataBase):
             cur = con.cursor()
             if usuario:
                 sql = '''SELECT usuario FROM usuario WHERE usuario = ?;'''
-                return cur.execute(sql, (usuario, ))
+                return cur.execute(sql, (usuario, )).fetchall()
     
     @classmethod
     def select_all_usuario(cls):
@@ -91,6 +91,27 @@ class usuarioDAO(DataBase):
                 cur.execute(sql, (usuario, ))
                 return 1
         return 2    
+    @classmethod
+    def select_id_usuario(cls, usuario:str):
+        with cls.return_con(cls) as con:
+            cur = con.cursor()
+            sql = '''SELECT id FROM usuario WHERE usuario = ?'''
+            result = cur.execute(sql, (usuario, )).fetchone()
+            return result
+        
+    @classmethod
+    def atualizar_usuario(cls, id:int, usuario:str, tipo:int):
+        '''1 - Alteracoes realizadas com sucesso!
+           2 - Usuario ja existe!'''
+        with cls.return_con(cls) as con:
+            cur = con.cursor()
+            
+            if not cls.usuario_existe(usuario) or cls.select_id_usuario(usuario)[0] == int(id):
+                sql = "UPDATE usuario SET usuario = ?, tipo= ? WHERE id = ?"
+                cur.execute(sql, (usuario, tipo, id))
+                con.commit()
+                return 1
+            return 2
 
     @classmethod
     def insert_tipo(cls, id:int , nome:str):

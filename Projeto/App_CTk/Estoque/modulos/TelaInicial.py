@@ -4,7 +4,7 @@ from Estoque.modulos.TelaCadProduto import CadProduto
 from Estoque.modulos.TelaFornecedor import WFornecedor
 from tkinter.ttk import Treeview, Scrollbar, Style
 from tkinter import Menu, PhotoImage
-from Estoque.modulos.img import *
+from Imagens.img import *
 from DAO.estoqueDAO import estoqueDAO
 class TelaPrincipal(CTk):
     

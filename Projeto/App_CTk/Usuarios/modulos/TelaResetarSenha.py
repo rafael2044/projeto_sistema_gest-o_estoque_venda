@@ -48,18 +48,11 @@ class ResetarSenha(CTkToplevel):
         
     def resetar(self, event=None):
         user = self.user.get()
-        if usuarioDAO.usuario_existe(user):
-            self.withdraw()
-            self.master.nivel_usuario = usuarioDAO.select_tipo_usuario(user)[0]
-            self.user.delete(0, 'end')
-            self.password.delete(0, 'end')
-            self.grab_release()
-            self.master.focus_set()
-            self.master.usuario.configure(text=user)
-            self.master.verificar_nivel()
-            self.master.carregar_usuarios()
-        else:
-            MensagemAlerta('Login Invalido', 'Usuario ou Senha invalidos!')
+        match usuarioDAO().resetar_senha(user):
+            case 1:
+                MensagemAlerta('Sucesso', 'A senha foi resetada!\nFaca login para inserir uma nova.')
+            case 2:
+                MensagemAlerta('Erro', 'Usuario nao existe!')
         
     def sair(self):
         self.destroy()

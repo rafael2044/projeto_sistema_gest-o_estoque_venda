@@ -5,7 +5,7 @@ from Estoque.modulos.TelaEditarFornecedor import EditarFornecedor
 from Estoque.modulos.MensagemAlerta import MensagemAlerta
 from Estoque.modulos.DialogoSimNao import DialogoSimNao
 from tkinter import PhotoImage
-from Estoque.modulos.img import icon_pesquisa, icon_atualizar, icon_excluir, icon_editar
+from Imagens.img import icon_pesquisa, icon_atualizar, icon_excluir, icon_editar
 
 class WFornecedor(CTkToplevel):
     
