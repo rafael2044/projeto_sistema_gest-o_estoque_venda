@@ -20,13 +20,13 @@ class produtoDAO(DataBase):
                     return 1
                 return 2
             return 3
-        except:
-            pass
+        except Exception as e:
+            print(f'Erro ao inserir produto: {e}')
         finally:
             self.desconectar()
       
     def produto_existe(self, cod_barra:str):
-        if len(self.select_produto(cod_barra)) > 0:
+        if self.select_produto(cod_barra):
             return True
         return False
 
@@ -37,7 +37,8 @@ class produtoDAO(DataBase):
             if cod_barra:
                 sql = '''SELECT * FROM produto WHERE codigo_de_barra = ?;'''
                 return self.cur.execute(sql, (cod_barra, )).fetchone()
-        except:
+        except Exception as e:
+            print(f'Erro query select produto: {e}')
             self.desconectar()
             
     def select_id_produto(self, cod_barra:str):
@@ -46,7 +47,8 @@ class produtoDAO(DataBase):
             if cod_barra:
                 sql = '''SELECT id FROM produto WHERE codigo_de_barra = ?;'''
                 return self.cur.execute(sql, (cod_barra, )).fetchone()
-        except:
+        except Exception as e:
+            print(f'Erro query select id produto: {e}')
             self.desconectar()
             
     def delete_produto(self, cod_barra:str):
@@ -56,7 +58,7 @@ class produtoDAO(DataBase):
             self.cur.execute(sql, (cod_barra, ))
             self.con.commit()
             return True
-        except:
-            pass
+        except Exception as e:
+            print(f'Erro ao deletar produto: {e}')
         finally:
             self.desconectar()

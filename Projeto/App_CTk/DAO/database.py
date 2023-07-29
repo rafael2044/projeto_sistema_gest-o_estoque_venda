@@ -5,8 +5,12 @@ class DataBase:
         self.create_tables()
         
     def conexao(self):
-        db_path = Path(Path(__file__).parent.parent, 'DB','BancoDeDados.db')
-        self.con = sqlite3.connect(db_path)
+        try:
+            db_path = Path(Path(__file__).parent.parent, 'DB','BancoDeDados.db')
+            self.con = sqlite3.connect(db_path)
+        except Exception as e:
+            print(f'Erro ao realizar conexao com banco de dados!')
+            self.desconectar()
     
     def cursor(self):
         self.conexao()
@@ -25,7 +29,7 @@ class DataBase:
             
             sql_user = '''CREATE TABLE IF NOT EXISTS usuario (
                         id INTEGER PRIMARY KEY AUTOINCREMENT,
-                        usuario TEXT NOT NULL,
+                        nome_usuario TEXT NOT NULL,
                         senha VARCHAR(68),
                         tipo INTEGER DEFAULT 0 NOT NULL,
                         usuario_novo INTEGER DEFAULT 1 NOT NULL,
@@ -68,8 +72,8 @@ class DataBase:
             self.cur.execute(sql_produto)
             self.cur.execute(sql_estoque)
             self.con.commit()
-        except:
-            pass
+        except Exception as e:
+            print(f'Erro ao criar tabelas: {e}')
         finally:
             self.desconectar()
             

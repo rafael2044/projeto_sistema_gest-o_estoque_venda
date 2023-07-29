@@ -1,18 +1,16 @@
 from customtkinter import CTkToplevel, CTkFrame, CTkEntry, CTkButton, CTk, CTkLabel, CTkFont
 from Popup.MensagemAlerta import MensagemAlerta
+from Estoque.modulos.TelaNovaSenha import NovaSenha
 from DAO.usuarioDAO import usuarioDAO
-from DAO.tipoDAO import TipoDAO
 class Login(CTkToplevel):
     def __init__(self, master):
         CTkToplevel.__init__(self)
         self.master = master
-        self.title('Login Sistema')
-        self.centralizar_janela()
-        self.resizable(False, False)
-        self.carregar_widgets()
         self.grab_set()
-        self.user.focus_set()
-        self.tipo_login = None
+        self.title('Login Sistema')
+        self.usuarioDAO = usuarioDAO()
+        self.centralizar_janela()
+        self.carregar_widgets()
         self.protocol('WM_DELETE_WINDOW', self.sair)
         self.bind('<Return>', self.logar)
         
@@ -27,7 +25,8 @@ class Login(CTkToplevel):
         Y = (W_HEIGHT - HEIGHT)//2
         
         self.geometry(f'{WEIDTH}x{HEIGHT}+{X}+{Y}+')    
-    
+        self.resizable(False, False)
+        
     def carregar_widgets(self):
         font_label = CTkFont('Segoe UI', size=18, weight='bold')
         font_entry = CTkFont('Segoe UI', size=16)
@@ -54,20 +53,23 @@ class Login(CTkToplevel):
         user = self.user.get()
         password = self.password.get()
 
-        if usuarioDAO().validar_usuario(user, password):
-            self.withdraw()
-            self.master.nivel_usuario = usuarioDAO().select_tipo_usuario(user)[0]
-            self.user.delete(0, 'end')
-            self.password.delete(0, 'end')
-            self.grab_release()
-            self.master.focus_set()
-            self.master.usuario.configure(text=user)
-            self.master.verificar_nivel()
-            self.master.carregar_usuarios()
-            print(self.master.nivel_usuario)
-        else:
-            MensagemAlerta('Login Invalido', 'Usuario ou Senha invalidos!')
+        match usuarioDAO().validar_usuario(user, password):
+            case 1:
+                self.limpar_entrys()
+                self.master.tipo_usuario = self.usuarioDAO.select_tipo_usuario(user)[0]
+                self.master.usuario.configure(text=user)
+                self.master.verificar_tipo()
+                self.master.carregar_usuarios()
+                self.grab_release()
+                self.withdraw()
+            case 2:
+                MensagemAlerta('Login Invalido', 'Usuario ou Senha invalidos!')
+            case 3:
+                NovaSenha(user)
         
+    def limpar_entrys(self):
+        self.user.delete(0, 'end')
+        self.password.delete(0, 'end')
     def sair(self):
         self.quit()
 

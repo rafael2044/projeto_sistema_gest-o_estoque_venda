@@ -6,8 +6,8 @@ from DAO.estoqueDAO import estoqueDAO
 from Popup.MensagemAlerta import MensagemAlerta
 class CadProduto(CTkToplevel):
     
-    def __init__(self):
-        CTkToplevel.__init__(self, takefocus=True)
+    def __init__(self, master=None):
+        CTkToplevel.__init__(self, master=master, takefocus=True)
         self.after(100, self.lift)
         self.title('Cadastrar Novo Produto')
         self.fornecedorDAO = fornecedorDAO()
@@ -112,6 +112,7 @@ class CadProduto(CTkToplevel):
                 match self.estoqueDAO.insert_produto_estoque(id_produto, quant_min, quant_atual, quant_max):
                     case 1:
                         MensagemAlerta('Sucesso!', 'O produto foi cadastrado em estoque com sucesso!')
+                        self.master.carregar_estoque()
                         self.limpar_entrys()
                     case 2:
                         MensagemAlerta('Erro!', 'O produto ja existe no estoque!')

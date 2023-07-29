@@ -11,8 +11,8 @@ class TipoDAO(DataBase):
                 self.cur.execute(sql, (id, nome))
                 self.con.commit()
                 return 1
-        except:
-            pass
+        except Exception as e:
+            print(f'Erro ao inserir tipo: {e}')
         finally:
             self.desconectar()    
     
@@ -21,8 +21,8 @@ class TipoDAO(DataBase):
             self.cursor()
             sql = '''SELECT * FROM tipo;'''
             return self.cur.execute(sql).fetchall()
-        except:
-            pass
+        except Exception as e:
+            print(f'Erro query select all tipo: {e}')
         finally:
             self.desconectar()
     
@@ -31,7 +31,8 @@ class TipoDAO(DataBase):
             self.cursor()
             sql = '''SELECT id FROM tipo WHERE nome = ?'''
             return self.cur.execute(sql, (nome, )).fetchone()
-        except:
+        except Exception as e:
+            print(f'Erro query select id tipo: {e}')
             self.desconectar()  
 
     def inserir_tipos(self):

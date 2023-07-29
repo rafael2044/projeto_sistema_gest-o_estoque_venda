@@ -18,7 +18,7 @@ class TelaPrincipal(CTk):
         self.centralizar_janela()
         self.carregar_widgets()
         self.login = Login(self)
-        self.nivel_usuario = None
+        self.tipo_usuario = None
         self.cad_usuario = None
         self.resetar_senha = None
         self.editar_usuario = None
@@ -125,8 +125,8 @@ class TelaPrincipal(CTk):
         self.login.user.focus_force()
         self.login.grab_set()
     
-    def verificar_nivel(self):
-        if self.nivel_usuario == 'Administrador':
+    def verificar_tipo(self):
+        if self.tipo_usuario == 'Administrador':
             self.bt_cad.configure(state='enabled')
             self.bt_reset.configure(state='enabled')
         else:
@@ -156,7 +156,6 @@ class TelaPrincipal(CTk):
         op = DialogoSimNao('Alerta de Exclusao', 'Deseja excluir o usuario selecionado?')
         if op.opcao:
             self.id = self.tv_tabela.item(self.usuario_dados[0], 'values')[0]
-            print(self.id)
             if self.usuarioDAO.deletar_usuario(self.id):
                 MensagemAlerta('Sucesso!', 'Usuario Excluido com sucesso!')
                 self.carregar_usuarios()
@@ -165,14 +164,14 @@ class TelaPrincipal(CTk):
         
     def usuario_selecionado(self, event):
         self.usuario_dados = self.tv_tabela.selection()
-        if self.usuario_dados and self.nivel_usuario == 'Administrador':
+        if self.usuario_dados and self.tipo_usuario == 'Administrador':
             self.bt_delete.configure(state='enabled')
             self.bt_delete.configure(fg_color=("#3a7ebf", "#1f538d"))
             self.bt_editar.configure(state='enabled')
             self.bt_editar.configure(fg_color=("#3a7ebf", "#1f538d"))
     
     def desabilitar_botoes(self, event):
-        if event.widget not in (self.tv_tabela, self.bt_delete, self.bt_editar) and self.focus_get() is self.tv_tabela and self.nivel_usuario == 'Administrador':
+        if event.widget not in (self.tv_tabela, self.bt_delete, self.bt_editar) and self.focus_get() is self.tv_tabela and self.tipo_usuario == 'Administrador':
             self.bt_delete.configure(state='disabled')
             self.bt_delete.configure(fg_color='gray')
             self.bt_editar.configure(state='disabled')

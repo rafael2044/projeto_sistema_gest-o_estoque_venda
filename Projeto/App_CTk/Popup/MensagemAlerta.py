@@ -9,11 +9,11 @@ class MensagemAlerta(CTkToplevel):
         self.mensagem = mensagem
         
         self.carregar_widgets()
-        
-        self.wait_visibility()
+    
         self.grab_set()
+        self.wait_visibility()
         self.bind('<Return>', self.close)
-        
+        self.wait_window(self)
     def center_window(self):
         HEIGHT = 75
         WEIDTH = 350

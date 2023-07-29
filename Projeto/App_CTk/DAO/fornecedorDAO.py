@@ -19,8 +19,8 @@ class fornecedorDAO(DataBase):
                     return 1
                 return 2
             return 3
-        except:
-            pass
+        except Exception as e:
+            print(f'Erro ao inserir fornecedor: {e}')
         finally:
             self.desconectar()
     
@@ -31,8 +31,8 @@ class fornecedorDAO(DataBase):
             self.cur.execute(sql, (nome, ))
             self.con.commit()
             return True
-        except:
-            pass
+        except Exception as e:
+            print(f'Erro ao deletar fornecedor: {e}')
         finally:
             self.desconectar
   
@@ -43,8 +43,8 @@ class fornecedorDAO(DataBase):
             self.cur.execute(sql, (nome, contato, endereco, id))
             self.con.commit()
             return True
-        except:
-            pass
+        except Exception as e:
+            print(f'Erro ao atualizar fornecedor: {e}')
         finally:
             self.desconectar
   
@@ -53,8 +53,8 @@ class fornecedorDAO(DataBase):
             self.cursor()
             sql = '''SELECT * FROM fornecedor'''
             return self.cur.execute(sql).fetchall()
-        except:
-            pass
+        except Exception as e:
+            print(f'Erro query select all fornecedores: {e}')
         finally:
             self.desconectar()
         
@@ -63,8 +63,8 @@ class fornecedorDAO(DataBase):
             self.cursor()
             sql = '''SELECT nome FROM fornecedor'''
             return self.cur.execute(sql).fetchall()
-        except:
-            pass
+        except Exception as e:
+            print(f'Erro query select all nome fornecedores: {e}')
         finally:
             self.desconectar()
             
@@ -74,8 +74,8 @@ class fornecedorDAO(DataBase):
             if nome:
                 sql = '''SELECT nome, contato, endereco FROM fornecedor WHERE nome = ?;'''
                 return self.cur.execute(sql, (nome, )).fetchone()
-        except:
-            pass
+        except Exception as e:
+            print(f'Erro query select fornecedor: {e}')
             self.desconectar()
             
     def select_id_fornecedor(self, nome:str):
@@ -84,7 +84,8 @@ class fornecedorDAO(DataBase):
             if nome:
                 sql = '''SELECT id FROM fornecedor WHERE nome = ?;'''
                 return self.cur.execute(sql, (nome, )).fetchone()
-        except:
+        except Exception as e:
+            print(f'Erro query select id fornecedor: {e}')
             self.desconectar()
  
     def select_like_fornecedor(self, nome:str):
@@ -93,12 +94,12 @@ class fornecedorDAO(DataBase):
             if nome:
                 sql = '''SELECT id, nome, contato, endereco endereco FROM fornecedor WHERE nome LIKE ?;'''
                 return self.cur.execute(sql, (nome+'%', )).fetchall()
-        except:
-            pass
+        except Exception as e:
+            print(f'Erro query select like fornecedor: {e}')
         finally:
             self.desconectar    
     
     def fornecedor_existe(self, nome:str):
-        if len(self.select_fornecedor(nome)) > 0:
+        if self.select_fornecedor(nome):
             return True
         return False

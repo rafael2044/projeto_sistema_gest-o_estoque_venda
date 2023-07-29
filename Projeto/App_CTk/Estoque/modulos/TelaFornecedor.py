@@ -146,7 +146,7 @@ class WFornecedor(CTkToplevel):
         nome = self.tv_tabela.item(self.item[0], 'values')[1]
         op = DialogoSimNao('Alerta!', f'Deseja Excluir o fornecedor {nome}?')
         if op.opcao:
-            fornecedorDAO.delete_fornecedor(nome)
+            self.fornecedorDAO.delete_fornecedor(nome)
             self.carregar_tab_fornecedores()
 
     def linha_selecionado(self, event):
