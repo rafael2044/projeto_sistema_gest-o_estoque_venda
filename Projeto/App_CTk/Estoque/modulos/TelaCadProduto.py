@@ -3,7 +3,7 @@ from tkinter.ttk import Treeview
 from DAO.fornecedorDAO import fornecedorDAO
 from DAO.produtoDAO import produtoDAO
 from DAO.estoqueDAO import estoqueDAO
-from Estoque.modulos.MensagemAlerta import MensagemAlerta
+from Popup.MensagemAlerta import MensagemAlerta
 class CadProduto(CTkToplevel):
     
     def __init__(self):

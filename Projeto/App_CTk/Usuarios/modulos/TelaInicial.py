@@ -3,7 +3,8 @@ from Usuarios.modulos.TelaLogin import Login
 from Usuarios.modulos.TelaCadUsuario import CadUsuario
 from Usuarios.modulos.TelaResetarSenha import ResetarSenha
 from Usuarios.modulos.TelaEditarUsuario import EditarUsuario
-from Usuarios.modulos.MensagemAlerta import MensagemAlerta
+from Popup.MensagemAlerta import MensagemAlerta
+from Popup.DialogoSimNao import DialogoSimNao
 from DAO.usuarioDAO import usuarioDAO
 from Imagens.img import icon_editar, icon_excluir
 from tkinter.ttk import Treeview, Scrollbar, Style
@@ -151,14 +152,16 @@ class TelaPrincipal(CTk):
             self.editar_usuario.lift()
     
     def deletar_usuario(self):
-        self.id = self.tv_tabela.item(self.usuario_dados[0], 'values')[0]
-        print(self.id)
-        if usuarioDAO.deletar_usuario(self.id):
-            MensagemAlerta('Sucesso!', 'Usuario Excluido com sucesso!')
-            self.carregar_usuarios()
-        else:
-            MensagemAlerta('Erro', 'Falha ao tentar excluir usuario!')
-    
+        op = DialogoSimNao('Alerta de Exclusao', 'Deseja excluir o usuario selecionado?')
+        if op.opcao:
+            self.id = self.tv_tabela.item(self.usuario_dados[0], 'values')[0]
+            print(self.id)
+            if usuarioDAO.deletar_usuario(self.id):
+                MensagemAlerta('Sucesso!', 'Usuario Excluido com sucesso!')
+                self.carregar_usuarios()
+            else:
+                MensagemAlerta('Erro', 'Falha ao tentar excluir usuario!')
+        
     def usuario_selecionado(self, event):
         self.usuario_dados = self.tv_tabela.selection()
         if self.usuario_dados and self.nivel_usuario == 'Administrador':

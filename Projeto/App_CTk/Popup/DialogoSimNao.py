@@ -13,7 +13,7 @@ class DialogoSimNao(CTkToplevel):
         self.wait_visibility()
         self.grab_set()
         self.protocol('WM_DELETE_WINDOW', self.destroy)
-        self.wait_window()
+        self.wait_window(self)
         
     def center_window(self):
         self.HEIGHT = 100

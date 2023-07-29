@@ -2,8 +2,8 @@ from customtkinter import CTkToplevel, CTkFrame, CTkEntry, CTkLabel, CTkButton, 
 from tkinter.ttk import Treeview, Scrollbar, Style
 from DAO.fornecedorDAO import fornecedorDAO
 from Estoque.modulos.TelaEditarFornecedor import EditarFornecedor
-from Estoque.modulos.MensagemAlerta import MensagemAlerta
-from Estoque.modulos.DialogoSimNao import DialogoSimNao
+from Popup.MensagemAlerta import MensagemAlerta
+from Popup.DialogoSimNao import DialogoSimNao
 from tkinter import PhotoImage
 from Imagens.img import icon_pesquisa, icon_atualizar, icon_excluir, icon_editar
 

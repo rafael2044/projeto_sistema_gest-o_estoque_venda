@@ -1,5 +1,5 @@
 from customtkinter import CTkToplevel, CTkFrame, CTkEntry, CTkButton, CTk, CTkLabel, CTkFont
-from Estoque.modulos.MensagemAlerta import MensagemAlerta
+from Popup.MensagemAlerta import MensagemAlerta
 from DAO.usuarioDAO import usuarioDAO
 from Estoque.modulos.TelaNovaSenha import NovaSenha
 

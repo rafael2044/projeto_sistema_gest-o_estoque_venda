@@ -1,5 +1,5 @@
 from customtkinter import CTkToplevel, CTkFrame, CTkEntry, CTkButton, CTk, CTkLabel, CTkFont, CTkComboBox
-from Usuarios.modulos.MensagemAlerta import MensagemAlerta
+from Popup.MensagemAlerta import MensagemAlerta
 from DAO.usuarioDAO import usuarioDAO
 class CadUsuario(CTkToplevel):
     def __init__(self, master):
