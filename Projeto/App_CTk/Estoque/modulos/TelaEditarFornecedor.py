@@ -8,6 +8,7 @@ class EditarFornecedor(CTkToplevel):
         self.dados = list(dados)
         self.after(100, self.lift)
         self.title('Editar Fornecedor')
+        self.fornecedorDAO = fornecedorDAO()
         self.centralizar_janela()
         self.carregar_widgets()
         self.protocol('WM_DELETE_WINDOW', self.destroy)
@@ -58,7 +59,7 @@ class EditarFornecedor(CTkToplevel):
         self.dados[2] = self.contato.get()
         self.dados[3] = self.endereco.get()
         
-        if fornecedorDAO().atualizar_fornecedor(*self.dados):
+        if self.fornecedorDAO.atualizar_fornecedor(*self.dados):
             MensagemAlerta('Sucesso!', 'Alteracoes realizadas com sucesso!')
         else:
             MensagemAlerta('Erro!', 'Aconteceu um erro ao realizar as alteracoes!')

@@ -1,6 +1,7 @@
 from customtkinter import CTkToplevel, CTkFrame, CTkEntry, CTkButton, CTk, CTkLabel, CTkFont, CTkComboBox
 from Popup.MensagemAlerta import MensagemAlerta
 from DAO.usuarioDAO import usuarioDAO
+from DAO.tipoDAO import TipoDAO
 class CadUsuario(CTkToplevel):
     def __init__(self, master):
         CTkToplevel.__init__(self)
@@ -29,7 +30,7 @@ class CadUsuario(CTkToplevel):
         font_entry = CTkFont('Segoe UI', size=16)
         font_button = CTkFont('Segoe UI', size=18, weight='bold')
         
-        self.tipos = usuarioDAO.select_all_tipo()
+        self.tipos = TipoDAO().select_all_tipo()
         
         f_main = CTkFrame(self)
         f_button = CTkFrame(f_main, fg_color='transparent')
@@ -49,9 +50,9 @@ class CadUsuario(CTkToplevel):
         
     def cadastrar(self, event=None):
         user = self.user.get()
-        tipo = usuarioDAO.select_id_tipo(self.cb_tipo.get())[0]
+        tipo = TipoDAO().select_id_tipo(self.cb_tipo.get())[0]
         
-        match usuarioDAO.insert_usuario(user, tipo):
+        match usuarioDAO().insert_usuario(user, tipo):
             
             case 1:
                 MensagemAlerta('Sucesso', 'Usuario cadastrado com sucesso!')

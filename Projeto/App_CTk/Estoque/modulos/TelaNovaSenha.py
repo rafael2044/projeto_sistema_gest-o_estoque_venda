@@ -6,6 +6,7 @@ class NovaSenha(CTkToplevel):
         CTkToplevel.__init__(self)
         self.usuario = usuario
         self.title('Nova Senha')
+        self.usuarioDAO = usuarioDAO()
         self.centralizar_janela()
         self.resizable(False, False)
         self.carregar_widgets()
@@ -52,7 +53,7 @@ class NovaSenha(CTkToplevel):
         validar_senha = self.password_validacao.get()
         
         if senha == validar_senha:
-            usuarioDAO().nova_senha(self.usuario, senha)
+            self.usuarioDAO.nova_senha(self.usuario, senha)
             self.wait_window(MensagemAlerta('Sucesso!', 'Senha inserida com sucesso!'))
             self.destroy()
         else:

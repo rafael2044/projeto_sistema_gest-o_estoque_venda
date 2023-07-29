@@ -54,7 +54,7 @@ class Login(CTkToplevel):
         user = self.user.get()
         password = self.password.get()
         
-        match usuarioDAO.validar_usuario(user, password):
+        match usuarioDAO().validar_usuario(user, password):
             case 1:
                 self.withdraw()
                 self.user.delete(0, 'end')

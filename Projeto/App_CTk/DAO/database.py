@@ -3,14 +3,21 @@ from pathlib import Path
 class DataBase:
     def __init__(self):
         self.create_tables()
-    
-    def return_con(self):
+        
+    def conexao(self):
         db_path = Path(Path(__file__).parent.parent, 'DB','BancoDeDados.db')
-        return sqlite3.connect(db_path)
+        self.con = sqlite3.connect(db_path)
     
+    def cursor(self):
+        self.conexao()
+        self.cur = self.con.cursor()
+        
+    def desconectar(self):
+        self.con.close()
+        
     def create_tables(self):
-        with self.return_con() as con:
-            cur = con.cursor()
+        try:
+            self.cursor()
             
             sql_tipo = '''CREATE TABLE IF NOT EXISTS tipo (
                           id INTEGER PRIMARY KEY,
@@ -55,11 +62,15 @@ class DataBase:
                                 CHECK(quant_disp >= quant_min AND quant_disp <= quant_max),
                                 FOREIGN KEY (id_produto) REFERENCES produto (id)
                             );'''
-            cur.execute(sql_tipo)
-            cur.execute(sql_user)
-            cur.execute(sql_fornecedor)
-            cur.execute(sql_produto)
-            cur.execute(sql_estoque)
-            con.commit()
+            self.cur.execute(sql_tipo)
+            self.cur.execute(sql_user)
+            self.cur.execute(sql_fornecedor)
+            self.cur.execute(sql_produto)
+            self.cur.execute(sql_estoque)
+            self.con.commit()
+        except:
+            pass
+        finally:
+            self.desconectar()
             
 DataBase()

@@ -1,5 +1,6 @@
 from customtkinter import CTkToplevel, CTkFrame, CTkEntry, CTkLabel, CTkButton, CTkComboBox, CTkTabview, CTkFont
 from DAO.usuarioDAO import usuarioDAO
+from DAO.tipoDAO import TipoDAO
 from Popup.MensagemAlerta import MensagemAlerta
 
 class EditarUsuario(CTkToplevel):
@@ -7,6 +8,7 @@ class EditarUsuario(CTkToplevel):
         CTkToplevel.__init__(self)
         self.master =master
         self.dados = list(dados)
+        self.tipoDAO = TipoDAO()
         self.after(100, self.lift)
         self.title('Editar Usuario')
         self.centralizar_janela()
@@ -27,7 +29,7 @@ class EditarUsuario(CTkToplevel):
         self.font_entry = CTkFont('Segoe UI', size=16)
         self.font_button = CTkFont('Segoe UI', size=18, weight='bold')
         
-        self.tipos = usuarioDAO.select_all_tipo()
+        self.tipos = self.tipoDAO.select_all_tipo()
         
         frame = CTkFrame(self)
         frame.pack(padx=10, pady=10, fill='both')
@@ -53,7 +55,7 @@ class EditarUsuario(CTkToplevel):
             
     def salvar_alterecoes(self):
         self.dados[1] = self.usuario.get()
-        self.dados[2] = usuarioDAO.select_id_tipo(self.tipo.get())[0]
+        self.dados[2] = self.tipoDAO.select_id_tipo(self.tipo.get())[0]
 
         print(self.dados)
         match usuarioDAO().atualizar_usuario(*self.dados):

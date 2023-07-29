@@ -4,82 +4,101 @@ class fornecedorDAO(DataBase):
     def __init__(self):
         DataBase.__init__(self)
         
-    @classmethod
-    def insert_fornecedor(cls, nome:str, contato:str, endereco:str):
+    def insert_fornecedor(self, nome:str, contato:str, endereco:str):
         '''1 - Cadastrado com sucesso
            2 - Fornecedor já existe
            3 - Nome ou Contato invalidos
            '''
-        with cls.return_con(cls) as con:
-            cur = con.cursor()
+        try:
+            self.cursor()
             if nome and contato:
-                if not cls.fornecedor_existe(nome):
+                if not self.fornecedor_existe(nome):
                     sql = f'''INSERT INTO fornecedor (nome, contato, endereco) VALUES (?,?,?);'''
-                    cur.execute(sql,(nome, contato, endereco))
-                    con.commit()
+                    self.cur.execute(sql,(nome, contato, endereco))
+                    self.con.commit()
                     return 1
                 return 2
             return 3
-        
-    @classmethod  
-    def fornecedor_existe(cls, nome:str):
-        result = list(cls.select_fornecedor(nome))
-        if len(result) > 0:
-            return True
-        return False
+        except:
+            pass
+        finally:
+            self.desconectar()
     
-    @classmethod
-    def select_all_fornecedores(cls):
-        with cls.return_con(cls) as con:
-            cur =con.cursor()
+    def delete_fornecedor(self, nome:str):
+        try:
+            self.cursor()
+            sql = "DELETE FROM fornecedor WHERE nome = ?"
+            self.cur.execute(sql, (nome, ))
+            self.con.commit()
+            return True
+        except:
+            pass
+        finally:
+            self.desconectar
+  
+    def atualizar_fornecedor(self, id:int, nome:str, contato:str, endereco:str):
+        try:
+            self.cursor()
+            sql = "UPDATE fornecedor SET nome = ?, contato= ?, endereco = ? WHERE id = ?"
+            self.cur.execute(sql, (nome, contato, endereco, id))
+            self.con.commit()
+            return True
+        except:
+            pass
+        finally:
+            self.desconectar
+  
+    def select_all_fornecedores(self):
+        try:
+            self.cursor()
             sql = '''SELECT * FROM fornecedor'''
-            return list(cur.execute(sql).fetchall())
+            return self.cur.execute(sql).fetchall()
+        except:
+            pass
+        finally:
+            self.desconectar()
         
-    @classmethod  
-    def select_all_name_fornecedores(cls):
-        with cls.return_con(cls) as con:
-            cur =con.cursor()
+    def select_all_name_fornecedores(self):
+        try:
+            self.cursor()
             sql = '''SELECT nome FROM fornecedor'''
-            return list(cur.execute(sql).fetchall())
+            return self.cur.execute(sql).fetchall()
+        except:
+            pass
+        finally:
+            self.desconectar()
             
-    @classmethod
-    def select_fornecedor(cls, nome:str):
-        with cls.return_con(cls) as con:
-            cur = con.cursor()
+    def select_fornecedor(self, nome:str):
+        try:
+            self.cursor()
             if nome:
                 sql = '''SELECT nome, contato, endereco FROM fornecedor WHERE nome = ?;'''
-                return cur.execute(sql, (nome, ))
+                return self.cur.execute(sql, (nome, )).fetchone()
+        except:
+            pass
+            self.desconectar()
             
-    @classmethod
-    def select_id_fornecedor(cls, nome:str):
-        with cls.return_con(cls) as con:
-            cur = con.cursor()
+    def select_id_fornecedor(self, nome:str):
+        try:
+            self.cursor()
             if nome:
                 sql = '''SELECT id FROM fornecedor WHERE nome = ?;'''
-                return cur.execute(sql, (nome, )).fetchone()
-    
-    @classmethod
-    def select_like_fornecedor(cls, nome:str):
-       with cls.return_con(cls) as con:
-            cur = con.cursor()
+                return self.cur.execute(sql, (nome, )).fetchone()
+        except:
+            self.desconectar()
+ 
+    def select_like_fornecedor(self, nome:str):
+        try:
+            self.cursor()
             if nome:
                 sql = '''SELECT id, nome, contato, endereco endereco FROM fornecedor WHERE nome LIKE ?;'''
-                return list(cur.execute(sql, (nome+'%', )).fetchall())
-            
-    @classmethod
-    def delete_fornecedor(cls, nome:str):
-        with cls.return_con(cls) as con:
-            cur = con.cursor()
-            sql = "DELETE FROM fornecedor WHERE nome = ?"
-            cur.execute(sql, (nome, ))
-            con.commit()
+                return self.cur.execute(sql, (nome+'%', )).fetchall()
+        except:
+            pass
+        finally:
+            self.desconectar    
+    
+    def fornecedor_existe(self, nome:str):
+        if len(self.select_fornecedor(nome)) > 0:
             return True
-
-    @classmethod
-    def atualizar_fornecedor(cls, id:int, nome:str, contato:str, endereco:str):
-        with cls.return_con(cls) as con:
-            cur = con.cursor()
-            sql = "UPDATE fornecedor SET nome = ?, contato= ?, endereco = ? WHERE id = ?"
-            cur.execute(sql, (nome, contato, endereco, id))
-            con.commit()
-            return True
+        return False

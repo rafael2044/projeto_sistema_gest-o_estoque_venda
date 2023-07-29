@@ -14,6 +14,7 @@ class TelaPrincipal(CTk):
     def __init__(self):
         CTk.__init__(self)
         self.title('Sistema')
+        self.usuarioDAO = usuarioDAO()
         self.centralizar_janela()
         self.carregar_widgets()
         self.login = Login(self)
@@ -114,7 +115,7 @@ class TelaPrincipal(CTk):
         self.menubar.add_cascade(label='Sair', menu=sair_menu)
    
     def carregar_usuarios(self):
-        usuarios = usuarioDAO.select_all_usuario()
+        usuarios = self.usuarioDAO.select_all_usuario()
         [self.tv_tabela.delete(x) for x in self.tv_tabela.get_children()]
         if usuarios:
             [self.tv_tabela.insert('', 'end', values=p) for p in usuarios]
@@ -156,7 +157,7 @@ class TelaPrincipal(CTk):
         if op.opcao:
             self.id = self.tv_tabela.item(self.usuario_dados[0], 'values')[0]
             print(self.id)
-            if usuarioDAO.deletar_usuario(self.id):
+            if self.usuarioDAO.deletar_usuario(self.id):
                 MensagemAlerta('Sucesso!', 'Usuario Excluido com sucesso!')
                 self.carregar_usuarios()
             else:

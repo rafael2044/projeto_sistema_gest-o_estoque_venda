@@ -10,6 +10,9 @@ class CadProduto(CTkToplevel):
         CTkToplevel.__init__(self, takefocus=True)
         self.after(100, self.lift)
         self.title('Cadastrar Novo Produto')
+        self.fornecedorDAO = fornecedorDAO()
+        self.produtoDAO = produtoDAO()
+        self.estoqueDAO = estoqueDAO()
         self.centralizar_janela()
         self.carreagar_widgets()
         self.protocol('WM_DELETE_WINDOW', self.destroy)
@@ -85,7 +88,7 @@ class CadProduto(CTkToplevel):
         self.pesquisa = CTkEntry(self.tab_cad, placeholder_text='Nome do Produto', width=150, font=self.font_entry)
 
     def carregar_fornecedores(self):
-        result = fornecedorDAO.select_all_name_fornecedores()
+        result = self.fornecedorDAO.select_all_name_fornecedores()
         fornecedores = []
         if result:
             for f in result:
@@ -100,13 +103,13 @@ class CadProduto(CTkToplevel):
         quant_min = int(self.quantidade_min.get())
         quant_atual = int(self.quantidade_atual.get())
         quant_max = int(self.quantidade_max.get())
-        id_fornecedor = int(fornecedorDAO.select_id_fornecedor(self.fornecedor.get())[0])
+        id_fornecedor = int(self.fornecedorDAO.select_id_fornecedor(self.fornecedor.get())[0])
         
         
-        match produtoDAO.insert_produto(descricao, id_fornecedor, preco_un, cod_barra):
+        match self.produtoDAO.insert_produto(descricao, id_fornecedor, preco_un, cod_barra):
             case 1:
-                id_produto = int(produtoDAO.select_id_produto(cod_barra)[0])
-                match estoqueDAO.insert_produto_estoque(id_produto, quant_min, quant_atual, quant_max):
+                id_produto = int(self.produtoDAO.select_id_produto(cod_barra)[0])
+                match self.estoqueDAO.insert_produto_estoque(id_produto, quant_min, quant_atual, quant_max):
                     case 1:
                         MensagemAlerta('Sucesso!', 'O produto foi cadastrado em estoque com sucesso!')
                         self.limpar_entrys()

@@ -110,7 +110,7 @@ class TelaPrincipal(CTk):
         self.menubar.add_cascade(label='Sair', menu=sair_menu)
         
     def carregar_estoque(self):
-        estoque = estoqueDAO().select_all_produto_estoque()
+        estoque = estoqueDAO().select_all_estoque()
         [self.tv_tabela.delete(x) for x in self.tv_tabela.get_children()]
         if estoque:
             [self.tv_tabela.insert('', 'end', values=p) for p in estoque]

@@ -13,6 +13,7 @@ class WFornecedor(CTkToplevel):
         CTkToplevel.__init__(self, takefocus=True)
         self.after(100, self.lift)
         self.title('Fornecedores')
+        self.fornecedorDAO = fornecedorDAO()
         self.centralizar_janela()
         self.carregar_widgets()
         self.protocol('WM_DELETE_WINDOW', self.destroy)
@@ -110,7 +111,7 @@ class WFornecedor(CTkToplevel):
     def carregar_tab_fornecedores(self, lista=None):
         result = lista
         if not lista:
-            result = fornecedorDAO.select_all_fornecedores()
+            result = self.fornecedorDAO.select_all_fornecedores()
         
         [self.tv_tabela.delete(x) for x in self.tv_tabela.get_children()]
         
@@ -120,14 +121,14 @@ class WFornecedor(CTkToplevel):
     def pesquisar_fornecedor(self):
         nome = self.pesquisa.get()
         if nome:
-            result = fornecedorDAO.select_like_fornecedor(nome)
+            result = self.fornecedorDAO.select_like_fornecedor(nome)
             self.carregar_tab_fornecedores(result)
             
     def cadastrar_fornecedor(self):
         nome = self.nome.get()
         contato = self.contato.get()
         endereco = self.endereco.get()
-        match (fornecedorDAO.insert_fornecedor(nome, contato, endereco)):
+        match (self.fornecedorDAO.insert_fornecedor(nome, contato, endereco)):
             case 1:
                 MensagemAlerta('Cadastro', 'Cadastro Realizado com Sucesso!')
                 self.carregar_tab_fornecedores()
