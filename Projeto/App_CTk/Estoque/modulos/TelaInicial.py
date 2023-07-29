@@ -83,11 +83,11 @@ class TelaPrincipal(CTk):
         
         
         CTkButton(f_button_menu, text='Cadastrar Produto', image=PhotoImage(data=icon_add_produto),
-                  compound='top', command=self.abrir_tela_cadProd, font=self.font_button).pack(side='left', padx=10)
+                  compound='top', command=self.abrir_tela_cadProd, font=self.font_button).pack(side='left', padx=(0,10))
         CTkButton(f_button_menu, text='Fornecedores', image=PhotoImage(data=icon_fornecedor),
-                  compound='top', command=self.abrir_tela_fornecedor, font=self.font_button).pack(side='left', padx=10)
+                  compound='top', command=self.abrir_tela_fornecedor, font=self.font_button).pack(side='left', padx=(10,0))
         self.usuario.pack(side='right', padx=10)
-        CTkLabel(f_info, text='Estoque Atual', font=('Segoe UI', 19, 'bold')).pack(side='left', padx=10)
+        CTkLabel(f_info, text='Estoque Atual', font=('Segoe UI', 19, 'bold')).pack(side='left')
         CTkLabel(f_info, text='Usuario Logado:', font=('Segoe UI', 12, 'bold')).pack(side='right')
         
         self.tv_tabela.pack(side='left', fill='both')
@@ -133,3 +133,9 @@ class TelaPrincipal(CTk):
             self.w_fornecedor.transient(self)
         else:
             self.w_fornecedor.after(100, self.w_fornecedor.lift)
+        
+    def verificar_restricoes_usuario(self):
+        if self.tipo_usuario == 'Administrador':
+            pass
+        else:
+            pass

@@ -91,12 +91,12 @@ class WFornecedor(CTkToplevel):
         self.tv_tabela.configure(yscrollcommand=self.scrollbar_vertical.set)
         
         
-        self.bt_delete = CTkButton(self.tab_pesq, state='disabled', text='', image=PhotoImage(data=icon_excluir),width=40,fg_color='gray', command=self.deletar_fornecedor)
-        self.bt_editar = CTkButton(self.tab_pesq, state='disabled', text='', image=PhotoImage(data=icon_editar),command=self.editar_fornecedor, width=40,fg_color='gray')
+        self.bt_delete = CTkButton(self.tab_pesq, state='disabled', text='', image=PhotoImage(data=icon_excluir),height=40,width=75,fg_color='gray', command=self.deletar_fornecedor)
+        self.bt_editar = CTkButton(self.tab_pesq, state='disabled', text='', image=PhotoImage(data=icon_editar),command=self.editar_fornecedor, height=40,width=75,fg_color='gray')
         f_pesquisa.pack(fill='x', pady=(2,5))
         self.pesquisa.pack(fill='x',side='left', expand=True, padx=(10,5), pady=(1,1))
-        CTkButton(f_pesquisa, text='', image=PhotoImage(data=icon_pesquisa), width=50,height=40, command=self.pesquisar_fornecedor).pack(side='left', padx=(5,5))
-        CTkButton(f_pesquisa, text='', image=PhotoImage(data=icon_atualizar), width=50,height=40, command=self.atualizar_tabela).pack(side='left', padx=(5,10))
+        CTkButton(f_pesquisa, text='', image=PhotoImage(data=icon_pesquisa), width=75,height=40, command=self.pesquisar_fornecedor).pack(side='left', padx=(5,5))
+        CTkButton(f_pesquisa, text='', image=PhotoImage(data=icon_atualizar), width=75,height=40, command=self.atualizar_tabela).pack(side='left', padx=(5,10))
         f_tabela.pack(fill='both', expand=True)
         self.tv_tabela.pack(fill='both', expand=True, side='left', anchor='w', padx=(10,0))
         self.scrollbar_vertical.pack(anchor='w', fill='y', expand=True, padx=(0, 10))

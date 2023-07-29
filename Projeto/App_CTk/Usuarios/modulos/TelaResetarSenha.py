@@ -13,7 +13,7 @@ class ResetarSenha(CTkToplevel):
         self.bind('<Return>', self.resetar)
         
     def centralizar_janela(self):
-        HEIGHT = 260
+        HEIGHT = 175
         WEIDTH = 300
         
         W_HEIGHT = self.winfo_screenheight()
@@ -32,17 +32,16 @@ class ResetarSenha(CTkToplevel):
         
         f_main = CTkFrame(self)
         f_button = CTkFrame(f_main, fg_color='transparent')
-        self.user = CTkEntry(f_main, placeholder_text='Digite o Usuario...', width=250, height=40, font=font_entry, takefocus=True)
+        self.user = CTkEntry(f_main, placeholder_text='Digite o Usuario...', height=40, font=font_entry, takefocus=True)
         self.bt_resetar = CTkButton(f_button, text='Resetar', font=font_button, command=self.resetar, height=40)
         self.bt_sair = CTkButton(f_button, text='Sair', font=font_button, command=self.sair,height=40)
         
         f_main.pack(padx=10,pady=10, expand=True, fill = 'both')
         CTkLabel(f_main, text='Usuario', font=font_label).pack(padx=10, pady=5, anchor='w')
-        self.user.pack(padx=10, anchor='w')
-        CTkLabel(f_main, text='Senha',font=font_label).pack(padx=10, pady=5, anchor='w')
-        f_button.pack(padx=10, pady=20)
-        self.bt_resetar.pack(padx=10, side='left')
-        self.bt_sair.pack(padx=20, side='left')
+        self.user.pack(padx=10, anchor='w', fill='x')
+        f_button.pack(padx=10, pady=10)
+        self.bt_resetar.pack(padx=(0,20), side='left')
+        self.bt_sair.pack(padx=(20,0), side='left')
         
     def resetar(self, event=None):
         user = self.user.get()

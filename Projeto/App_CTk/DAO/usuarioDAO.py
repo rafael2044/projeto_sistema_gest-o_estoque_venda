@@ -133,7 +133,7 @@ class usuarioDAO(DataBase):
                 senha_sha256 = sha256(senha.encode()).hexdigest()
                 sql = '''SELECT * FROM usuario WHERE nome_usuario = ? AND senha = ?;'''
 
-                if len(self.cur.execute(sql, (nome_usuario, senha_sha256)).fetchone())>0:
+                if self.cur.execute(sql, (nome_usuario, senha_sha256)).fetchone():
                     return 1
             return 2            
         except Exception as e:

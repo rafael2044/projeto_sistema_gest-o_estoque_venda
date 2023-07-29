@@ -34,20 +34,20 @@ class Login(CTkToplevel):
         
         f_main = CTkFrame(self)
         f_button = CTkFrame(f_main, fg_color='transparent')
-        self.user = CTkEntry(f_main, placeholder_text='Digite o Usuario...', width=250, height=40, font=font_entry, takefocus=True)
-        self.password = CTkEntry(f_main, show='*', placeholder_text='Digite a Senha...', width=250, height=40, font=font_entry)
+        self.user = CTkEntry(f_main, placeholder_text='Digite o Usuario...', height=40, font=font_entry, takefocus=True)
+        self.password = CTkEntry(f_main, show='*', placeholder_text='Digite a Senha...', height=40, font=font_entry)
         
         self.bt_entrar = CTkButton(f_button, text='Entrar', font=font_button, command=self.logar, height=40)
         self.bt_sair = CTkButton(f_button, text='Sair', font=font_button, command=self.sair,height=40)
         
         f_main.pack(padx=10,pady=10, expand=True, fill = 'both')
         CTkLabel(f_main, text='Usuario', font=font_label).pack(padx=10, pady=5, anchor='w')
-        self.user.pack(padx=10, anchor='w')
+        self.user.pack(padx=10, anchor='w', fill='x')
         CTkLabel(f_main, text='Senha',font=font_label).pack(padx=10, pady=5, anchor='w')
-        self.password.pack(padx=10, anchor='w')
-        f_button.pack(padx=10, pady=20)
-        self.bt_entrar.pack(padx=10, side='left')
-        self.bt_sair.pack(padx=20, side='left')
+        self.password.pack(padx=10, anchor='w', fill='x')
+        f_button.pack(padx=10, pady=(10,5))
+        self.bt_entrar.pack(padx=(0,20), side='left')
+        self.bt_sair.pack(padx=(20,0), side='left')
         
     def logar(self, event=None):
         user = self.user.get()
@@ -58,7 +58,7 @@ class Login(CTkToplevel):
                 self.limpar_entrys()
                 self.master.tipo_usuario = self.usuarioDAO.select_tipo_usuario(user)[0]
                 self.master.usuario.configure(text=user)
-                self.master.verificar_tipo()
+                self.master.verificar_restricoes_usuario()
                 self.master.carregar_usuarios()
                 self.grab_release()
                 self.withdraw()

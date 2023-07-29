@@ -33,20 +33,20 @@ class NovaSenha(CTkToplevel):
         
         f_main = CTkFrame(self)
         f_button = CTkFrame(f_main, fg_color='transparent')
-        self.password = CTkEntry(f_main, placeholder_text='Digite a Senha...', width=250, height=40, font=font_entry, takefocus=True, show='*')
-        self.password_validacao = CTkEntry(f_main, show='*', placeholder_text='Digite a Senha novamente...', width=250, height=40, font=font_entry)
+        self.password = CTkEntry(f_main, placeholder_text='Digite a Senha...', height=40, font=font_entry, takefocus=True, show='*')
+        self.password_validacao = CTkEntry(f_main, show='*', placeholder_text='Digite a Senha novamente...', height=40, font=font_entry)
         
         self.bt_inserir = CTkButton(f_button, text='Inserir', font=font_button, command=self.inserir, height=40)
         self.bt_sair = CTkButton(f_button, text='Sair', font=font_button, command=self.sair,height=40)
         
         f_main.pack(padx=10,pady=10, expand=True, fill = 'both')
         CTkLabel(f_main, text='Senha', font=font_label).pack(padx=10, pady=5, anchor='w')
-        self.password.pack(padx=10, anchor='w')
+        self.password.pack(padx=10, anchor='w', fill='x')
         CTkLabel(f_main, text='Validar Senha',font=font_label).pack(padx=10, pady=5, anchor='w')
-        self.password_validacao.pack(padx=10, anchor='w')
-        f_button.pack(padx=10, pady=20)
-        self.bt_inserir.pack(padx=10, side='left')
-        self.bt_sair.pack(padx=20, side='left')
+        self.password_validacao.pack(padx=10, anchor='w', fill='x')
+        f_button.pack(padx=10, pady=(10,5))
+        self.bt_inserir.pack(padx=(0,20), side='left')
+        self.bt_sair.pack(padx=(20,0), side='left')
         
     def inserir(self, event=None):
         senha = self.password.get()

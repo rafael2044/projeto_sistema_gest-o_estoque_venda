@@ -77,41 +77,45 @@ class TelaPrincipal(CTk):
         f_tabela.pack(padx=10, pady=0, anchor='w', fill='both', expand=True)
         f_scroll.pack(padx=10, pady=0, fill='x')
         
-        
         self.bt_cad = CTkButton(f_button_top_menu, text='Cadastrar Usuario', command=self.abrir_janela_cadastro, font=self.font_button, state='disabled')
-        self.bt_cad.pack(side='left', padx=10)
+        self.bt_cad.pack(side='left', padx=(0,10))
         self.bt_reset = CTkButton(f_button_top_menu, text='Resetar Senha', font=self.font_button, state='disabled', command=self.abrir_janela_resetar_senha)
-        self.bt_reset.pack(side='left', padx=10)
+        self.bt_reset.pack(side='left')
         
-        self.bt_delete = CTkButton(f_button_bottom, state='disabled', command=self.deletar_usuario, text='', image=PhotoImage(data=icon_excluir),width=40,fg_color='gray')
-        self.bt_editar = CTkButton(f_button_bottom, state='disabled', command=self.abrir_janela_editar_usuario, text='', image=PhotoImage(data=icon_editar), width=40,fg_color='gray')
+        self.bt_delete = CTkButton(f_button_bottom, state='disabled', command=self.deletar_usuario_selecionado, text='', image=PhotoImage(data=icon_excluir),height=40,width=60, fg_color='gray')
+        self.bt_editar = CTkButton(f_button_bottom, state='disabled', command=self.abrir_janela_editar_usuario, text='', image=PhotoImage(data=icon_editar), height=40, width=60, fg_color='gray')
         
         self.usuario.pack(side='right', padx=10)
-        CTkLabel(f_info, text='Usuarios Ativoss', font=('Segoe UI', 19, 'bold')).pack(side='left', padx=10)
+        CTkLabel(f_info, text='Usuarios Cadastrados', font=('Segoe UI', 19, 'bold')).pack(side='left')
         CTkLabel(f_info, text='Usuario Logado:', font=('Segoe UI', 12, 'bold')).pack(side='right')
         
         self.tv_tabela.pack(side='left', fill='both')
         self.scrollbar_vertical.pack(fill='y', expand=True, anchor='w')
         f_scroll.pack(padx=10, pady=0, fill='x')
-        self.scrollbar_horizontal.pack(fill='x')
+        self.scrollbar_horizontal.pack(fill='x', pady=(0,5))
         
-        f_button_bottom.pack(padx=10, pady=5, anchor='w', fill='x')
-        self.bt_delete.pack(side='right')
+        f_button_bottom.pack(padx=10, pady=(0,5), anchor='w', fill='x')
+        self.bt_delete.pack(side='right', pady=(0,0))
         self.bt_editar.pack(side='right', padx=10)
         self.tv_tabela.bind('<<TreeviewSelect>>', self.usuario_selecionado)
-        self.bind('<Button-1>', self.desabilitar_botoes)
+        self.bind('<Button-1>', self.click_fora_da_tabela)
         
     def carregar_menu(self):
-        self.menubar = Menu(self, font=('Segoe UI', 14))
+        font_menubar = CTkFont(family='Segoe UI', size=14)
+        font_menu = CTkFont(family='Segoe UI', size=12)
+        self.menubar = Menu(self, font=font_menubar)
         self.configure(menu=self.menubar)
-        cad_menu = Menu(self.menubar, font=('Segoe UI', 10))
-        cad_menu.add_command(label='Usuario')
+        self.cad_menu = Menu(self.menubar, font=font_menu)
+        self.cad_menu.add_command(label='Usuario', command=self.abrir_janela_cadastro)
 
+        self.editar_menu = Menu(self.menubar, font=font_menu)
+        self.editar_menu.add_command(label='Resetar Senha de Usuario', command=self.abrir_janela_resetar_senha)
         
-        sair_menu = Menu(self.menubar, font=('Segoe UI', 14))
+        sair_menu = Menu(self.menubar, font=font_menu)
         sair_menu.add_command(label='Logout', command=self.sair)
         
-        self.menubar.add_cascade(label='Cadastrar', menu=cad_menu)
+        self.menubar.add_cascade(label='Cadastrar', menu=self.cad_menu)
+        self.menubar.add_cascade(label='Editar', menu=self.editar_menu)
         self.menubar.add_cascade(label='Sair', menu=sair_menu)
    
     def carregar_usuarios(self):
@@ -125,13 +129,11 @@ class TelaPrincipal(CTk):
         self.login.user.focus_force()
         self.login.grab_set()
     
-    def verificar_tipo(self):
+    def verificar_restricoes_usuario(self):
         if self.tipo_usuario == 'Administrador':
-            self.bt_cad.configure(state='enabled')
-            self.bt_reset.configure(state='enabled')
+            self.habilitar_botoes_menu()
         else:
-            self.bt_cad.configure(state='disabled')
-            self.bt_reset.configure(state='disabled')
+            self.desabilitar_botoes_menu()
         
     def abrir_janela_cadastro(self):
         if self.cad_usuario is None or not self.cad_usuario.winfo_exists():
@@ -152,7 +154,7 @@ class TelaPrincipal(CTk):
         else:
             self.editar_usuario.lift()
     
-    def deletar_usuario(self):
+    def deletar_usuario_selecionado(self):
         op = DialogoSimNao('Alerta de Exclusao', 'Deseja excluir o usuario selecionado?')
         if op.opcao:
             self.id = self.tv_tabela.item(self.usuario_dados[0], 'values')[0]
@@ -165,17 +167,37 @@ class TelaPrincipal(CTk):
     def usuario_selecionado(self, event):
         self.usuario_dados = self.tv_tabela.selection()
         if self.usuario_dados and self.tipo_usuario == 'Administrador':
-            self.bt_delete.configure(state='enabled')
-            self.bt_delete.configure(fg_color=("#3a7ebf", "#1f538d"))
-            self.bt_editar.configure(state='enabled')
-            self.bt_editar.configure(fg_color=("#3a7ebf", "#1f538d"))
+            self.habilitar_botoes_inferiores()
     
-    def desabilitar_botoes(self, event):
+    def click_fora_da_tabela(self, event):
         if event.widget not in (self.tv_tabela, self.bt_delete, self.bt_editar) and self.focus_get() is self.tv_tabela and self.tipo_usuario == 'Administrador':
-            self.bt_delete.configure(state='disabled')
-            self.bt_delete.configure(fg_color='gray')
-            self.bt_editar.configure(state='disabled')
-            self.bt_editar.configure(fg_color='gray')
+            self.desabilitar_botoes_inferiores()
             self.tv_tabela.selection_set()
-            
-            
+    
+    def desabilitar_botoes_inferiores(self):
+        self.bt_delete.configure(state='disabled')
+        self.bt_delete.configure(fg_color='gray')
+        self.bt_editar.configure(state='disabled')
+        self.bt_editar.configure(fg_color='gray')
+        
+    def habilitar_botoes_inferiores(self):
+        self.bt_delete.configure(state='enabled')
+        self.bt_delete.configure(fg_color=("#3a7ebf", "#1f538d"))
+        self.bt_editar.configure(state='enabled')
+        self.bt_editar.configure(fg_color=("#3a7ebf", "#1f538d"))
+        
+    def habilitar_botoes_menu(self):
+        self.bt_cad.configure(state='enabled')
+        self.bt_cad.configure(fg_color=("#3a7ebf", "#1f538d"))
+        self.bt_reset.configure(state='enabled')
+        self.bt_reset.configure(fg_color=("#3a7ebf", "#1f538d"))
+        self.cad_menu.entryconfig('Usuario', state='active')
+        self.editar_menu.entryconfig('Resetar Senha de Usuario', state='active')
+    
+    def desabilitar_botoes_menu(self):
+        self.bt_cad.configure(state='disabled')
+        self.bt_cad.configure(fg_color='gray')
+        self.bt_reset.configure(state='disabled')
+        self.bt_reset.configure(fg_color='gray')
+        self.cad_menu.entryconfig('Usuario', state='disabled')
+        self.editar_menu.entryconfig('Resetar Senha de Usuario', state='disabled')
