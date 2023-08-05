@@ -1,28 +1,32 @@
-from customtkinter import CTkFrame, CTkButton, CTk, CTkLabel, CTkFont
+from customtkinter import CTkFrame, CTkButton, CTk, CTkLabel, CTkFont, CTkImage
 from Estoque.modulos.TelaLogin import Login
-from Estoque.modulos.TelaCadProduto import CadProduto
-from Estoque.modulos.TelaFornecedor import WFornecedor
+from Estoque.modulos.TelaProduto import TelaProduto
+from Estoque.modulos.TelaEstoque import TelaEstoque
+from Estoque.modulos.TelaFornecedor import TelaFornecedor
 from tkinter.ttk import Treeview, Scrollbar, Style
-from tkinter import Menu, PhotoImage
-from Imagens.img import *
+from tkinter import Menu
+from PIL import Image
+from Imagens.img import img_cad_estoque, img_cad_produto, img_fornecedor
 from DAO.estoqueDAO import estoqueDAO
 class TelaPrincipal(CTk):
     
     def __init__(self):
         CTk.__init__(self)
-        self.title('Sistema')
-        self.centralizar_janela()
+        self.title('Sistema Estoque')
         self.carregar_widgets()
-        self.cad_prod = None
+        self.estoque = None
+        self.produto = None
         self.w_fornecedor = None
         self.cad_un = None
         self.tipo_usuario = None
         self.login = Login(self)
         self.login.transient(self)
-        
+        self.centralizar_janela()
+
+        self.mainloop()
     def centralizar_janela(self):
-        HEIGHT = 800
-        WEIDTH = 1065
+        HEIGHT = int(self.winfo_screenheight()/ 1.30)
+        WEIDTH = int(self.winfo_screenwidth() / 1.20)
         
         W_HEIGHT = self.winfo_screenheight()
         W_WEIDTH = self.winfo_screenwidth()
@@ -30,27 +34,33 @@ class TelaPrincipal(CTk):
         X = (W_WEIDTH - WEIDTH)//2
         Y = (W_HEIGHT - HEIGHT)//2
         
-        self.geometry(f'{WEIDTH}x{HEIGHT}+{X}+{Y}+')
+        self.geometry(f'{WEIDTH}x{HEIGHT}+{X}+{Y}+') 
+        self.after(0, lambda:self.wm_state('zoomed'))
+        
     
     def carregar_widgets(self):
         self.carregar_menu()
         self.style = Style()
         self.style.theme_use('clam')
-        self.style.configure('Treeview', font=('Segoe UI', 15), rowheight=30)
+        self.style.configure('Treeview', font=('Segoe UI', 12), rowheight=30)
         self.style.configure('Treeview.Heading', font=('Segoe UI', 13, 'bold'))
         self.style.layout("Treeview", [('Treeview.treearea', {'sticky': 'nswe'})])
-        
-        f_button_menu = CTkFrame(self)
-        f_info = CTkFrame(self)
-        f_tabela = CTkFrame(self)
-        f_scroll = CTkFrame(self, height=10)
-        self.font_button = CTkFont('Segoe UI', size=18, weight='bold')
+    
+        self.grid_columnconfigure(0, weight=1)
+        self.grid_columnconfigure(1, weight=1)
+        self.grid_columnconfigure(2, weight=1)
+        self.grid_rowconfigure(0, weight=30)
+        self.grid_rowconfigure(1, weight=1)
+        self.grid_rowconfigure(2, weight=500)
+        self.font_button = CTkFont('Segoe UI', size=18, slant='italic', weight='bold')
 
+        f_menu_buttons = CTkFrame(self, fg_color='transparent', border_width=2, corner_radius=20)
+        f_info = CTkFrame(self, fg_color='transparent', height=10)
         
-        self.usuario = CTkLabel(f_info, text=' '*50, font=('Segoe UI', 12, 'bold'))
+        self.usuario = CTkLabel(f_info, text=' '*10, font=('Segoe UI', 12, 'bold'))
         
-        self.tv_tabela = Treeview(f_tabela, columns=('id', 'cod_barra', 'descricao', 'preco_un', 'fornecedor','quant_min', 'quant_atual', 'quant_max'),
-                                  selectmode='browse')
+        self.tv_tabela = Treeview(self, columns=('id', 'cod_barra', 'descricao', 'preco_un', 'fornecedor','quant_min', 'quant_atual', 'quant_max'),
+                                  selectmode='browse', show='headings')
         self.tv_tabela.heading('#0', text='')
         self.tv_tabela.heading('id', text='ID')
         self.tv_tabela.heading('cod_barra', text='Cod. Barra')
@@ -61,45 +71,42 @@ class TelaPrincipal(CTk):
         self.tv_tabela.heading('quant_atual', text='Quant. Atual')
         self.tv_tabela.heading('quant_max', text='Quant. Max')
         
-        self.tv_tabela.column('#0', width=2, minwidth=2, stretch=True)
         self.tv_tabela.column('id', width=50, stretch=True, minwidth=50, anchor='center')
         self.tv_tabela.column('cod_barra', width=175, stretch=True, minwidth=175, anchor='center')
-        self.tv_tabela.column('descricao', width=300, stretch=False, minwidth=300)
+        self.tv_tabela.column('descricao', width=500, stretch=False, minwidth=450)
         self.tv_tabela.column('preco_un', width=150, stretch=True, minwidth=150, anchor='center')
-        self.tv_tabela.column('fornecedor', width=175, stretch=False, minwidth=175)
-        self.tv_tabela.column('quant_min', width=100, stretch=True, minwidth=100, anchor='center')
+        self.tv_tabela.column('fornecedor', width=200, stretch=False, minwidth=175 )
+        self.tv_tabela.column('quant_min', width=100, stretch= True, minwidth=100, anchor='center')
         self.tv_tabela.column('quant_atual', width=115, stretch=True, minwidth=115, anchor='center')
         self.tv_tabela.column('quant_max', width=110, stretch=True, minwidth=110, anchor='center')
         
-        self.scrollbar_vertical = Scrollbar(f_tabela, orient='vertical', command=self.tv_tabela.yview)
-        self.scrollbar_horizontal = Scrollbar(f_scroll, orient='horizontal', command=self.tv_tabela.xview)
+        
+        self.scrollbar_vertical = Scrollbar(self, orient='vertical', command=self.tv_tabela.yview)
+        self.scrollbar_horizontal = Scrollbar(self, orient='horizontal', command=self.tv_tabela.xview)
         self.tv_tabela.configure(xscrollcommand=self.scrollbar_horizontal.set)
         self.tv_tabela.configure(yscrollcommand=self.scrollbar_vertical.set)
+        f_menu_buttons.grid(column=0, row=0, columnspan=3, sticky='we', pady=0, padx=5) 
+        CTkButton(f_menu_buttons, text='Estoque', image=CTkImage(Image.open(img_cad_estoque), size=(32,32)),
+                  compound='top', command=self.abrir_tela_Estoque, font=self.font_button, fg_color='transparent', corner_radius=20).pack(side='left', padx=10, pady=0)
+        CTkButton(f_menu_buttons, text='Produtos', image=CTkImage(Image.open(img_cad_produto)),fg_color='transparent', corner_radius=20,
+                  compound='top', command=self.abrir_tela_Produto, font=self.font_button).pack(side='left', padx=(0,10),  pady=5)
+        CTkButton(f_menu_buttons, text='Fornecedores', image=CTkImage(Image.open(img_fornecedor)),fg_color='transparent', corner_radius=20,
+                  compound='top', command=self.abrir_tela_fornecedor, font=self.font_button).pack(side='left', padx=10,  pady=5)
+        CTkLabel(self, text='Estoque Atual', font=('Segoe UI', 23, 'bold')).grid(row=1, column=0, sticky='w', padx=10,  pady=5)
+        f_info.grid(column=2, row=1, sticky='e', padx=5)
+        CTkLabel(f_info, text='Usuario Logado:', font=('Segoe UI', 12, 'bold')).pack(side='left', padx=(0,10),  pady=0)
+    
+        self.usuario.pack(side='left')
         
-        f_button_menu.pack(padx=10, pady=5, anchor='w', fill='x')
-        f_info.pack(padx=10, anchor='w', fill='x')
-        f_tabela.pack(padx=10, pady=0, anchor='w', fill='both', expand=True)
-        f_scroll.pack(padx=10, pady=0, fill='x')
-        
-        
-        CTkButton(f_button_menu, text='Cadastrar Produto', image=PhotoImage(data=icon_add_produto),
-                  compound='top', command=self.abrir_tela_cadProd, font=self.font_button).pack(side='left', padx=(0,10))
-        CTkButton(f_button_menu, text='Fornecedores', image=PhotoImage(data=icon_fornecedor),
-                  compound='top', command=self.abrir_tela_fornecedor, font=self.font_button).pack(side='left', padx=(10,0))
-        self.usuario.pack(side='right', padx=10)
-        CTkLabel(f_info, text='Estoque Atual', font=('Segoe UI', 19, 'bold')).pack(side='left')
-        CTkLabel(f_info, text='Usuario Logado:', font=('Segoe UI', 12, 'bold')).pack(side='right')
-        
-        self.tv_tabela.pack(side='left', fill='both')
-        self.scrollbar_vertical.pack(fill='y', expand=True, anchor='w')
-        f_scroll.pack(padx=10, pady=0, fill='x')
-        self.scrollbar_horizontal.pack(fill='x')
+        self.tv_tabela.grid(column=0, row=2, columnspan=4, sticky='nsew', padx=(5,10))
+        self.scrollbar_vertical.grid(column=2, row=2,  sticky='nse', padx=(0,5))
+        self.scrollbar_horizontal.grid(column=0, row=3, columnspan=4, sticky='ew', padx=5, pady=(0,10))
         
     def carregar_menu(self):
         self.menubar = Menu(self, font=('Segoe UI', 14))
         self.configure(menu=self.menubar)
         cad_menu = Menu(self.menubar, font=('Segoe UI', 10))
-        cad_menu.add_command(label='Produto', command=self.abrir_tela_cadProd)
+        cad_menu.add_command(label='Produto', command=self.abrir_tela_Produto)
         cad_menu.add_command(label='Fornecedor', command=self.abrir_tela_fornecedor)
 
         
@@ -119,17 +126,24 @@ class TelaPrincipal(CTk):
         self.login.deiconify()
         self.login.user.focus_force()
         self.login.grab_set()
-    
-    def abrir_tela_cadProd(self):
-        if self.cad_prod is None or not self.cad_prod.winfo_exists():
-            self.cad_prod = CadProduto(self)
-            self.cad_prod.transient(self)
+        
+    def abrir_tela_Estoque(self):
+        if self.estoque is None or not self.estoque.winfo_exists():
+            self.estoque= TelaEstoque(self)
+            self.estoque.transient(self)
         else:
-            self.cad_prod.after(100, self.cad_prod.lift)
+            self.estoque.after(100, self.estoque.lift)
+            
+    def abrir_tela_Produto(self):
+        if self.produto is None or not self.produto.winfo_exists():
+            self.produto = TelaProduto(self)
+            self.produto.transient(self)
+        else:
+            self.produto.after(100, self.produto.lift)
     
     def abrir_tela_fornecedor(self):
         if self.w_fornecedor is None or not self.w_fornecedor.winfo_exists():
-            self.w_fornecedor = WFornecedor()
+            self.w_fornecedor = TelaFornecedor(self)
             self.w_fornecedor.transient(self)
         else:
             self.w_fornecedor.after(100, self.w_fornecedor.lift)

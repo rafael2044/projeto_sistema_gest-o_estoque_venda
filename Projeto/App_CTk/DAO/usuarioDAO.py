@@ -122,17 +122,17 @@ class usuarioDAO(DataBase):
             self.desconectar()
     
     def validar_usuario(self, nome_usuario:str, senha :str):
-        '''1 - Usuario e senha validos
+        '''1 - Login efetuado com sucesso
            2 - Usuario ou Senha invalido
            3 - Usuario novo'''
         try:
             self.cursor()
-            if nome_usuario:
+            if self.usuario_existe(nome_usuario):
                 if self.novo_usuario(nome_usuario):
                     return 3
                 senha_sha256 = sha256(senha.encode()).hexdigest()
                 sql = '''SELECT * FROM usuario WHERE nome_usuario = ? AND senha = ?;'''
-
+                
                 if self.cur.execute(sql, (nome_usuario, senha_sha256)).fetchone():
                     return 1
             return 2            

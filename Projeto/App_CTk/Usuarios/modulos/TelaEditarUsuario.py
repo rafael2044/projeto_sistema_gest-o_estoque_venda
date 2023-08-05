@@ -33,7 +33,7 @@ class EditarUsuario(CTkToplevel):
         
         frame = CTkFrame(self)
         frame.pack(padx=10, pady=10, fill='both')
-        self.usuario = CTkEntry(frame, placeholder_text='Digite o novo usuario...', font=self.font_entry, height=40)
+        self.usuario = CTkEntry(frame, placeholder_text='Digite o novo nome de usuario...', font=self.font_entry, height=40)
         
         self.tipo = CTkComboBox(frame, font=self.font_entry, values=[x[1] for x in self.tipos], height=40)    
         
@@ -44,7 +44,7 @@ class EditarUsuario(CTkToplevel):
         self.tipo.pack(padx=10, anchor='w', fill='x')
       
         
-        CTkButton(frame, text='Salvar Alteracoes', font=self.font_button, height=40, command=self.salvar_alterecoes).pack(anchor='w', padx=10, pady=20, side='left')
+        CTkButton(frame, text='Salvar Alterações', font=self.font_button, height=40, command=self.salvar_alterecoes).pack(anchor='w', padx=10, pady=20, side='left')
         CTkButton(frame, text='Cancelar', font=self.font_button, height=40, command=self.destroy).pack(anchor='w', padx=10, pady=20, side='left')
 
         self.carregar_dados()
@@ -60,11 +60,11 @@ class EditarUsuario(CTkToplevel):
         print(self.dados)
         match usuarioDAO().atualizar_usuario(*self.dados):
             case 1:
-                MensagemAlerta('Sucesso!', 'Alteracoes realizadas com sucesso!')
+                MensagemAlerta('Sucesso!', 'Alterações realizadas com sucesso!')
                 self.master.carregar_usuarios()
                 self.destroy()
             case 2:
-                MensagemAlerta('Erro!', 'O usuario ja existe!')
+                MensagemAlerta('Erro!', 'O usuario já existe!')
 
         
     

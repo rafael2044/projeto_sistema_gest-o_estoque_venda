@@ -7,7 +7,7 @@ class Login(CTkToplevel):
         CTkToplevel.__init__(self)
         self.master = master
         self.grab_set()
-        self.title('Login Sistema')
+        self.title('Login Sistema Usuario')
         self.usuarioDAO = usuarioDAO()
         self.centralizar_janela()
         self.carregar_widgets()
@@ -63,7 +63,7 @@ class Login(CTkToplevel):
                 self.grab_release()
                 self.withdraw()
             case 2:
-                MensagemAlerta('Login Invalido', 'Usuario ou Senha invalidos!')
+                MensagemAlerta('Login Invalido', 'Usuario e/ou Senha invalidos!')
             case 3:
                 NovaSenha(user)
         

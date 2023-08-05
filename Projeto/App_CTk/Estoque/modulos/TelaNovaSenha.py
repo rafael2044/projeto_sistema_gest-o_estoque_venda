@@ -54,7 +54,7 @@ class NovaSenha(CTkToplevel):
         
         if senha == validar_senha:
             self.usuarioDAO.nova_senha(self.usuario, senha)
-            MensagemAlerta('Sucesso!', 'Senha inserida com sucesso!')
+            MensagemAlerta('Sucesso', 'Senha inserida com sucesso!')
             self.destroy()
         else:
             MensagemAlerta('Erro', 'As senhas precisam ser iguais!')

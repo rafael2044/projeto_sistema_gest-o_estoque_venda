@@ -47,9 +47,9 @@ class ResetarSenha(CTkToplevel):
         user = self.user.get()
         match usuarioDAO().resetar_senha(user):
             case 1:
-                MensagemAlerta('Sucesso', 'A senha foi resetada!\nFaca login para inserir uma nova.')
+                MensagemAlerta('Sucesso', 'A senha foi resetada!\nEfetue login no sistema para inserir uma nova.')
             case 2:
-                MensagemAlerta('Erro', 'Usuario nao existe!')
+                MensagemAlerta('Erro', 'Usuario não existe!')
         
     def sair(self):
         self.destroy()

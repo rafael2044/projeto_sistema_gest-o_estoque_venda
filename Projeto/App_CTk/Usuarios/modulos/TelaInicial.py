@@ -13,7 +13,7 @@ class TelaPrincipal(CTk):
     
     def __init__(self):
         CTk.__init__(self)
-        self.title('Sistema')
+        self.title('Sistema Usuario')
         self.usuarioDAO = usuarioDAO()
         self.centralizar_janela()
         self.carregar_widgets()

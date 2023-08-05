@@ -1,16 +1,18 @@
-from customtkinter import CTkToplevel, CTkFrame, CTkEntry, CTkLabel, CTkButton, CTkComboBox, CTkTabview, CTkFont
+from customtkinter import CTkToplevel, CTkFrame, CTkEntry, CTkLabel, CTkButton, CTkComboBox, CTkTabview, CTkFont, CTkImage
 from tkinter.ttk import Treeview, Scrollbar, Style
 from DAO.fornecedorDAO import fornecedorDAO
 from Estoque.modulos.TelaEditarFornecedor import EditarFornecedor
 from Popup.MensagemAlerta import MensagemAlerta
 from Popup.DialogoSimNao import DialogoSimNao
 from tkinter import PhotoImage
-from Imagens.img import icon_pesquisa, icon_atualizar, icon_excluir, icon_editar
+from PIL import Image
+from Imagens.img import img_pesquisa, img_atualizar, img_excluir, img_editar, img_cadastrar
 
-class WFornecedor(CTkToplevel):
+class TelaFornecedor(CTkToplevel):
     
-    def __init__(self):
-        CTkToplevel.__init__(self, takefocus=True)
+    def __init__(self, master=None):
+        CTkToplevel.__init__(self, master=master, takefocus=True)
+        self.master = master
         self.after(100, self.lift)
         self.title('Fornecedores')
         self.fornecedorDAO = fornecedorDAO()
@@ -60,19 +62,15 @@ class WFornecedor(CTkToplevel):
         self.endereco.pack(padx=10, anchor='w', fill='x')
       
         
-        CTkButton(self.tab_cad, text='Cadastrar', font=self.font_button, command=self.cadastrar_fornecedor, height=40).pack(anchor='w', padx=10, pady=20)
+        CTkButton(self.tab_cad, text='Cadastrar', image = CTkImage(Image.open(img_cadastrar)),compound='left',font=self.font_button, command=self.cadastrar_fornecedor, height=40).pack(anchor='w', padx=10, pady=20)
         
     def carregar_w_tab_pesq(self):
-        self.style = Style()
-        self.style.configure('Treeview', font=('Segoe UI', 15), rowheight=30)
-        self.style.configure('Treeview.Heading', font=('Segoe UI', 13))
-        self.style.layout('Treeview', [('Treeview.treearea', {'sticky':'nswe'})])
         f_pesquisa = CTkFrame(self.tab_pesq, corner_radius=25, fg_color='transparent')
         
-        self.pesquisa = CTkEntry(f_pesquisa, placeholder_text='Nome do Produto', width=150,height=40, font=self.font_entry)
+        self.pesquisa = CTkEntry(f_pesquisa, placeholder_text='Nome do fornecedor', width=150,height=40, font=self.font_entry)
 
         f_tabela = CTkFrame(self.tab_pesq, fg_color='transparent')
-        self.tv_tabela = Treeview(f_tabela, columns=('id', 'nome', 'contato','endereco'))
+        self.tv_tabela = Treeview(f_tabela, columns=('id', 'nome', 'contato','endereco'), show='headings')
         self.tv_tabela.column('#0', width=2, stretch=True, minwidth=2) 
         self.tv_tabela.column('id', width=50, stretch=True, minwidth=50)
         self.tv_tabela.column('nome', width=300, stretch=False, minwidth=300)
@@ -91,12 +89,13 @@ class WFornecedor(CTkToplevel):
         self.tv_tabela.configure(yscrollcommand=self.scrollbar_vertical.set)
         
         
-        self.bt_delete = CTkButton(self.tab_pesq, state='disabled', text='', image=PhotoImage(data=icon_excluir),height=40,width=75,fg_color='gray', command=self.deletar_fornecedor)
-        self.bt_editar = CTkButton(self.tab_pesq, state='disabled', text='', image=PhotoImage(data=icon_editar),command=self.editar_fornecedor, height=40,width=75,fg_color='gray')
+        self.bt_delete = CTkButton(self.tab_pesq, state='disabled', text='Deletar', font=('Segoe UI', 18, 'bold'), image=CTkImage(Image.open(img_excluir)),height=40,width=75,fg_color='#595457', command=self.deletar_fornecedor,compound='left')
+        self.bt_editar = CTkButton(self.tab_pesq, state='disabled', text='Editar',font=('Segoe UI', 18, 'bold'), image=CTkImage(Image.open(img_editar)),command=self.editar_fornecedor, height=40,width=75,fg_color='#595457',
+                                   compound='left')
         f_pesquisa.pack(fill='x', pady=(2,5))
         self.pesquisa.pack(fill='x',side='left', expand=True, padx=(10,5), pady=(1,1))
-        CTkButton(f_pesquisa, text='', image=PhotoImage(data=icon_pesquisa), width=75,height=40, command=self.pesquisar_fornecedor).pack(side='left', padx=(5,5))
-        CTkButton(f_pesquisa, text='', image=PhotoImage(data=icon_atualizar), width=75,height=40, command=self.atualizar_tabela).pack(side='left', padx=(5,10))
+        CTkButton(f_pesquisa, text='', image=CTkImage(Image.open(img_pesquisa)), width=75,height=40, command=self.pesquisar_fornecedor).pack(side='left', padx=(5,5))
+        CTkButton(f_pesquisa, text='', image=CTkImage(Image.open(img_atualizar)), width=75,height=40, command=self.atualizar_tabela).pack(side='left', padx=(5,10))
         f_tabela.pack(fill='both', expand=True)
         self.tv_tabela.pack(fill='both', expand=True, side='left', anchor='w', padx=(10,0))
         self.scrollbar_vertical.pack(anchor='w', fill='y', expand=True, padx=(0, 10))
@@ -135,7 +134,7 @@ class WFornecedor(CTkToplevel):
             case 2:
                 MensagemAlerta('Erro ao Cadastrar', 'Fornecedor já existe!')
             case 3:
-                MensagemAlerta('Erro ao Cadastrar', 'Nome ou Contato Inválidos!')
+                MensagemAlerta('Erro ao Cadastrar', 'Nome e/ou Contato Inválidos!')
 
     def editar_fornecedor(self):
         dados = self.tv_tabela.item(self.item[0], 'values')
@@ -160,9 +159,9 @@ class WFornecedor(CTkToplevel):
     def desabilitar_botoes(self, event):
         if event.widget not in (self.tv_tabela, self.bt_delete, self.bt_editar) and self.focus_get() is self.tv_tabela:
             self.bt_delete.configure(state='disabled')
-            self.bt_delete.configure(fg_color='gray')
+            self.bt_delete.configure(fg_color='#595457')
             self.bt_editar.configure(state='disabled')
-            self.bt_editar.configure(fg_color='gray')
+            self.bt_editar.configure(fg_color='#595457')
             self.tv_tabela.selection_set()
         
     def atualizar_tabela(self):

@@ -43,7 +43,7 @@ class EditarFornecedor(CTkToplevel):
         self.endereco.pack(padx=10, anchor='w', fill='x')
       
         
-        CTkButton(frame, text='Salvar Alteracoes', font=self.font_button, height=40, command=self.salvar_alterecoes).pack(anchor='w', padx=10, pady=20, side='left')
+        CTkButton(frame, text='Salvar Alterações', font=self.font_button, height=40, command=self.salvar_alterecoes).pack(anchor='w', padx=10, pady=20, side='left')
         CTkButton(frame, text='Cancelar', font=self.font_button, height=40, command=self.destroy).pack(anchor='w', padx=10, pady=20, side='left')
 
         self.carregar_dados()
@@ -60,9 +60,9 @@ class EditarFornecedor(CTkToplevel):
         self.dados[3] = self.endereco.get()
         
         if self.fornecedorDAO.atualizar_fornecedor(*self.dados):
-            MensagemAlerta('Sucesso!', 'Alteracoes realizadas com sucesso!')
+            MensagemAlerta('Sucesso!', 'Alteraçõoes realizadas com sucesso!')
         else:
-            MensagemAlerta('Erro!', 'Aconteceu um erro ao realizar as alteracoes!')
+            MensagemAlerta('Erro!', 'Aconteceu um erro ao realizar alteracões!')
         self.master.carregar_tab_fornecedores()
         self.destroy()
     

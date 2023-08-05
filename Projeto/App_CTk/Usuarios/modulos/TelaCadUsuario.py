@@ -43,7 +43,7 @@ class CadUsuario(CTkToplevel):
         f_main.pack(padx=10,pady=10, expand=True, fill = 'both')
         CTkLabel(f_main, text='Usuario', font=font_label).pack(padx=10, pady=5, anchor='w')
         self.user.pack(padx=10, anchor='w', fill='x')
-        CTkLabel(f_main, text='Tipo', font=font_label).pack(padx=10, pady=5, anchor='w')
+        CTkLabel(f_main, text='Tipo de Usuario', font=font_label).pack(padx=10, pady=5, anchor='w')
         self.cb_tipo.pack(padx=10, anchor='w', fill='x')
         f_button.pack(padx=10, pady=(20,10))
         self.bt_cadastrar.pack(padx=(0,20), side='left')
