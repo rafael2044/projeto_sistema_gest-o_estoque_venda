@@ -86,11 +86,11 @@ class TelaPrincipal(CTk):
         self.tv_tabela.configure(xscrollcommand=self.scrollbar_horizontal.set)
         self.tv_tabela.configure(yscrollcommand=self.scrollbar_vertical.set)
         f_menu_buttons.grid(column=0, row=0, columnspan=3, sticky='we', pady=0, padx=5) 
-        CTkButton(f_menu_buttons, text='Estoque', image=CTkImage(Image.open(img_cad_estoque), size=(32,32)),
-                  compound='top', command=self.abrir_tela_Estoque, font=self.font_button, fg_color='transparent', corner_radius=20).pack(side='left', padx=10, pady=0)
-        CTkButton(f_menu_buttons, text='Produtos', image=CTkImage(Image.open(img_cad_produto)),fg_color='transparent', corner_radius=20,
+        CTkButton(f_menu_buttons, text='Estoque', image=CTkImage(Image.open(img_cad_estoque), size=(60,60)),
+                  compound='top', command=self.abrir_tela_Estoque, font=self.font_button, fg_color='transparent', corner_radius=20).pack(side='left', padx=10, pady=5)
+        CTkButton(f_menu_buttons, text='Produtos', image=CTkImage(Image.open(img_cad_produto), size=(60,60)),fg_color='transparent', corner_radius=20,
                   compound='top', command=self.abrir_tela_Produto, font=self.font_button).pack(side='left', padx=(0,10),  pady=5)
-        CTkButton(f_menu_buttons, text='Fornecedores', image=CTkImage(Image.open(img_fornecedor)),fg_color='transparent', corner_radius=20,
+        CTkButton(f_menu_buttons, text='Fornecedores', image=CTkImage(Image.open(img_fornecedor), size=(60,60)),fg_color='transparent', corner_radius=20,
                   compound='top', command=self.abrir_tela_fornecedor, font=self.font_button).pack(side='left', padx=10,  pady=5)
         CTkLabel(self, text='Estoque Atual', font=('Segoe UI', 23, 'bold')).grid(row=1, column=0, sticky='w', padx=10,  pady=5)
         f_info.grid(column=2, row=1, sticky='e', padx=5)
@@ -131,22 +131,17 @@ class TelaPrincipal(CTk):
         if self.estoque is None or not self.estoque.winfo_exists():
             self.estoque= TelaEstoque(self)
             self.estoque.transient(self)
-        else:
-            self.estoque.after(100, self.estoque.lift)
+      
             
     def abrir_tela_Produto(self):
         if self.produto is None or not self.produto.winfo_exists():
             self.produto = TelaProduto(self)
             self.produto.transient(self)
-        else:
-            self.produto.after(100, self.produto.lift)
     
     def abrir_tela_fornecedor(self):
         if self.w_fornecedor is None or not self.w_fornecedor.winfo_exists():
             self.w_fornecedor = TelaFornecedor(self)
             self.w_fornecedor.transient(self)
-        else:
-            self.w_fornecedor.after(100, self.w_fornecedor.lift)
         
     def verificar_restricoes_usuario(self):
         if self.tipo_usuario == 'Administrador':

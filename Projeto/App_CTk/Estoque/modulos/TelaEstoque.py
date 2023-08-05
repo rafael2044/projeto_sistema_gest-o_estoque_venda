@@ -1,4 +1,4 @@
-from customtkinter import CTkToplevel, CTkFrame, CTkEntry, CTkLabel, CTkButton, CTkComboBox, CTkTabview, CTkFont, CTkImage
+from customtkinter import CTkToplevel, CTkEntry, CTkLabel, CTkButton, CTkTabview, CTkFont, CTkImage
 from tkinter.ttk import Treeview, Scrollbar
 from DAO.fornecedorDAO import fornecedorDAO
 from DAO.produtoDAO import produtoDAO
@@ -6,14 +6,13 @@ from DAO.estoqueDAO import estoqueDAO
 from Estoque.modulos.TelaCadEstoque import CadEstoque
 from Imagens.img import img_add_estoque
 from PIL import Image
-from Popup.MensagemAlerta import MensagemAlerta
 class TelaEstoque(CTkToplevel):
     
     def __init__(self, master=None):
         CTkToplevel.__init__(self, master=master, takefocus=True)
         self.master=master
         self.after(100, self.lift)
-        self.title('Cadastrar Novo Produto')
+        self.title('Estoque')
         self.fornecedorDAO = fornecedorDAO()
         self.produtoDAO = produtoDAO()
         self.estoqueDAO = estoqueDAO()
@@ -77,7 +76,7 @@ class TelaEstoque(CTkToplevel):
         self.tv_tabela.configure(xscrollcommand=self.scrollbar_horizontal.set)
         self.tv_tabela.configure(yscrollcommand=self.scrollbar_vertical.set)
         
-        self.bt_cadastrar = CTkButton(self.tab_cad, image=CTkImage(Image.open(img_add_estoque)), text='Cadastrar', compound='left', font=self.font_button, width=40, state='disabled',fg_color='gray',
+        self.bt_cadastrar = CTkButton(self.tab_cad, image=CTkImage(Image.open(img_add_estoque), size=(32,32)), text='Cadastrar', compound='left', font=self.font_button, width=40, state='disabled',fg_color='gray',
                                       command=self.abrir_janela_cadEstoque)
         
         self.pesquisa.grid(column=0, row=0, columnspan=2, sticky='ew', pady=10)
@@ -124,7 +123,8 @@ class TelaEstoque(CTkToplevel):
         
     def abrir_janela_cadEstoque(self):
         dados = self.tv_tabela.item(self.produto_dados[0], 'values')
-        if self.cadEstoque is None or self.cadEstoque.winfo_exists():
+        if self.cadEstoque is None or not self.cadEstoque.winfo_exists():
             self.cadEstoque = CadEstoque(self, dados)
+            self.cadEstoque.transient(self)
             
         

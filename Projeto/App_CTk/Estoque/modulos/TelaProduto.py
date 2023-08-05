@@ -2,7 +2,6 @@ from customtkinter import CTkToplevel, CTkEntry, CTkLabel, CTkButton, CTkComboBo
 from tkinter.ttk import Treeview, Scrollbar
 from DAO.fornecedorDAO import fornecedorDAO
 from DAO.produtoDAO import produtoDAO
-from DAO.estoqueDAO import estoqueDAO
 from Popup.MensagemAlerta import MensagemAlerta
 from Imagens.img import img_cadastrar
 from PIL import Image
@@ -74,7 +73,7 @@ class TelaProduto(CTkToplevel):
         self.fornecedor.pack(anchor='w', padx=10)
         
         
-        CTkButton(self.tab_cad, text='Cadastrar', font=self.font_button, height=40, command=self.cadastrar_produto, image=CTkImage(Image.open(img_cadastrar)),
+        CTkButton(self.tab_cad, text='Cadastrar', font=self.font_button, height=40, command=self.cadastrar_produto, image=CTkImage(Image.open(img_cadastrar), size=(32,32)),
                   compound='left').pack(anchor='w', padx=10, pady=20)
         
     def carregar_w_tab_pesq(self):

@@ -46,9 +46,9 @@ class Login(CTkToplevel):
         self.user = CTkEntry(self, placeholder_text='Digite o Usuario...', height=40, font=font_entry, takefocus=True)
         self.password = CTkEntry(self, show='*', placeholder_text='Digite a Senha...', height=40, font=font_entry)
         
-        self.bt_entrar = CTkButton(self, text='Confirmar', font=font_button, command=self.logar, width=100, height=40, image=CTkImage(Image.open(img_entrar)),
+        self.bt_entrar = CTkButton(self, text='Confirmar', font=font_button, command=self.logar, width=100, height=40, image=CTkImage(Image.open(img_entrar), size=(32,32)),
                                    compound='left')
-        self.bt_sair = CTkButton(self, text='Cancelar', font=font_button, command=self.sair,width=100, height=40, image=CTkImage(Image.open(img_sair)),
+        self.bt_sair = CTkButton(self, text='Cancelar', font=font_button, command=self.sair,width=100, height=40, image=CTkImage(Image.open(img_sair), size=(32,32)),
                                  compound='left')
         
         CTkLabel(self, text='', image=CTkImage(Image.open(img_logo), size=(200,80))).grid(column=0, row=0, columnspan=2, sticky='nesw')

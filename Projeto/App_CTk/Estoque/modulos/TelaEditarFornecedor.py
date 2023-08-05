@@ -1,4 +1,4 @@
-from customtkinter import CTkToplevel, CTkFrame, CTkEntry, CTkLabel, CTkButton, CTkComboBox, CTkTabview, CTkFont
+from customtkinter import CTkToplevel, CTkFrame, CTkEntry, CTkLabel, CTkButton,CTkFont
 from DAO.fornecedorDAO import fornecedorDAO
 from Popup.MensagemAlerta import MensagemAlerta
 class EditarFornecedor(CTkToplevel):

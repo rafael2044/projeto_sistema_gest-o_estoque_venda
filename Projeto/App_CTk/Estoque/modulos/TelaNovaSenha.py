@@ -1,6 +1,8 @@
-from customtkinter import CTkToplevel, CTkFrame, CTkEntry, CTkButton, CTk, CTkLabel, CTkFont
+from customtkinter import CTkToplevel, CTkFrame, CTkEntry, CTkButton, CTkLabel, CTkFont, CTkImage
 from Popup.MensagemAlerta import MensagemAlerta
 from DAO.usuarioDAO import usuarioDAO
+from PIL import Image
+from Imagens.img import img_salvar_senha, img_sair
 class NovaSenha(CTkToplevel):
     def __init__(self, usuario):
         CTkToplevel.__init__(self)
@@ -36,8 +38,8 @@ class NovaSenha(CTkToplevel):
         self.password = CTkEntry(f_main, placeholder_text='Digite a Senha...', height=40, font=font_entry, takefocus=True, show='*')
         self.password_validacao = CTkEntry(f_main, show='*', placeholder_text='Digite a Senha novamente...', height=40, font=font_entry)
         
-        self.bt_inserir = CTkButton(f_button, text='Inserir', font=font_button, command=self.inserir, height=40)
-        self.bt_sair = CTkButton(f_button, text='Sair', font=font_button, command=self.sair,height=40)
+        self.bt_salvar = CTkButton(f_button, text='Salvar', font=font_button, image=CTkImage(Image.open(img_salvar_senha), size=(32,32)),compound='left', command=self.inserir, height=40)
+        self.bt_sair = CTkButton(f_button, text='Sair', font=font_button,image=CTkImage(Image.open(img_sair), size=(32,32)),compound='left', command=self.sair,height=40)
         
         f_main.pack(padx=10,pady=10, expand=True, fill = 'both')
         CTkLabel(f_main, text='Senha', font=font_label).pack(padx=10, pady=5, anchor='w')
@@ -45,7 +47,7 @@ class NovaSenha(CTkToplevel):
         CTkLabel(f_main, text='Validar Senha',font=font_label).pack(padx=10, pady=5, anchor='w')
         self.password_validacao.pack(padx=10, anchor='w', fill='x')
         f_button.pack(padx=10, pady=(10,5))
-        self.bt_inserir.pack(padx=(0,20), side='left')
+        self.bt_salvar.pack(padx=(0,20), side='left')
         self.bt_sair.pack(padx=(20,0), side='left')
         
     def inserir(self, event=None):

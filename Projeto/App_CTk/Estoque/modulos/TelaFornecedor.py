@@ -1,10 +1,9 @@
-from customtkinter import CTkToplevel, CTkFrame, CTkEntry, CTkLabel, CTkButton, CTkComboBox, CTkTabview, CTkFont, CTkImage
-from tkinter.ttk import Treeview, Scrollbar, Style
+from customtkinter import CTkToplevel, CTkFrame, CTkEntry, CTkLabel, CTkButton, CTkTabview, CTkFont, CTkImage
+from tkinter.ttk import Treeview, Scrollbar
 from DAO.fornecedorDAO import fornecedorDAO
 from Estoque.modulos.TelaEditarFornecedor import EditarFornecedor
 from Popup.MensagemAlerta import MensagemAlerta
 from Popup.DialogoSimNao import DialogoSimNao
-from tkinter import PhotoImage
 from PIL import Image
 from Imagens.img import img_pesquisa, img_atualizar, img_excluir, img_editar, img_cadastrar
 
@@ -89,13 +88,13 @@ class TelaFornecedor(CTkToplevel):
         self.tv_tabela.configure(yscrollcommand=self.scrollbar_vertical.set)
         
         
-        self.bt_delete = CTkButton(self.tab_pesq, state='disabled', text='Deletar', font=('Segoe UI', 18, 'bold'), image=CTkImage(Image.open(img_excluir)),height=40,width=75,fg_color='#595457', command=self.deletar_fornecedor,compound='left')
-        self.bt_editar = CTkButton(self.tab_pesq, state='disabled', text='Editar',font=('Segoe UI', 18, 'bold'), image=CTkImage(Image.open(img_editar)),command=self.editar_fornecedor, height=40,width=75,fg_color='#595457',
+        self.bt_delete = CTkButton(self.tab_pesq, state='disabled', text='Deletar', font=('Segoe UI', 18, 'bold'), image=CTkImage(Image.open(img_excluir), size=(32,32)),height=40,width=75,fg_color='#595457', command=self.deletar_fornecedor,compound='left')
+        self.bt_editar = CTkButton(self.tab_pesq, state='disabled', text='Editar',font=('Segoe UI', 18, 'bold'), image=CTkImage(Image.open(img_editar), size=(32,32)),command=self.editar_fornecedor, height=40,width=75,fg_color='#595457',
                                    compound='left')
         f_pesquisa.pack(fill='x', pady=(2,5))
         self.pesquisa.pack(fill='x',side='left', expand=True, padx=(10,5), pady=(1,1))
-        CTkButton(f_pesquisa, text='', image=CTkImage(Image.open(img_pesquisa)), width=75,height=40, command=self.pesquisar_fornecedor).pack(side='left', padx=(5,5))
-        CTkButton(f_pesquisa, text='', image=CTkImage(Image.open(img_atualizar)), width=75,height=40, command=self.atualizar_tabela).pack(side='left', padx=(5,10))
+        CTkButton(f_pesquisa, text='', image=CTkImage(Image.open(img_pesquisa), size=(32,32)), width=75,height=40, command=self.pesquisar_fornecedor).pack(side='left', padx=(5,5))
+        CTkButton(f_pesquisa, text='', image=CTkImage(Image.open(img_atualizar), size=(32,32)), width=75,height=40, command=self.atualizar_tabela).pack(side='left', padx=(5,10))
         f_tabela.pack(fill='both', expand=True)
         self.tv_tabela.pack(fill='both', expand=True, side='left', anchor='w', padx=(10,0))
         self.scrollbar_vertical.pack(anchor='w', fill='y', expand=True, padx=(0, 10))
