@@ -1,9 +1,9 @@
-from customtkinter import CTkToplevel, CTkEntry, CTkLabel, CTkButton, CTkComboBox, CTkTabview, CTkFont, CTkImage
+from customtkinter import CTkToplevel, CTkEntry, CTkLabel, CTkButton,CTkFrame, CTkComboBox, CTkTabview, CTkFont, CTkImage
 from tkinter.ttk import Treeview, Scrollbar
 from DAO.fornecedorDAO import fornecedorDAO
 from DAO.produtoDAO import produtoDAO
 from Popup.MensagemAlerta import MensagemAlerta
-from Imagens.img import img_cadastrar
+from Imagens.img import img_cadastrar, img_editar, img_excluir, img_pesquisa, img_atualizar
 from PIL import Image
 class TelaProduto(CTkToplevel):
     
@@ -78,7 +78,19 @@ class TelaProduto(CTkToplevel):
         
     def carregar_w_tab_pesq(self):
         
-        self.pesquisa = CTkEntry(self.tab_pesq, placeholder_text='Nome do Produto', width=150, font=self.font_entry)
+        self.tab_pesq.grid_columnconfigure(0, weight=3)
+        self.tab_pesq.grid_columnconfigure(1, weight=1)
+        self.tab_pesq.grid_columnconfigure(2, weight=0)
+        self.tab_pesq.grid_rowconfigure(0, weight=0)
+        self.tab_pesq.grid_rowconfigure(1, weight=1)
+        self.tab_pesq.grid_rowconfigure(2, weight=0)
+        self.tab_pesq.grid_rowconfigure(3, weight=0)
+        
+        
+        f_bts_top = CTkFrame(self.tab_pesq, corner_radius=25, fg_color='transparent')
+        f_bts_bottom = CTkFrame(self.tab_pesq, corner_radius=25, fg_color='transparent')
+        
+        self.pesquisa = CTkEntry(self.tab_pesq, placeholder_text='Nome do Produto', font=self.font_entry)
         
         
         self.tv_tabela = Treeview(self.tab_pesq, columns=('id', 'cod_barra', 'descricao', 'fornecedor', 'preco_un'),
@@ -98,19 +110,35 @@ class TelaProduto(CTkToplevel):
         self.tv_tabela.column('fornecedor', width=200, stretch=True, minwidth=200)
         self.tv_tabela.column('preco_un', width=150, stretch=True, minwidth=150)        
         
+        self.bt_delete = CTkButton(f_bts_bottom, state='disabled', text='Deletar', font=('Segoe UI', 18, 'bold'), 
+                                   image=CTkImage(Image.open(img_excluir), size=(32,32)),height=45,width=120,fg_color='#595457', 
+                                   compound='left')
+        self.bt_editar = CTkButton(f_bts_bottom, state='disabled', text='Editar',font=('Segoe UI', 18, 'bold'),
+                                   image=CTkImage(Image.open(img_editar), size=(32,32)), height=45,
+                                   width=110,fg_color='#595457',compound='left')
+        
         self.scrollbar_vertical = Scrollbar(self.tab_pesq, orient='vertical', command=self.tv_tabela.yview)
         self.scrollbar_horizontal = Scrollbar(self.tab_pesq, orient='horizontal', command=self.tv_tabela.xview)
         self.tv_tabela.configure(xscrollcommand=self.scrollbar_horizontal.set)
         self.tv_tabela.configure(yscrollcommand=self.scrollbar_vertical.set)
         
-        self.pesquisa.grid(column=0, row=0, columnspan=2, sticky='ew', pady=10)
-        self.tv_tabela.grid(column=0, row=1 ,columnspan=2, sticky='nsew')
-        self.scrollbar_vertical.grid(row=1, column=1, rowspan=2, sticky='nse',)
-        self.scrollbar_horizontal.grid(row=2, column=0, columnspan=2, sticky='ew')
-    
-
+        self.pesquisa.grid(column=0, row=0, padx=10, pady=10, sticky='we')
+        f_bts_top.grid(column=1, columnspan=2, row=0, sticky='e')
+        CTkButton(f_bts_top, text='', image=CTkImage(Image.open(img_pesquisa), size=(32,32)), width=75,height=40).pack(side='left', padx=(5,5))
+        CTkButton(f_bts_top, text='', image=CTkImage(Image.open(img_atualizar), size=(32,32)),height=40).pack(side='left', padx=(5,10))
+        
+        self.tv_tabela.grid(column=0, row=1, columnspan=2, sticky='wsen', padx=(10,0))
+        self.scrollbar_vertical.grid(column=2, row=1, sticky='wns', padx=(0,10))
+        self.scrollbar_horizontal.grid(column=0, row=2, sticky='we', columnspan=3, padx=(10,10))
+        f_bts_bottom.grid(column=0, columnspan=3, row=3, sticky='we')
+        self.bt_editar.pack(anchor='e',side='right', padx=10)
+        self.bt_delete.pack(anchor='e',side='right', padx=10, pady=10)
+        
+        self.tv_tabela.bind('<<TreeviewSelect>>', self.linha_selecionado)
+        self.bind('<Button-1>', self.desabilitar_botoes)
+        
     def carregar_produtos(self):
-        [self.tv_tabela.delete(x) for x in self.tv_tabela.winfo_children()]
+        [self.tv_tabela.delete(x) for x in self.tv_tabela.get_children()]
         produtos = self.produtoDAO.select_all_produto()
         if produtos:
             [self.tv_tabela.insert('', 'end', values=x) for x in produtos]
@@ -123,6 +151,15 @@ class TelaProduto(CTkToplevel):
                 fornecedores.append(f[0])
             
         return fornecedores
+
+    def atualizar_tabela(self):
+        self.pesquisa.delete(0,'end')
+        self.carregar_produtos()
+    
+    def pesquisar_produto(self):
+        nome = self.pesquisa.get()
+        if nome:
+            pass
 
     def cadastrar_produto(self):
         cod_barra = self.cod_barra.get()
@@ -139,6 +176,29 @@ class TelaProduto(CTkToplevel):
             case 3:
                 MensagemAlerta('Erro!', 'Os campos não foram preenchidos corretamente!')
         
+    def editar_produtor(self):
+        dados = self.tv_tabela.item(self.item[0], 'values')
+     
+        
+    def deletar_produto(self):
+        nome = self.tv_tabela.item(self.item[0], 'values')[1]
+        
+    def linha_selecionado(self, event):
+        self.item = self.tv_tabela.selection()
+        if self.item:
+            self.bt_delete.configure(state='enabled')
+            self.bt_delete.configure(fg_color=("#3a7ebf", "#1f538d"))
+            self.bt_editar.configure(state='enabled')
+            self.bt_editar.configure(fg_color=("#3a7ebf", "#1f538d"))
+    
+    def desabilitar_botoes(self, event):
+        if event.widget not in (self.tv_tabela, self.bt_delete, self.bt_editar) and self.focus_get() is self.tv_tabela:
+            self.bt_delete.configure(state='disabled')
+            self.bt_delete.configure(fg_color='#595457')
+            self.bt_editar.configure(state='disabled')
+            self.bt_editar.configure(fg_color='#595457')
+            self.tv_tabela.selection_set()    
+
         
     def limpar_entrys(self):
         self.cod_barra.delete(0, 'end')

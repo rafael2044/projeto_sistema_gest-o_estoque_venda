@@ -1,7 +1,5 @@
-from customtkinter import CTkToplevel, CTkFrame, CTkEntry, CTkLabel, CTkButton, CTkFont, CTkImage
-from tkinter.ttk import Treeview
+from customtkinter import CTkToplevel, CTkEntry, CTkLabel, CTkButton, CTkFont, CTkImage
 from DAO.fornecedorDAO import fornecedorDAO
-from DAO.produtoDAO import produtoDAO
 from DAO.estoqueDAO import estoqueDAO
 from Popup.MensagemAlerta import MensagemAlerta
 from Imagens.img import img_cadastrar
@@ -15,7 +13,6 @@ class CadEstoque(CTkToplevel):
         self.after(100, self.lift)
         self.title('Cadastrar Produto em Estoque')
         self.fornecedorDAO = fornecedorDAO()
-        self.produtoDAO = produtoDAO()
         self.estoqueDAO = estoqueDAO()
         self.carreagar_widgets()
         self.carregar_dados()
@@ -74,20 +71,30 @@ class CadEstoque(CTkToplevel):
         CTkLabel(self, text='Fornecedor', font=self.font_label, height=40).grid(column=0, row=12, padx=15, sticky='w')
         self.fornecedor.grid(column=0, row=13, padx=15, sticky='w')
     
-        CTkButton(self, text='Cadastrar', font=self.font_button, height=40, compound='left', image=CTkImage(Image.open(img_cadastrar), size=(32,32))).grid(column=0, row=14,
-                                                                                                                                                           padx=15, pady=10,
-                                                                                                                                                           sticky='w')
+        CTkButton(self, text='Cadastrar', font=self.font_button, height=40, compound='left',
+                  image=CTkImage(Image.open(img_cadastrar), size=(32,32)), 
+                  command=self.cadastrar_produto).grid(column=0, row=14,padx=15, pady=10,sticky='w')
         
 
     def cadastrar_produto(self):
-        cod_barra = self.cod_barra.get()
-        descricao = self.descricao.get()
-        preco_un = float(self.preco_uni.get().replace(',', '.'))
+        
+        id_produto = self.dados[0]
         quant_min = int(self.quantidade_min.get())
         quant_atual = int(self.quantidade_atual.get())
         quant_max = int(self.quantidade_max.get())
-        id_fornecedor = int(self.fornecedorDAO.select_id_fornecedor(self.fornecedor.get())[0])
+        match (self.estoqueDAO.insert_produto_estoque(id_produto, quant_min, quant_atual, quant_max)):
+            case 1:
+                MensagemAlerta('Sucesso!', 'O produto foi cadastrado no estoque!')
+                self.master.carregar_produtos()
+                self.master.master.carregar_estoque()
+                self.destroy()
+            case 2:
+                MensagemAlerta('Erro!', 'O produto ja existe no estoque!')
+            case 3:
+                MensagemAlerta('Erro!', 'Os campos nao foram preenchidos completamente!')
+            
         
+           
         
     def carregar_dados(self):
         self.cod_barra.insert(0, self.dados[1])

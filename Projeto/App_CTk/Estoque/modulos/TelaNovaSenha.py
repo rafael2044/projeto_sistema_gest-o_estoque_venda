@@ -47,8 +47,8 @@ class NovaSenha(CTkToplevel):
         CTkLabel(f_main, text='Validar Senha',font=font_label).pack(padx=10, pady=5, anchor='w')
         self.password_validacao.pack(padx=10, anchor='w', fill='x')
         f_button.pack(padx=10, pady=(10,5))
-        self.bt_salvar.pack(padx=(0,20), side='left')
-        self.bt_sair.pack(padx=(20,0), side='left')
+        self.bt_salvar.pack(padx=(0,10), side='left')
+        self.bt_sair.pack(padx=(10,0), side='left')
         
     def inserir(self, event=None):
         senha = self.password.get()

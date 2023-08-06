@@ -76,7 +76,7 @@ class TelaEstoque(CTkToplevel):
         self.tv_tabela.configure(xscrollcommand=self.scrollbar_horizontal.set)
         self.tv_tabela.configure(yscrollcommand=self.scrollbar_vertical.set)
         
-        self.bt_cadastrar = CTkButton(self.tab_cad, image=CTkImage(Image.open(img_add_estoque), size=(32,32)), text='Cadastrar', compound='left', font=self.font_button, width=40, state='disabled',fg_color='gray',
+        self.bt_cadastrar = CTkButton(self.tab_cad, image=CTkImage(Image.open(img_add_estoque), size=(32,32)), text='Cadastrar', compound='left', font=self.font_button,height=40, width=140, state='disabled',fg_color='gray',
                                       command=self.abrir_janela_cadEstoque)
         
         self.pesquisa.grid(column=0, row=0, columnspan=2, sticky='ew', pady=10)
@@ -92,7 +92,7 @@ class TelaEstoque(CTkToplevel):
         self.pesquisa = CTkEntry(self.tab_cad, placeholder_text='Nome do Produto', width=150, font=self.font_entry)
 
     def carregar_produtos(self):
-        [self.tv_tabela.delete(x) for x in self.tv_tabela.winfo_children()]
+        [self.tv_tabela.delete(x) for x in self.tv_tabela.get_children()]
         produtos = self.produtoDAO.select_produto_n_cad_em_estoque()
         if produtos:
             [self.tv_tabela.insert('', 'end', values=x) for x in produtos]

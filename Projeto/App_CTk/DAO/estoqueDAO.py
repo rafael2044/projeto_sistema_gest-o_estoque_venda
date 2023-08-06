@@ -18,6 +18,7 @@ class estoqueDAO(DataBase):
                     sql = f'''INSERT INTO estoque (id_produto, quant_disp, quant_min, quant_max) VALUES (?,?,?,?);'''
                     self.cur.execute(sql,(id_produto, quant_atual, quant_min, quant_atual))
                     self.con.commit()
+                    produtoDAO().update_em_estoque(id_produto)
                     return 1
                 return 2
             return 3

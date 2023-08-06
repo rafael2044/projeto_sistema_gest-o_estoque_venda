@@ -1,6 +1,8 @@
-from customtkinter import CTkToplevel, CTkFrame, CTkEntry, CTkButton, CTk, CTkLabel, CTkFont
+from customtkinter import CTkToplevel, CTkEntry, CTkButton, CTkLabel, CTkFont, CTkImage
 from Popup.MensagemAlerta import MensagemAlerta
 from DAO.usuarioDAO import usuarioDAO
+from Imagens.img import img_resetar, img_sair
+from PIL import Image
 class ResetarSenha(CTkToplevel):
     def __init__(self, master):
         CTkToplevel.__init__(self)
@@ -14,7 +16,7 @@ class ResetarSenha(CTkToplevel):
         
     def centralizar_janela(self):
         HEIGHT = 175
-        WEIDTH = 300
+        WEIDTH = 350
         
         W_HEIGHT = self.winfo_screenheight()
         W_WEIDTH = self.winfo_screenwidth()
@@ -29,19 +31,21 @@ class ResetarSenha(CTkToplevel):
         font_label = CTkFont('Segoe UI', size=18, weight='bold')
         font_entry = CTkFont('Segoe UI', size=16)
         font_button = CTkFont('Segoe UI', size=18, weight='bold')
+        self.grid_columnconfigure(0, weight=10)
+        self.grid_rowconfigure(0, weight=0)
+        self.grid_rowconfigure(1, weight=0)
+        self.grid_rowconfigure(2, weight=0)
         
-        f_main = CTkFrame(self)
-        f_button = CTkFrame(f_main, fg_color='transparent')
-        self.user = CTkEntry(f_main, placeholder_text='Digite o Usuario...', height=40, font=font_entry, takefocus=True)
-        self.bt_resetar = CTkButton(f_button, text='Resetar', font=font_button, command=self.resetar, height=40)
-        self.bt_sair = CTkButton(f_button, text='Sair', font=font_button, command=self.sair,height=40)
+        self.user = CTkEntry(self, placeholder_text='Digite o Usuario...', height=40, font=font_entry, takefocus=True)
+        self.bt_resetar = CTkButton(self, text='Resetar', font=font_button, command=self.resetar, height=40,
+                                    image=CTkImage(Image.open(img_resetar), size=(32,32)), compound='left')
+        self.bt_sair = CTkButton(self, text='Sair', font=font_button, command=self.sair,height=40,
+                                 image=CTkImage(Image.open(img_sair), size=(32,32)), compound='left')
         
-        f_main.pack(padx=10,pady=10, expand=True, fill = 'both')
-        CTkLabel(f_main, text='Usuario', font=font_label).pack(padx=10, pady=5, anchor='w')
-        self.user.pack(padx=10, anchor='w', fill='x')
-        f_button.pack(padx=10, pady=10)
-        self.bt_resetar.pack(padx=(0,20), side='left')
-        self.bt_sair.pack(padx=(20,0), side='left')
+        CTkLabel(self, text='Usuario', font=font_label).grid(column=0, row=0, pady=5, padx=10, sticky='w')
+        self.user.grid(column=0, row=1, pady=5, padx=10, sticky='we')
+        self.bt_resetar.grid(column=0, row=2, pady=15, padx=10, sticky='w')
+        self.bt_sair.grid(column=0, row=2, pady=15, padx=10, sticky='e')
         
     def resetar(self, event=None):
         user = self.user.get()

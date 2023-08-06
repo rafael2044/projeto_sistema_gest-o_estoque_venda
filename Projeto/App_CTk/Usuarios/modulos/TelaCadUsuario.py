@@ -1,8 +1,10 @@
-from customtkinter import CTkToplevel, CTkFrame, CTkEntry, CTkButton, CTk, CTkLabel, CTkFont, CTkComboBox
+from customtkinter import CTkToplevel, CTkFrame, CTkEntry, CTkButton, CTkLabel, CTkFont, CTkComboBox, CTkImage
 from Popup.MensagemAlerta import MensagemAlerta
 from Popup.DialogoSimNao import DialogoSimNao
 from DAO.usuarioDAO import usuarioDAO
 from DAO.tipoDAO import TipoDAO
+from Imagens.img import img_cadastrar, img_sair
+from PIL import Image
 class CadUsuario(CTkToplevel):
     def __init__(self, master):
         CTkToplevel.__init__(self)
@@ -15,7 +17,7 @@ class CadUsuario(CTkToplevel):
         self.protocol('WM_DELETE_WINDOW', self.sair)
         
     def centralizar_janela(self):
-        HEIGHT = 250
+        HEIGHT = 230
         WEIDTH = 300
         
         W_HEIGHT = self.winfo_screenheight()
@@ -33,21 +35,26 @@ class CadUsuario(CTkToplevel):
         
         self.tipos = TipoDAO().select_all_tipo()
         
-        f_main = CTkFrame(self)
-        f_button = CTkFrame(f_main, fg_color='transparent')
-        self.user = CTkEntry(f_main, placeholder_text='Digite o Usuario...', height=40, font=font_entry)
-        self.cb_tipo = CTkComboBox(f_main, values=[x[1] for x in self.tipos], font=font_label, state='readonly')
-        self.bt_cadastrar = CTkButton(f_button, text='Cadastrar', font=font_button, command=self.cadastrar, height=40)
-        self.bt_sair = CTkButton(f_button, text='Sair', font=font_button, command=self.sair,height=40)
+        self.grid_columnconfigure(0, weight=1)
+        self.grid_rowconfigure(0, weight=0)
+        self.grid_rowconfigure(1, weight=0)
+        self.grid_rowconfigure(2, weight=0)
+        self.grid_rowconfigure(3, weight=0)
+        self.grid_rowconfigure(4, weight=0)
+       
+        self.user = CTkEntry(self, placeholder_text='Digite o Usuario...', height=40, font=font_entry)
+        self.cb_tipo = CTkComboBox(self, values=[x[1] for x in self.tipos], font=font_label, state='readonly', height=40)
+        self.bt_cadastrar = CTkButton(self, text='Cadastrar', font=font_button, command=self.cadastrar, height=40,
+                                      image=CTkImage(Image.open(img_cadastrar), size=(32,32)), compound='left')
+        self.bt_sair = CTkButton(self, text='Sair', font=font_button, command=self.sair,height=40, width=80,
+                                 image=CTkImage(Image.open(img_sair), size=(32,32)), compound='left')
         
-        f_main.pack(padx=10,pady=10, expand=True, fill = 'both')
-        CTkLabel(f_main, text='Usuario', font=font_label).pack(padx=10, pady=5, anchor='w')
-        self.user.pack(padx=10, anchor='w', fill='x')
-        CTkLabel(f_main, text='Tipo de Usuario', font=font_label).pack(padx=10, pady=5, anchor='w')
-        self.cb_tipo.pack(padx=10, anchor='w', fill='x')
-        f_button.pack(padx=10, pady=(20,10))
-        self.bt_cadastrar.pack(padx=(0,20), side='left')
-        self.bt_sair.pack(padx=(20,0), side='left')
+        CTkLabel(self, text='Usuario', font=font_label).grid(padx=10, pady=5, sticky='w', column=0, row=0)
+        self.user.grid(padx=10, sticky='we', column=0, row=1)
+        CTkLabel(self, text='Tipo de Usuario', font=font_label).grid(padx=10, pady=5, sticky='w', column=0, row=2)
+        self.cb_tipo.grid(padx=10, pady=(0,5), sticky='we', column=0, row=3)
+        self.bt_cadastrar.grid(padx=10, pady=10, sticky='w', column=0, row=4)
+        self.bt_sair.grid(padx=10, pady=10, sticky='e', column=0, row=4)
         
     def cadastrar(self, event=None):
         user = self.user.get()

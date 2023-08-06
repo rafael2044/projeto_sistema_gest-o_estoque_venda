@@ -20,7 +20,7 @@ class TelaPrincipal(CTk):
         self.cad_un = None
         self.tipo_usuario = None
         self.login = Login(self)
-        self.login.transient(self)
+        self.login.transient()
         self.centralizar_janela()
 
         self.mainloop()
@@ -34,10 +34,10 @@ class TelaPrincipal(CTk):
         X = (W_WEIDTH - WEIDTH)//2
         Y = (W_HEIGHT - HEIGHT)//2
         
+        self.minsize(WEIDTH, HEIGHT)
         self.geometry(f'{WEIDTH}x{HEIGHT}+{X}+{Y}+') 
         self.after(0, lambda:self.wm_state('zoomed'))
         
-    
     def carregar_widgets(self):
         self.carregar_menu()
         self.style = Style()
@@ -118,20 +118,25 @@ class TelaPrincipal(CTk):
         
     def carregar_estoque(self):
         estoque = estoqueDAO().select_all_estoque()
-        [self.tv_tabela.delete(x) for x in self.tv_tabela.get_children()]
+        self.limpar_estoque()
         if estoque:
             [self.tv_tabela.insert('', 'end', values=p) for p in estoque]
     
+    def limpar_estoque(self):
+        [self.tv_tabela.delete(x) for x in self.tv_tabela.get_children()]
+        
     def sair(self):
+        self.limpar_estoque()
+        self.usuario.configure(text='')
         self.login.deiconify()
         self.login.user.focus_force()
         self.login.grab_set()
+        
         
     def abrir_tela_Estoque(self):
         if self.estoque is None or not self.estoque.winfo_exists():
             self.estoque= TelaEstoque(self)
             self.estoque.transient(self)
-      
             
     def abrir_tela_Produto(self):
         if self.produto is None or not self.produto.winfo_exists():

@@ -46,30 +46,49 @@ class TelaFornecedor(CTkToplevel):
         
     def carregar_w_tab_cad(self):
         
+        self.tab_cad.grid_columnconfigure(0, weight=1)
+        self.tab_cad.grid_rowconfigure(0, weight=0)
+        self.tab_cad.grid_rowconfigure(1, weight=0)
+        self.tab_cad.grid_rowconfigure(2, weight=0)
+        self.tab_cad.grid_rowconfigure(3, weight=0)
+        self.tab_cad.grid_rowconfigure(4, weight=0)
+        self.tab_cad.grid_rowconfigure(5, weight=0)
+        self.tab_cad.grid_rowconfigure(6, weight=0)
+        
         self.nome = CTkEntry(self.tab_cad, placeholder_text='Digite o nome do Fornecedor...', font=self.font_entry, height=40)
     
         self.contato = CTkEntry(self.tab_cad, width=200, font=self.font_entry, placeholder_text='Digite o Contato...', height=40)
         
         self.endereco = CTkEntry(self.tab_cad, font=self.font_entry, placeholder_text='Digite o Endereço...', height=40)
         
-        
-        CTkLabel(self.tab_cad, text='Fornecedor', font=self.font_label).pack(padx=10, anchor='w', pady=10)
-        self.nome.pack(padx=10, anchor='w', fill='x')
-        CTkLabel(self.tab_cad, text='Contato', font=self.font_label).pack(padx=10, anchor='w', pady=10)
-        self.contato.pack(padx=10, anchor='w')
-        CTkLabel(self.tab_cad, text='Endereço', font=self.font_label).pack(padx=10, anchor='w', pady=10)
-        self.endereco.pack(padx=10, anchor='w', fill='x')
+        CTkLabel(self.tab_cad, text='Fornecedor', font=self.font_label).grid(padx=10, sticky='w', pady=10, column=0, row=0)
+        self.nome.grid(padx=10, sticky='we', column=0, row=1)
+        CTkLabel(self.tab_cad, text='Contato', font=self.font_label).grid(padx=10, sticky='w', pady=10, column=0, row=2)
+        self.contato.grid(padx=10, sticky='w', column=0, row=3)
+        CTkLabel(self.tab_cad, text='Endereço', font=self.font_label).grid(padx=10, sticky='w', pady=10, column=0, row=4)
+        self.endereco.grid(padx=10, sticky='we', column=0, row=5)
       
         
-        CTkButton(self.tab_cad, text='Cadastrar', image = CTkImage(Image.open(img_cadastrar)),compound='left',font=self.font_button, command=self.cadastrar_fornecedor, height=40).pack(anchor='w', padx=10, pady=20)
+        CTkButton(self.tab_cad, text='Cadastrar', image = CTkImage(Image.open(img_cadastrar)),compound='left',
+                  font=self.font_button, command=self.cadastrar_fornecedor, height=40).grid(padx=10, sticky='w', pady=10, column=0, row=6)
         
     def carregar_w_tab_pesq(self):
-        f_pesquisa = CTkFrame(self.tab_pesq, corner_radius=25, fg_color='transparent')
         
-        self.pesquisa = CTkEntry(f_pesquisa, placeholder_text='Nome do fornecedor', width=150,height=40, font=self.font_entry)
+        self.tab_pesq.grid_columnconfigure(0, weight=3)
+        self.tab_pesq.grid_columnconfigure(1, weight=1)
+        self.tab_pesq.grid_columnconfigure(2, weight=0)
+        self.tab_pesq.grid_rowconfigure(0, weight=0)
+        self.tab_pesq.grid_rowconfigure(1, weight=1)
+        self.tab_pesq.grid_rowconfigure(2, weight=0)
+        self.tab_pesq.grid_rowconfigure(3, weight=0)
+        
+        
+        f_bts_top = CTkFrame(self.tab_pesq, corner_radius=25, fg_color='transparent')
+        f_bts_bottom = CTkFrame(self.tab_pesq, corner_radius=25, fg_color='transparent')
+        
+        self.pesquisa = CTkEntry(self.tab_pesq, placeholder_text='Nome do fornecedor', width=150,height=40, font=self.font_entry)
 
-        f_tabela = CTkFrame(self.tab_pesq, fg_color='transparent')
-        self.tv_tabela = Treeview(f_tabela, columns=('id', 'nome', 'contato','endereco'), show='headings')
+        self.tv_tabela = Treeview(self.tab_pesq, columns=('id', 'nome', 'contato','endereco'), show='headings')
         self.tv_tabela.column('#0', width=2, stretch=True, minwidth=2) 
         self.tv_tabela.column('id', width=50, stretch=True, minwidth=50)
         self.tv_tabela.column('nome', width=300, stretch=False, minwidth=300)
@@ -82,23 +101,31 @@ class TelaFornecedor(CTkToplevel):
         self.tv_tabela.heading('contato', text='Contato')
         self.tv_tabela.heading('endereco', text='Endereço')
         
-        self.scrollbar_vertical = Scrollbar(f_tabela, orient='vertical', command=self.tv_tabela.yview)
+        self.scrollbar_vertical = Scrollbar(self.tab_pesq, orient='vertical', command=self.tv_tabela.yview)
         self.scrollbar_horizontal = Scrollbar(self.tab_pesq, orient='horizontal', command=self.tv_tabela.xview)
         self.tv_tabela.configure(xscrollcommand=self.scrollbar_horizontal.set)
         self.tv_tabela.configure(yscrollcommand=self.scrollbar_vertical.set)
         
         
-        self.bt_delete = CTkButton(self.tab_pesq, state='disabled', text='Deletar', font=('Segoe UI', 18, 'bold'), image=CTkImage(Image.open(img_excluir), size=(32,32)),height=40,width=75,fg_color='#595457', command=self.deletar_fornecedor,compound='left')
-        self.bt_editar = CTkButton(self.tab_pesq, state='disabled', text='Editar',font=('Segoe UI', 18, 'bold'), image=CTkImage(Image.open(img_editar), size=(32,32)),command=self.editar_fornecedor, height=40,width=75,fg_color='#595457',
-                                   compound='left')
-        f_pesquisa.pack(fill='x', pady=(2,5))
-        self.pesquisa.pack(fill='x',side='left', expand=True, padx=(10,5), pady=(1,1))
-        CTkButton(f_pesquisa, text='', image=CTkImage(Image.open(img_pesquisa), size=(32,32)), width=75,height=40, command=self.pesquisar_fornecedor).pack(side='left', padx=(5,5))
-        CTkButton(f_pesquisa, text='', image=CTkImage(Image.open(img_atualizar), size=(32,32)), width=75,height=40, command=self.atualizar_tabela).pack(side='left', padx=(5,10))
-        f_tabela.pack(fill='both', expand=True)
-        self.tv_tabela.pack(fill='both', expand=True, side='left', anchor='w', padx=(10,0))
-        self.scrollbar_vertical.pack(anchor='w', fill='y', expand=True, padx=(0, 10))
-        self.scrollbar_horizontal.pack(fill='x', anchor='s', padx=10, pady=(0,5))
+        self.bt_delete = CTkButton(f_bts_bottom, state='disabled', text='Deletar', font=('Segoe UI', 18, 'bold'), 
+                                   image=CTkImage(Image.open(img_excluir), size=(32,32)),height=45,width=120,fg_color='#595457', 
+                                   command=self.deletar_fornecedor,compound='left')
+        self.bt_editar = CTkButton(f_bts_bottom, state='disabled', text='Editar',font=('Segoe UI', 18, 'bold'),
+                                   image=CTkImage(Image.open(img_editar), size=(32,32)),command=self.editar_fornecedor, height=45,
+                                   width=110,fg_color='#595457',compound='left')
+        
+        
+        self.pesquisa.grid(column=0, row=0, padx=10, pady=10, sticky='we')
+        f_bts_top.grid(column=1, columnspan=2, row=0, sticky='e')
+        CTkButton(f_bts_top, text='', image=CTkImage(Image.open(img_pesquisa), size=(32,32)), width=75,height=40, 
+                  command=self.pesquisar_fornecedor).pack(side='left', padx=(5,5))
+        CTkButton(f_bts_top, text='', image=CTkImage(Image.open(img_atualizar), size=(32,32)), width=75,height=40, 
+                  command=self.atualizar_tabela).pack(side='left', padx=(5,10))
+        
+        self.tv_tabela.grid(column=0, row=1, columnspan=2, sticky='wsen', padx=(10,0))
+        self.scrollbar_vertical.grid(column=2, row=1, sticky='wns', padx=(0,10))
+        self.scrollbar_horizontal.grid(column=0, row=2, sticky='we', columnspan=3, padx=(10,10))
+        f_bts_bottom.grid(column=0, columnspan=3, row=3, sticky='we')
         self.bt_editar.pack(anchor='e',side='right', padx=10)
         self.bt_delete.pack(anchor='e',side='right', padx=10, pady=10)
 

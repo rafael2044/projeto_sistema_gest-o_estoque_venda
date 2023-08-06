@@ -13,7 +13,7 @@ class produtoDAO(DataBase):
         try:
             self.cursor()
             if descricao and id_fornecedor and preco_uni and cod_barra:
-                if not self.produto_existe(cod_barra):
+                if not self.produto_existe_cod_barra(cod_barra):
                     sql = f'''INSERT INTO produto (codigo_de_barra ,descricao, id_fornecedor, preco_unitario) VALUES (?,?,?,?);'''
                     self.cur.execute(sql,(cod_barra, descricao,id_fornecedor,preco_uni))
                     self.con.commit()
@@ -25,13 +25,24 @@ class produtoDAO(DataBase):
         finally:
             self.desconectar()
       
-    def produto_existe(self, cod_barra:str):
-        if self.select_produto(cod_barra):
+    def produto_existe_cod_barra(self, cod_barra:str):
+        if self.select_produto_cod_barra(cod_barra):
             return True
         return False
 
+
+    def update_em_estoque(self, id:int):
+        try:
+            self.cursor()
+            if self.select_produto_id(id):
+                sql = '''UPDATE produto SET em_estoque=1 WHERE id = ?;'''
+                self.cur.execute(sql, (id,))
+                self.con.commit()
+        except Exception as e:
+            print(f'Erro update produto em estoque: {e}')
+            self.desconectar()
     
-    def select_produto(self, cod_barra:str):
+    def select_produto_cod_barra(self, cod_barra:str):
         try:
             self.cursor()
             if cod_barra:
@@ -39,6 +50,16 @@ class produtoDAO(DataBase):
                 return self.cur.execute(sql, (cod_barra, )).fetchone()
         except Exception as e:
             print(f'Erro query select produto: {e}')
+            self.desconectar()
+    
+    def select_produto_id(self, id:int):
+        try:
+            self.cursor()
+            if id:
+                sql = '''SELECT * FROM produto WHERE id = ?;'''
+                return self.cur.execute(sql, (id, )).fetchone()
+        except Exception as e:
+            print(f'Erro query select produto id: {e}')
             self.desconectar()
     
     def select_all_produto(self):

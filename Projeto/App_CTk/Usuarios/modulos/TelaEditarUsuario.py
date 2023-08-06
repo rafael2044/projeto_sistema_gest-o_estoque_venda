@@ -1,7 +1,10 @@
-from customtkinter import CTkToplevel, CTkFrame, CTkEntry, CTkLabel, CTkButton, CTkComboBox, CTkTabview, CTkFont
+from customtkinter import CTkToplevel, CTkEntry, CTkLabel, CTkButton, CTkComboBox, CTkFont, CTkImage
 from DAO.usuarioDAO import usuarioDAO
 from DAO.tipoDAO import TipoDAO
 from Popup.MensagemAlerta import MensagemAlerta
+from Imagens.img import img_salvar, img_sair
+from PIL import Image
+
 
 class EditarUsuario(CTkToplevel):
     def __init__(self, master, dados:list):
@@ -29,35 +32,40 @@ class EditarUsuario(CTkToplevel):
         self.font_entry = CTkFont('Segoe UI', size=16)
         self.font_button = CTkFont('Segoe UI', size=18, weight='bold')
         
+        self.grid_columnconfigure(0, weight=30)
+        
         self.tipos = self.tipoDAO.select_all_tipo()
         
-        frame = CTkFrame(self)
-        frame.pack(padx=10, pady=10, fill='both')
-        self.usuario = CTkEntry(frame, placeholder_text='Digite o novo nome de usuario...', font=self.font_entry, height=40)
+        self.id = CTkEntry(self, font=self.font_entry, height=40, width=40)
         
-        self.tipo = CTkComboBox(frame, font=self.font_entry, values=[x[1] for x in self.tipos], height=40)    
+        self.usuario = CTkEntry(self, placeholder_text='Digite o novo nome de usuario...', font=self.font_entry, height=40)
         
+        self.tipo = CTkComboBox(self, font=self.font_entry, values=[x[1] for x in self.tipos], height=40, state='readonly')    
+        
+        CTkLabel(self, text='ID', font=self.font_label).grid(padx=10, pady=10, column=0, row=0, sticky='w')
+        self.id.grid(padx=10, sticky='w', column=0, row=1)
+        CTkLabel(self, text='Usuario', font=self.font_label).grid(padx=10, pady=10, column=0, row=2, sticky='w')
+        self.usuario.grid(padx=10, sticky='we', column=0, row=3)
+        CTkLabel(self, text='Tipo de Usuario', font=self.font_label).grid(padx=10, sticky='w', pady=10, column=0, row=4)
+        self.tipo.grid(padx=10, sticky='we', column=0, row=5)
       
-        CTkLabel(frame, text='Usuario', font=self.font_label).pack(padx=10, anchor='w', pady=10)
-        self.usuario.pack(padx=10, anchor='w')
-        CTkLabel(frame, text='Tipo de Usuario', font=self.font_label).pack(padx=10, anchor='w', pady=10)
-        self.tipo.pack(padx=10, anchor='w', fill='x')
-      
         
-        CTkButton(frame, text='Salvar Alterações', font=self.font_button, height=40, command=self.salvar_alterecoes).pack(anchor='w', padx=10, pady=20, side='left')
-        CTkButton(frame, text='Cancelar', font=self.font_button, height=40, command=self.destroy).pack(anchor='w', padx=10, pady=20, side='left')
+        CTkButton(self, text='Salvar Alterações', font=self.font_button, height=40, command=self.salvar_alterecoes,
+                  image=CTkImage(Image.open(img_salvar), size=(32,32)), compound='left').grid(sticky='w', padx=10, pady=20, column=0, row=6)
+        CTkButton(self, text='Cancelar', font=self.font_button, height=40, command=self.destroy, 
+                  image=CTkImage(Image.open(img_sair), size=(32,32)), compound='left').grid(sticky='e', padx=10, pady=20, column=0, row=6)
 
         self.carregar_dados()
         
     def carregar_dados(self):
+        self.id.insert(0, self.dados[0])
         self.usuario.insert(0, self.dados[1])
         self.tipo.set(self.dados[2])
+        self.id.configure(state='disabled')
             
     def salvar_alterecoes(self):
         self.dados[1] = self.usuario.get()
         self.dados[2] = self.tipoDAO.select_id_tipo(self.tipo.get())[0]
-
-        print(self.dados)
         match usuarioDAO().atualizar_usuario(*self.dados):
             case 1:
                 MensagemAlerta('Sucesso!', 'Alterações realizadas com sucesso!')
