@@ -23,20 +23,28 @@ class DataBase:
         try:
             self.cursor()
             
-            sql_tipo = '''CREATE TABLE IF NOT EXISTS tipo (
+            sql_nivel = '''CREATE TABLE IF NOT EXISTS nivel (
                           id INTEGER PRIMARY KEY,
                           nome VARCHAR(20) NOT NULL);'''
-            
+                          
+            sql_setor = '''CREATE TABLE IF NOT EXISTS setor (
+                          id INTEGER PRIMARY KEY,
+                          nome VARCHAR(20) NOT NULL);'''
+                          
             sql_user = '''CREATE TABLE IF NOT EXISTS usuario (
                         id INTEGER PRIMARY KEY AUTOINCREMENT,
                         nome_usuario TEXT NOT NULL,
                         senha VARCHAR(68),
-                        tipo INTEGER DEFAULT 0 NOT NULL,
+                        nivel INTEGER DEFAULT 0 NOT NULL,
+                        setor INTEGER NOT NULL,
                         usuario_novo INTEGER DEFAULT 1 NOT NULL,
                         CHECK(usuario_novo = 0 OR usuario_novo = 1)
-                        FOREIGN KEY (tipo) REFERENCES tipo (id)
+                        FOREIGN KEY (nivel) REFERENCES nivel (id)
                                            ON UPDATE CASCADE
                                            ON DELETE SET DEFAULT
+                        FOREIGN KEY (setor) REFERENCES setor (id)
+                                            ON UPDATE CASCADE
+                                            ON DELETE SET DEFAULT
                     );'''
             
             sql_fornecedor = '''CREATE TABLE IF NOT EXISTS fornecedor (
@@ -67,7 +75,8 @@ class DataBase:
                                 CHECK(quant_disp >= quant_min AND quant_disp <= quant_max),
                                 FOREIGN KEY (id_produto) REFERENCES produto (id)
                             );'''
-            self.cur.execute(sql_tipo)
+            self.cur.execute(sql_nivel)
+            self.cur.execute(sql_setor)
             self.cur.execute(sql_user)
             self.cur.execute(sql_fornecedor)
             self.cur.execute(sql_produto)

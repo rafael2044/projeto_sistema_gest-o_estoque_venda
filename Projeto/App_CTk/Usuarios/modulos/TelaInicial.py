@@ -18,8 +18,8 @@ class TelaPrincipal(CTk):
         self.usuarioDAO = usuarioDAO()
         self.centralizar_janela()
         self.carregar_widgets()
+        self.dados_usuario = {'usuario':'', 'nivel':'', 'setor':''}
         self.login = Login(self)
-        self.tipo_usuario = None
         self.cad_usuario = None
         self.resetar_senha = None
         self.editar_usuario = None
@@ -63,18 +63,19 @@ class TelaPrincipal(CTk):
         
         self.usuario = CTkLabel(f_info, text=' '*50, font=('Segoe UI', 12, 'bold'))
         
-        self.tv_tabela = Treeview(self, columns=('id', 'usuario', 'tipo'),
+        self.tv_tabela = Treeview(self, columns=('id', 'usuario', 'nivel', 'setor'),
                                   selectmode='browse', show='headings')
         self.tv_tabela.heading('#0', text='')
         self.tv_tabela.heading('id', text='ID')
         self.tv_tabela.heading('usuario', text='Usuario')
-        self.tv_tabela.heading('tipo', text='Tipo')
-        
+        self.tv_tabela.heading('nivel', text='Nivel')
+        self.tv_tabela.heading('setor', text='Setor')
         
         self.tv_tabela.column('#0', width=2, minwidth=2, stretch=True)
         self.tv_tabela.column('id', width=50, stretch=True, minwidth=50, anchor='center')
         self.tv_tabela.column('usuario', width=300, stretch=True, minwidth=175)
-        self.tv_tabela.column('tipo', width=200, stretch=True, minwidth=175)
+        self.tv_tabela.column('nivel', width=200, stretch=True, minwidth=175)
+        self.tv_tabela.column('setor', width=200, stretch=True, minwidth=175)
         
         self.scrollbar_vertical = Scrollbar(self, orient='vertical', command=self.tv_tabela.yview)
         self.scrollbar_horizontal = Scrollbar(self, orient='horizontal', command=self.tv_tabela.xview)
@@ -143,7 +144,7 @@ class TelaPrincipal(CTk):
         self.login.grab_set()
     
     def verificar_restricoes_usuario(self):
-        if self.tipo_usuario == 'Administrador':
+        if self.dados_usuario['nivel'] == 'Administrador' and self.dados_usuario['setor'] == 'ADM':
             self.habilitar_botoes_menu()
         else:
             self.desabilitar_botoes_menu()
@@ -161,7 +162,7 @@ class TelaPrincipal(CTk):
             self.resetar_senha.lift()
             
     def abrir_janela_editar_usuario(self):
-        dados = self.tv_tabela.item(self.usuario_dados[0], 'values')
+        dados = self.tv_tabela.item(self.usuario_dados_selecionado[0], 'values')
         if self.editar_usuario is None or not self.editar_usuario.winfo_exists():
             self.editar_usuario = EditarUsuario(self, dados)
         else:
@@ -170,7 +171,7 @@ class TelaPrincipal(CTk):
     def deletar_usuario_selecionado(self):
         op = DialogoSimNao('Alerta de Exclusao', 'Deseja excluir o usuario selecionado?')
         if op.opcao:
-            self.id = self.tv_tabela.item(self.usuario_dados[0], 'values')[0]
+            self.id = self.tv_tabela.item(self.usuario_dados_selecionado[0], 'values')[0]
             if self.usuarioDAO.deletar_usuario(self.id):
                 MensagemAlerta('Sucesso!', 'Usuario Excluido com sucesso!')
                 self.carregar_usuarios()
@@ -178,12 +179,12 @@ class TelaPrincipal(CTk):
                 MensagemAlerta('Erro', 'Falha ao tentar excluir usuario!')
         
     def usuario_selecionado(self, event):
-        self.usuario_dados = self.tv_tabela.selection()
-        if self.usuario_dados and self.tipo_usuario == 'Administrador':
+        self.usuario_dados_selecionado = self.tv_tabela.selection()
+        if self.usuario_dados_selecionado and self.dados_usuario['nivel'] == 'Administrador' and self.dados_usuario['setor'] == 'ADM':
             self.habilitar_botoes_inferiores()
     
     def click_fora_da_tabela(self, event):
-        if event.widget not in (self.tv_tabela, self.bt_delete, self.bt_editar) and self.focus_get() is self.tv_tabela and self.tipo_usuario == 'Administrador':
+        if event.widget not in (self.tv_tabela, self.bt_delete, self.bt_editar) and self.focus_get() is self.tv_tabela and self.dados_usuario['nivel'] == 'Administrador' and self.dados_usuario['setor'] == 'ADM' :
             self.desabilitar_botoes_inferiores()
             self.tv_tabela.selection_set()
     

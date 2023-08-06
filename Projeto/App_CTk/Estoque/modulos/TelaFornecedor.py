@@ -177,8 +177,9 @@ class TelaFornecedor(CTkToplevel):
     def linha_selecionado(self, event):
         self.item = self.tv_tabela.selection()
         if self.item:
-            self.bt_delete.configure(state='enabled')
-            self.bt_delete.configure(fg_color=("#3a7ebf", "#1f538d"))
+            if self.master.dados_usuario['nivel'] == 'Administrador':
+                self.bt_delete.configure(state='enabled')
+                self.bt_delete.configure(fg_color=("#3a7ebf", "#1f538d"))
             self.bt_editar.configure(state='enabled')
             self.bt_editar.configure(fg_color=("#3a7ebf", "#1f538d"))
     

@@ -1,6 +1,5 @@
-from customtkinter import CTkToplevel, CTkFrame, CTkEntry, CTkButton, CTkLabel, CTkFont, CTkImage
+from customtkinter import CTkToplevel, CTkEntry, CTkButton, CTkLabel, CTkFont, CTkImage
 from Popup.MensagemAlerta import MensagemAlerta
-from tkinter import PhotoImage
 from DAO.usuarioDAO import usuarioDAO
 from Estoque.modulos.TelaNovaSenha import NovaSenha
 from Imagens.img import img_logo, img_sair, img_entrar
@@ -67,7 +66,9 @@ class Login(CTkToplevel):
         match self.usuarioDAO.validar_usuario(user, password):
             case 1:
                 self.limpar_entrys()
-                self.master.tipo_usuario = self.usuarioDAO.select_tipo_usuario(user)[0]
+                self.master.dados_usuario['usuario'] = user
+                self.master.dados_usuario['nivel'] = self.usuarioDAO.select_nivel_usuario(user)[0]
+                self.master.dados_usuario['setor'] = self.usuarioDAO.select_setor_usuario(user)[0]
                 self.master.usuario.configure(text=user)
                 self.master.verificar_restricoes_usuario()
                 self.master.carregar_estoque()

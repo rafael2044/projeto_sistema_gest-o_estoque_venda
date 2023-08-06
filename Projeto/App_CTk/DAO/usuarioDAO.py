@@ -1,5 +1,6 @@
 from DAO.database import DataBase
-from DAO.tipoDAO import TipoDAO
+from DAO.nivelDAO import NivelDAO
+from DAO.setorDAO import SetorDAO
 
 from hashlib import sha256
 
@@ -8,7 +9,7 @@ class usuarioDAO(DataBase):
         DataBase.__init__(self)
         self.criar_admin()
     
-    def insert_usuario(self, nome_usuario:str, tipo:int):
+    def insert_usuario(self, nome_usuario:str, nivel:int, setor:int):
         '''DML que inseri um nome_usuario na tabela nome_usuario
            Possiveis retornos:
            1 - Cadastrado com sucesso
@@ -16,10 +17,10 @@ class usuarioDAO(DataBase):
            3 - Dados incompletos'''
         try:
             self.cursor()
-            if nome_usuario and tipo:
+            if nome_usuario and nivel and setor:
                 if not self.usuario_existe(nome_usuario):
-                    sql = f'''INSERT INTO usuario (nome_usuario, tipo) VALUES (?,?);'''
-                    self.cur.execute(sql,(nome_usuario, tipo))
+                    sql = f'''INSERT INTO usuario (nome_usuario, nivel, setor) VALUES (?,?,?);'''
+                    self.cur.execute(sql,(nome_usuario, nivel, setor))
                     self.con.commit()
                     return 1
                 return 2
@@ -42,8 +43,8 @@ class usuarioDAO(DataBase):
         finally:
             self.desconectar()
             
-    def atualizar_usuario(self, id:int, nome_usuario:str, tipo:int):
-        '''DML que atualiza os dados: usuario e tipo; do id do usuario que foi passado como argumento.
+    def atualizar_usuario(self, id:int, nome_usuario:str, nivel:int, setor:int):
+        '''DML que atualiza os dados: usuario e nivel; do id do usuario que foi passado como argumento.
            Possiveis retornos:
            1 - Alteracoes realizadas com sucesso!
            2 - Usuario ja existe!'''
@@ -51,8 +52,8 @@ class usuarioDAO(DataBase):
             self.cursor()
             
             if not self.usuario_existe(nome_usuario) or self.select_id_usuario(nome_usuario)[0] == int(id):
-                sql = "UPDATE usuario SET nome_usuario = ?, tipo= ? WHERE id = ?"
-                self.cur.execute(sql, (nome_usuario, tipo, id))
+                sql = "UPDATE usuario SET nome_usuario = ?, nivel= ?, setor = ? WHERE id = ?"
+                self.cur.execute(sql, (nome_usuario, nivel,setor, id))
                 self.con.commit()
                 return 1
             return 2
@@ -84,26 +85,40 @@ class usuarioDAO(DataBase):
     def select_all_usuario(self):
         try:
             self.cursor()
-            sql = '''SELECT u.id, u.nome_usuario, t.nome FROM usuario as u
-                     INNER JOIN tipo as t ON u.tipo = t.id;'''
+            sql = '''SELECT u.id, u.nome_usuario, n.nome, s.nome FROM usuario as u
+                     INNER JOIN nivel as n ON u.nivel = n.id
+                     INNER JOIN setor as s ON u.setor = s.id;'''
             return self.cur.execute(sql).fetchall()
         except Exception as e:
             print(f'Erro query select all usuario: {e}')
         finally:
             self.desconectar()
       
-    def select_tipo_usuario(self, nome_usuario:str):
+    def select_nivel_usuario(self, nome_usuario:str):
         try:
             self.cursor()
-            sql = '''SELECT t.nome FROM usuario as u
-                     INNER JOIN tipo as t ON u.tipo = t.id
+            sql = '''SELECT n.nome FROM usuario as u
+                     INNER JOIN nivel as n ON u.nivel = n.id
                      WHERE u.nome_usuario = ?'''
             return self.cur.execute(sql, (nome_usuario, )).fetchone()
         except Exception as e:
-            print(f'Erro query select tipo usuario: {e}')
+            print(f'Erro query select nivel usuario: {e}')
             self.desconectar()
         finally:
             self.desconectar()
+            
+    def select_setor_usuario(self, nome_usuario:str):
+        try:
+            self.cursor()
+            sql = '''SELECT s.nome FROM usuario as u
+                     INNER JOIN setor as s ON u.setor = s.id
+                     WHERE u.nome_usuario = ?'''
+            return self.cur.execute(sql, (nome_usuario, )).fetchone()
+        except Exception as e:
+            print(f'Erro query select nivel usuario: {e}')
+            self.desconectar()
+        finally:
+            self.desconectar() 
       
     def usuario_existe(self, nome_usuario:str):
         if len(self.select_nome_usuario(nome_usuario))>0:
@@ -174,12 +189,13 @@ class usuarioDAO(DataBase):
            
     def criar_admin(self):
         try:
-            TipoDAO()
+            NivelDAO()
+            SetorDAO()
             if not self.usuario_existe('admin'):
                     self.cursor()
-                    sql = '''INSERT INTO usuario (nome_usuario, senha, tipo, usuario_novo) VALUES
-                            (?,?,?,?)'''
-                    self.cur.execute(sql, ('admin', sha256('admin'.encode()).hexdigest(), 1, 0))
+                    sql = '''INSERT INTO usuario (nome_usuario, senha, nivel, setor, usuario_novo) VALUES
+                            (?,?,?,?,?)'''
+                    self.cur.execute(sql, ('admin', sha256('admin'.encode()).hexdigest(), 1,1,0))
                     self.con.commit()
                     return True
             return False

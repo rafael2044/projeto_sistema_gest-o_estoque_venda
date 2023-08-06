@@ -98,18 +98,18 @@ class TelaEstoque(CTkToplevel):
             [self.tv_tabela.insert('', 'end', values=x) for x in produtos]
     
     def verificar_restricoes_usuario(self):
-        if self.master.tipo_usuario == 'Administrador':
+        if self.master.dados_usuario['nivel'] == 'Administrador':
             self.habilitar_botoes_menu()
         else:
             self.desabilitar_botoes_menu()
         
     def produto_selecionado(self, event):
         self.produto_dados = self.tv_tabela.selection()
-        if self.produto_dados and self.master.tipo_usuario == 'Administrador':
+        if self.produto_dados and self.master.dados_usuario['nivel'] == 'Padrao' or self.master.dados_usuario['nivel'] == 'Administrador':
             self.habilitar_botoes_inferiores()
     
     def click_fora_da_tabela(self, event):
-        if event.widget not in (self.tv_tabela, self.bt_cadastrar) and self.focus_get() is self.tv_tabela and self.master.tipo_usuario == 'Administrador':
+        if event.widget not in (self.tv_tabela, self.bt_cadastrar) and self.focus_get() is self.tv_tabela:
             self.desabilitar_botoes_inferiores()
             self.tv_tabela.selection_set()
     

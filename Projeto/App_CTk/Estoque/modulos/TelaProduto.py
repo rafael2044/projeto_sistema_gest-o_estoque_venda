@@ -178,16 +178,16 @@ class TelaProduto(CTkToplevel):
         
     def editar_produtor(self):
         dados = self.tv_tabela.item(self.item[0], 'values')
-     
-        
+         
     def deletar_produto(self):
         nome = self.tv_tabela.item(self.item[0], 'values')[1]
         
     def linha_selecionado(self, event):
         self.item = self.tv_tabela.selection()
         if self.item:
-            self.bt_delete.configure(state='enabled')
-            self.bt_delete.configure(fg_color=("#3a7ebf", "#1f538d"))
+            if self.master.dados_usuario['nivel'] == 'Administrador':
+                self.bt_delete.configure(state='enabled')
+                self.bt_delete.configure(fg_color=("#3a7ebf", "#1f538d"))
             self.bt_editar.configure(state='enabled')
             self.bt_editar.configure(fg_color=("#3a7ebf", "#1f538d"))
     

@@ -18,7 +18,7 @@ class TelaPrincipal(CTk):
         self.produto = None
         self.w_fornecedor = None
         self.cad_un = None
-        self.tipo_usuario = None
+        self.dados_usuario = {'usuario':'', 'nivel':'', 'setor':''}
         self.login = Login(self)
         self.login.transient()
         self.centralizar_janela()
@@ -86,12 +86,16 @@ class TelaPrincipal(CTk):
         self.tv_tabela.configure(xscrollcommand=self.scrollbar_horizontal.set)
         self.tv_tabela.configure(yscrollcommand=self.scrollbar_vertical.set)
         f_menu_buttons.grid(column=0, row=0, columnspan=3, sticky='we', pady=0, padx=5) 
-        CTkButton(f_menu_buttons, text='Estoque', image=CTkImage(Image.open(img_cad_estoque), size=(60,60)),
-                  compound='top', command=self.abrir_tela_Estoque, font=self.font_button, fg_color='transparent', corner_radius=20).pack(side='left', padx=10, pady=5)
-        CTkButton(f_menu_buttons, text='Produtos', image=CTkImage(Image.open(img_cad_produto), size=(60,60)),fg_color='transparent', corner_radius=20,
-                  compound='top', command=self.abrir_tela_Produto, font=self.font_button).pack(side='left', padx=(0,10),  pady=5)
-        CTkButton(f_menu_buttons, text='Fornecedores', image=CTkImage(Image.open(img_fornecedor), size=(60,60)),fg_color='transparent', corner_radius=20,
-                  compound='top', command=self.abrir_tela_fornecedor, font=self.font_button).pack(side='left', padx=10,  pady=5)
+        self.bt_estoque = CTkButton(f_menu_buttons, text='Estoque', image=CTkImage(Image.open(img_cad_estoque), size=(60,60)),
+                  compound='top', command=self.abrir_tela_Estoque, font=self.font_button, fg_color='transparent', corner_radius=20)
+        self.bt_produto = CTkButton(f_menu_buttons, text='Produtos', image=CTkImage(Image.open(img_cad_produto), size=(60,60)),fg_color='transparent', corner_radius=20,
+                  compound='top', command=self.abrir_tela_Produto, font=self.font_button)
+        self.bt_fornecedor = CTkButton(f_menu_buttons, text='Fornecedores', image=CTkImage(Image.open(img_fornecedor), size=(60,60)),fg_color='transparent', corner_radius=20,
+                  compound='top', command=self.abrir_tela_fornecedor, font=self.font_button)
+        
+        self.bt_estoque.pack(side='left', padx=10, pady=5)
+        self.bt_produto.pack(side='left', padx=(0,10),  pady=5)
+        self.bt_fornecedor.pack(side='left', padx=10,  pady=5)
         CTkLabel(self, text='Estoque Atual', font=('Segoe UI', 23, 'bold')).grid(row=1, column=0, sticky='w', padx=10,  pady=5)
         f_info.grid(column=2, row=1, sticky='e', padx=5)
         CTkLabel(f_info, text='Usuario Logado:', font=('Segoe UI', 12, 'bold')).pack(side='left', padx=(0,10),  pady=0)
@@ -105,15 +109,16 @@ class TelaPrincipal(CTk):
     def carregar_menu(self):
         self.menubar = Menu(self, font=('Segoe UI', 14))
         self.configure(menu=self.menubar)
-        cad_menu = Menu(self.menubar, font=('Segoe UI', 10))
-        cad_menu.add_command(label='Produto', command=self.abrir_tela_Produto)
-        cad_menu.add_command(label='Fornecedor', command=self.abrir_tela_fornecedor)
+        self.cad_menu = Menu(self.menubar, font=('Segoe UI', 10))
+        self.cad_menu.add_command(label='Estoque', command=self.abrir_tela_Estoque)
+        self.cad_menu.add_command(label='Produto', command=self.abrir_tela_Produto)
+        self.cad_menu.add_command(label='Fornecedor', command=self.abrir_tela_fornecedor)
 
         
         sair_menu = Menu(self.menubar, font=('Segoe UI', 14))
         sair_menu.add_command(label='Logout', command=self.sair)
         
-        self.menubar.add_cascade(label='Cadastrar', menu=cad_menu)
+        self.menubar.add_cascade(label='Cadastrar', menu=self.cad_menu)
         self.menubar.add_cascade(label='Sair', menu=sair_menu)
         
     def carregar_estoque(self):
@@ -132,7 +137,6 @@ class TelaPrincipal(CTk):
         self.login.user.focus_force()
         self.login.grab_set()
         
-        
     def abrir_tela_Estoque(self):
         if self.estoque is None or not self.estoque.winfo_exists():
             self.estoque= TelaEstoque(self)
@@ -147,9 +151,34 @@ class TelaPrincipal(CTk):
         if self.w_fornecedor is None or not self.w_fornecedor.winfo_exists():
             self.w_fornecedor = TelaFornecedor(self)
             self.w_fornecedor.transient(self)
-        
+    
+    def desabilitar_botoes_menu(self):
+        self.bt_estoque.configure(state='disabled')
+        self.bt_estoque.configure(fg_color='gray')
+        self.bt_produto.configure(state='disabled')
+        self.bt_produto.configure(fg_color='gray')
+        self.bt_fornecedor.configure(state='disabled')
+        self.bt_fornecedor.configure(fg_color='gray')
+        self.cad_menu.entryconfig('Estoque', state='disabled')
+        self.cad_menu.entryconfig('Produto', state='disabled')
+        self.cad_menu.entryconfig('Fornecedor', state='disabled')  
+    
+    def habilitar_botoes_menu(self):
+        self.bt_estoque.configure(state='enabled')
+        self.bt_estoque.configure(fg_color='transparent')
+        self.bt_produto.configure(state='enabled')
+        self.bt_produto.configure(fg_color='transparent')
+        self.bt_fornecedor.configure(state='enabled')
+        self.bt_fornecedor.configure(fg_color='transparent')
+        self.cad_menu.entryconfig('Estoque', state='active')
+        self.cad_menu.entryconfig('Produto', state='active')
+        self.cad_menu.entryconfig('Fornecedor', state='active')
+    
     def verificar_restricoes_usuario(self):
-        if self.tipo_usuario == 'Administrador':
-            pass
+        if (self.dados_usuario['nivel'] == 'Padrao' and self.dados_usuario['setor'] == 'Estoque'):
+            self.habilitar_botoes_menu()
+        elif(self.dados_usuario['nivel'] == 'Administrador' and (self.dados_usuario['setor'] == 'Estoque' or self.dados_usuario['setor'] == 'ADM')):
+            self.habilitar_botoes_menu()
         else:
-            pass
+            self.desabilitar_botoes_menu()
+        

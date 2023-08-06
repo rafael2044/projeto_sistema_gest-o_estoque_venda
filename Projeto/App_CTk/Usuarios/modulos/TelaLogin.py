@@ -64,7 +64,10 @@ class Login(CTkToplevel):
         match usuarioDAO().validar_usuario(user, password):
             case 1:
                 self.limpar_entrys()
-                self.master.tipo_usuario = self.usuarioDAO.select_tipo_usuario(user)[0]
+                self.master.dados_usuario['nivel'] = self.usuarioDAO.select_nivel_usuario(user)[0]
+                self.master.dados_usuario['setor'] = self.usuarioDAO.select_setor_usuario(user)[0]
+                self.master.dados_usuario['usuario'] = user
+                print(self.master.dados_usuario)
                 self.master.usuario.configure(text=user)
                 self.master.verificar_restricoes_usuario()
                 self.master.carregar_usuarios()
