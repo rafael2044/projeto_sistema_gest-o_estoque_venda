@@ -16,7 +16,7 @@ class estoqueDAO(DataBase):
             if id_produto and quant_min and quant_atual and quant_max:
                 if not self.produto_existe(id_produto):
                     sql = f'''INSERT INTO estoque (id_produto, quant_disp, quant_min, quant_max) VALUES (?,?,?,?);'''
-                    self.cur.execute(sql,(id_produto, quant_atual, quant_min, quant_atual))
+                    self.cur.execute(sql,(id_produto, quant_atual, quant_min, quant_max))
                     self.con.commit()
                     produtoDAO().update_em_estoque(id_produto)
                     return 1
@@ -59,7 +59,7 @@ class estoqueDAO(DataBase):
            O retorno eh uma lista contendo cada um dos produtos cadastrados no estoque.'''
         try:
             self.cursor()
-            sql = '''SELECT e.id, p.codigo_de_barra, p.descricao, p.preco_unitario, f.nome, e.quant_disp, e.quant_min, e.quant_max FROM estoque as e
+            sql = '''SELECT e.id, p.codigo_de_barra, p.descricao, p.preco_unitario, f.nome, e.quant_min, e.quant_disp, e.quant_max FROM estoque as e
             INNER JOIN produto as p ON p.id = e.id_produto
             INNER JOIN fornecedor as f ON f.id = p.id_fornecedor; '''
             return self.cur.execute(sql).fetchall()

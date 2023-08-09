@@ -30,6 +30,17 @@ class produtoDAO(DataBase):
             return True
         return False
 
+    def atualizar_produto(self, id:int, cod_barra:str, descricao:str, id_fornecedor:int, preco_un:float):
+        try:
+            self.cursor()
+            sql = "UPDATE produto SET descricao = ?, preco_unitario = ?, id_fornecedor = ? WHERE id = ?"
+            self.cur.execute(sql, (descricao, preco_un, id_fornecedor, id))
+            self.con.commit()
+            return True
+        except Exception as e:
+            print(f'Erro ao atualizar produto: {e}')
+        finally:
+            self.desconectar
 
     def update_em_estoque(self, id:int):
         try:
