@@ -1,8 +1,7 @@
 from customtkinter import CTkToplevel,CTkEntry, CTkButton, CTkLabel, CTkFont, CTkImage
 from Popup.MensagemAlerta import MensagemAlerta
-from Estoque.modulos.TelaNovaSenha import NovaSenha
 from DAO.usuarioDAO import usuarioDAO
-from Imagens.img import img_logo, img_sair, img_entrar
+from Imagens.img import img_logo, img_sair, img_entrar, img_salvar_senha
 from PIL import Image
 class Login(CTkToplevel):
     def __init__(self, master):
@@ -82,4 +81,68 @@ class Login(CTkToplevel):
         self.password.delete(0, 'end')
     def sair(self):
         self.quit()
+        
+class NovaSenha(CTkToplevel):
+    def __init__(self, usuario):
+        CTkToplevel.__init__(self)
+        self.usuario = usuario
+        self.title('Nova Senha')
+        self.usuarioDAO = usuarioDAO()
+        self.centralizar_janela()
+        self.resizable(False, False)
+        self.carregar_widgets()
+        self.grab_set()
+        self.protocol('WM_DELETE_WINDOW', self.sair)
+        self.bind('<Return>', self.inserir)
+        
+    def centralizar_janela(self):
+        HEIGHT = 260
+        WEIDTH = 300
+        
+        W_HEIGHT = self.winfo_screenheight()
+        W_WEIDTH = self.winfo_screenwidth()
+        
+        X = (W_WEIDTH - WEIDTH)//2
+        Y = (W_HEIGHT - HEIGHT)//2
+        
+        self.geometry(f'{WEIDTH}x{HEIGHT}+{X}+{Y}+')    
+    
+    def carregar_widgets(self):
+        font_label = CTkFont('Segoe UI', size=18, weight='bold')
+        font_entry = CTkFont('Segoe UI', size=16)
+        font_button = CTkFont('Segoe UI', size=18, weight='bold')
+        self.grid_columnconfigure(0, weight=1)
+        self.grid_rowconfigure(0, weight=0)
+        self.grid_rowconfigure(1, weight=0)
+        self.grid_rowconfigure(2, weight=0)
+        self.grid_rowconfigure(3, weight=0)
+        self.grid_rowconfigure(4, weight=0)
+        
+        self.password = CTkEntry(self, placeholder_text='Digite a Senha...', height=40, font=font_entry, takefocus=True, show='*')
+        self.password_validacao = CTkEntry(self, show='*', placeholder_text='Digite a Senha novamente...', height=40, font=font_entry)
+        
+        self.bt_salvar = CTkButton(self, text='Salvar', font=font_button, image=CTkImage(Image.open(img_salvar_senha), size=(32,32)),compound='left', command=self.inserir, height=40)
+        self.bt_sair = CTkButton(self, text='Sair', font=font_button,image=CTkImage(Image.open(img_sair), size=(32,32)),compound='left', command=self.sair,height=40, width=90)
+        
+        CTkLabel(self, text='Senha', font=font_label).grid(column=0, row=0, pady=10, padx=10, sticky='w')
+        self.password.grid(column=0, row=1, padx=10, sticky='we')
+        CTkLabel(self, text='Validar Senha',font=font_label).grid(column=0, row=2, pady=10, padx=10, sticky='w')
+        self.password_validacao.grid(column=0, row=3, padx=10, sticky='we')
+        self.bt_salvar.grid(column=0, row=4, pady=10, padx=10, sticky='w')
+        self.bt_sair.grid(column=0, row=4, pady=10, padx=10, sticky='e')
+        
+    def inserir(self, event=None):
+        senha = self.password.get()
+        validar_senha = self.password_validacao.get()
+        
+        if senha == validar_senha:
+            self.usuarioDAO.nova_senha(self.usuario, senha)
+            MensagemAlerta('Sucesso', 'Senha inserida com sucesso!')
+            self.destroy()
+        else:
+            MensagemAlerta('Erro', 'As senhas precisam ser iguais!')
+        
+    def sair(self):
+        self.destroy()
+
 

@@ -145,7 +145,7 @@ class TelaPrincipal(CTk):
     def abrir_tela_Produto(self):
         if self.produto is None or not self.produto.winfo_exists():
             self.produto = TelaProduto(self)
-            self.produto.transient(self)
+            self.produto.transient(self)    
     
     def abrir_tela_fornecedor(self):
         if self.w_fornecedor is None or not self.w_fornecedor.winfo_exists():
