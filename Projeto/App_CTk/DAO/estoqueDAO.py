@@ -59,7 +59,7 @@ class estoqueDAO(DataBase):
            O retorno eh uma lista contendo cada um dos produtos cadastrados no estoque.'''
         try:
             self.cursor()
-            sql = '''SELECT e.id, p.codigo_de_barra, p.descricao, p.preco_unitario, f.nome, e.quant_min, e.quant_disp, e.quant_max FROM estoque as e
+            sql = '''SELECT e.id, p.codigo_de_barra, p.descricao, p.valor_venda, p.valor_custo, f.nome, e.quant_min, e.quant_disp, e.quant_max FROM estoque as e
             INNER JOIN produto as p ON p.id = e.id_produto
             INNER JOIN fornecedor as f ON f.id = p.id_fornecedor; '''
             return self.cur.execute(sql).fetchall()

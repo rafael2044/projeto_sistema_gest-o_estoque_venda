@@ -19,7 +19,7 @@ class TelaEstoque(CTkToplevel):
         self.estoqueDAO = estoqueDAO()
         self.cadNovosProdutos = None
         self.centralizar_janela()
-        self.carreagar_widgets()
+        self.carregar_widgets()
         self.protocol('WM_DELETE_WINDOW', self.destroy)
         
     def centralizar_janela(self):
@@ -34,18 +34,10 @@ class TelaEstoque(CTkToplevel):
         
         self.geometry(f'{WEIDTH}x{HEIGHT}+{X}+{Y}+')
         
-    def carreagar_widgets(self):
-        self.font_label = CTkFont('Segoe UI', size=18, weight='bold')
-        self.font_entry = CTkFont('Segoe UI', size=16)
-        self.font_button = CTkFont('Segoe UI', size=18, slant='italic', weight='bold')
-        
-        self.carregar_widgets()
-    
-    
     def carregar_widgets(self):
         self.font_label = CTkFont('Segoe UI', size=18, weight='bold')
         self.font_entry = CTkFont('Segoe UI', size=16)
-        self.font_button = CTkFont('Segoe UI', size=18, weight='bold')
+        self.font_button = CTkFont('Segoe UI', size=18, slant='italic', weight='bold')
         
         self.grid_columnconfigure(0, weight=3)
         self.grid_columnconfigure(1, weight=1)
@@ -60,13 +52,14 @@ class TelaEstoque(CTkToplevel):
         f_bts_top = CTkFrame(self, corner_radius=25, fg_color='transparent')
         f_bts_bottom = CTkFrame(self, corner_radius=25, fg_color='transparent')    
             
-        self.tv_tabela = Treeview(self, columns=('id', 'cod_barra', 'descricao', 'preco_un', 'fornecedor','quant_min', 'quant_atual', 'quant_max'),
+        self.tv_tabela = Treeview(self, columns=('id', 'cod_barra', 'descricao', 'valor_venda','valor_custo', 'fornecedor','quant_min', 'quant_atual', 'quant_max'),
                                   selectmode='browse', show='headings')
         self.tv_tabela.heading('#0', text='')
         self.tv_tabela.heading('id', text='ID')
         self.tv_tabela.heading('cod_barra', text='Cod. Barra')
         self.tv_tabela.heading('descricao', text='Descrição')
-        self.tv_tabela.heading('preco_un', text='Preço Unitário')
+        self.tv_tabela.heading('valor_venda', text='Valor de Venda')
+        self.tv_tabela.heading('valor_custo', text='Valor de Custo')
         self.tv_tabela.heading('fornecedor', text='Fornecedor')
         self.tv_tabela.heading('quant_min', text='Quant. Min')
         self.tv_tabela.heading('quant_atual', text='Quant. Atual')
@@ -75,7 +68,8 @@ class TelaEstoque(CTkToplevel):
         self.tv_tabela.column('id', width=50, stretch=True, minwidth=50, anchor='center')
         self.tv_tabela.column('cod_barra', width=175, stretch=True, minwidth=175, anchor='center')
         self.tv_tabela.column('descricao', width=500, stretch=False, minwidth=450)
-        self.tv_tabela.column('preco_un', width=150, stretch=True, minwidth=150, anchor='center')
+        self.tv_tabela.column('valor_venda', width=150, stretch=True, minwidth=150, anchor='center')
+        self.tv_tabela.column('valor_custo', width=150, stretch=True, minwidth=150, anchor='center')
         self.tv_tabela.column('fornecedor', width=200, stretch=False, minwidth=175 )
         self.tv_tabela.column('quant_min', width=100, stretch= True, minwidth=100, anchor='center')
         self.tv_tabela.column('quant_atual', width=115, stretch=True, minwidth=115, anchor='center')
@@ -116,7 +110,14 @@ class TelaEstoque(CTkToplevel):
         
         self.tv_tabela.bind('<<TreeviewSelect>>', self.linha_selecionado)
         self.bind('<Button-1>', self.desabilitar_botoes)
+        self.carregar_estoque()
         
+    def carregar_estoque(self):
+        [self.tv_tabela.delete(x) for x in self.tv_tabela.get_children()]
+        produtos = self.estoqueDAO.select_all_estoque()
+        if produtos:
+            [self.tv_tabela.insert('', 'end', values=x) for x in produtos]    
+    
     def desabilitar_botoes(self, event):
         if event.widget not in (self.tv_tabela, self.bt_delete, self.bt_editar) and self.focus_get() is self.tv_tabela:
             self.bt_delete.configure(state='disabled')
@@ -154,7 +155,7 @@ class TelaProdutoEstoque(CTkToplevel):
         
     def centralizar_janela(self):
         HEIGHT = 700
-        WEIDTH = 900
+        WEIDTH = 1200
         
         W_HEIGHT = self.winfo_screenheight()
         W_WEIDTH = self.winfo_screenwidth()
@@ -179,7 +180,7 @@ class TelaProdutoEstoque(CTkToplevel):
         self.pesquisa = CTkEntry(self, placeholder_text='Nome do Produto', width=150, height=40, font=self.font_entry)
         f_bts_top = CTkFrame(self, corner_radius=25, fg_color='transparent')
         
-        self.tv_tabela = Treeview(self, columns=('id', 'cod_barra', 'descricao', 'fornecedor', 'preco_un'),
+        self.tv_tabela = Treeview(self, columns=('id', 'cod_barra', 'descricao', 'fornecedor', 'valor_venda', 'valor_custo'),
                                   selectmode='browse', show='headings')
         
         
@@ -187,13 +188,15 @@ class TelaProdutoEstoque(CTkToplevel):
         self.tv_tabela.heading('cod_barra', text='Cod. Barra')
         self.tv_tabela.heading('descricao', text='Descrição')
         self.tv_tabela.heading('fornecedor', text='Fornecedor')
-        self.tv_tabela.heading('preco_un', text='Preço Un')
+        self.tv_tabela.heading('valor_venda', text='Valor de Venda')
+        self.tv_tabela.heading('valor_custo', text='Valor de Custo')
     
         self.tv_tabela.column('id', width=50, stretch=True, minwidth=50, anchor='center')
         self.tv_tabela.column('cod_barra', width=175, stretch=True, minwidth=175)
         self.tv_tabela.column('descricao', width=450, stretch=True, minwidth=300)
         self.tv_tabela.column('fornecedor', width=200, stretch=True, minwidth=200)
-        self.tv_tabela.column('preco_un', width=150, stretch=True, minwidth=150)        
+        self.tv_tabela.column('valor_venda', width=150, stretch=True, minwidth=150)        
+        self.tv_tabela.column('valor_custo', width=150, stretch=True, minwidth=150)        
         
         self.scrollbar_vertical = Scrollbar(self, orient='vertical', command=self.tv_tabela.yview)
         self.scrollbar_horizontal = Scrollbar(self, orient='horizontal', command=self.tv_tabela.xview)
@@ -226,8 +229,7 @@ class TelaProdutoEstoque(CTkToplevel):
         
     def produto_selecionado(self, event):
         self.produto_dados = self.tv_tabela.selection()
-        if self.produto_dados and self.master.dados_usuario['nivel'] == 'Padrao' or self.master.dados_usuario['nivel'] == 'Administrador':
-            self.habilitar_botoes_inferiores()
+        self.habilitar_botoes_inferiores()
     
     def click_fora_da_tabela(self, event):
         if event.widget not in (self.tv_tabela, self.bt_cadastrar) and self.focus_get() is self.tv_tabela:
@@ -264,7 +266,7 @@ class CadEstoque(CTkToplevel):
         self.protocol('WM_DELETE_WINDOW', self.destroy)
         
     def centralizar_janela(self):
-        HEIGHT = 680
+        HEIGHT = 780
         WEIDTH = 700
         
         W_HEIGHT = self.winfo_screenheight()
@@ -284,8 +286,8 @@ class CadEstoque(CTkToplevel):
 
         self.descricao = CTkEntry(self, placeholder_text='', width=550, font=self.font_entry, height=40)
     
-        self.preco_uni = CTkEntry(self, width=100, font=self.font_entry, placeholder_text='', height=40)
-        
+        self.valor_venda = CTkEntry(self, width=100, font=self.font_entry, placeholder_text='', height=40)
+        self.valor_custo = CTkEntry(self, width=100, font=self.font_entry, placeholder_text='', height=40)
         self.quantidade_min = CTkEntry(self, width=50, font=self.font_entry, height=40)
         
         self.quantidade_atual = CTkEntry(self, width=50, font=self.font_entry, height=40)
@@ -304,20 +306,22 @@ class CadEstoque(CTkToplevel):
         self.cod_barra.grid(column=0, row=1, padx=15, sticky='w')
         CTkLabel(self, text='Descrição', font=self.font_label, height=40).grid(column=0, row=2, padx=15,pady=5, sticky='w')
         self.descricao.grid(column=0, row=3, padx=15, sticky='w')
-        CTkLabel(self, text='Preço Unitário', font=self.font_label, height=40).grid(column=0, row=4, padx=15,pady=5, sticky='w')
-        self.preco_uni.grid(column=0, row=5, padx=15, sticky='w')
-        CTkLabel(self, text='Quantidade Mínima', font=self.font_label, height=40).grid(column=0, row=6, padx=15,pady=5, sticky='w')
-        self.quantidade_min.grid(column=0, row=7, padx=15, sticky='w')
-        CTkLabel(self, text='Quantidade Atual', font=self.font_label, height=40).grid(column=0, row=8, padx=15,pady=5, sticky='w')
-        self.quantidade_atual.grid(column=0, row=9, padx=15, sticky='w')
-        CTkLabel(self, text='Quantidade Máxima', font=self.font_label, height=40).grid(column=0, row=10, padx=15,pady=5, sticky='w')
-        self.quantidade_max.grid(column=0, row=11, padx=15, sticky='w')
-        CTkLabel(self, text='Fornecedor', font=self.font_label, height=40).grid(column=0, row=12, padx=15, sticky='w')
-        self.fornecedor.grid(column=0, row=13, padx=15, sticky='w')
+        CTkLabel(self, text='Valor de Venda', font=self.font_label, height=40).grid(column=0, row=4, padx=15,pady=5, sticky='w')
+        self.valor_venda.grid(column=0, row=5, padx=15, sticky='w')
+        CTkLabel(self, text='Valor de Custo', font=self.font_label, height=40).grid(column=0, row=6, padx=15,pady=5, sticky='w')
+        self.valor_custo.grid(column=0, row=7, padx=15, sticky='w')
+        CTkLabel(self, text='Quantidade Mínima', font=self.font_label, height=40).grid(column=0, row=8, padx=15,pady=5, sticky='w')
+        self.quantidade_min.grid(column=0, row=9, padx=15, sticky='w')
+        CTkLabel(self, text='Quantidade Atual', font=self.font_label, height=40).grid(column=0, row=10, padx=15,pady=5, sticky='w')
+        self.quantidade_atual.grid(column=0, row=11, padx=15, sticky='w')
+        CTkLabel(self, text='Quantidade Máxima', font=self.font_label, height=40).grid(column=0, row=12, padx=15,pady=5, sticky='w')
+        self.quantidade_max.grid(column=0, row=13, padx=15, sticky='w')
+        CTkLabel(self, text='Fornecedor', font=self.font_label, height=40).grid(column=0, row=14, padx=15, sticky='w')
+        self.fornecedor.grid(column=0, row=15, padx=15, sticky='w')
     
         CTkButton(self, text='Cadastrar', font=self.font_button, height=40, compound='left',
                   image=CTkImage(Image.open(img_cadastrar), size=(32,32)), 
-                  command=self.cadastrar_produto).grid(column=0, row=14,padx=15, pady=10,sticky='w')
+                  command=self.cadastrar_produto).grid(column=0, row=16,padx=15, pady=10,sticky='w')
         
 
     def cadastrar_produto(self):
@@ -338,17 +342,17 @@ class CadEstoque(CTkToplevel):
                 MensagemAlerta('Erro!', 'Os campos nao foram preenchidos completamente!')
             
         
-           
-        
     def carregar_dados(self):
         self.cod_barra.insert(0, self.dados[1])
         self.descricao.insert(0, self.dados[2])
-        self.preco_uni.insert(0, self.dados[3])
-        self.fornecedor.insert(0, self.dados[4])
+        self.valor_venda.insert(0, self.dados[4])
+        self.valor_custo.insert(0, self.dados[5])
+        self.fornecedor.insert(0, self.dados[3])
         
         self.cod_barra.configure(state='disabled')
         self.descricao.configure(state='disabled')
-        self.preco_uni.configure(state='disabled')
+        self.valor_venda.configure(state='disabled')
+        self.valor_custo.configure(state='disabled')
         self.fornecedor.configure(state='disabled')
                         
     def validar_quant_min(self, event):

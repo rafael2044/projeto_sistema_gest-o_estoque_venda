@@ -5,17 +5,17 @@ class produtoDAO(DataBase):
         DataBase.__init__(self)
         
     
-    def insert_produto(self, cod_barra:str, descricao:str, preco_uni:float, id_fornecedor:int):
+    def insert_produto(self, cod_barra:str, descricao:str, valor_venda:float,valor_custo:float, id_fornecedor:int):
         '''1 - Cadastrado com sucesso
            2 - Produto já cadastrado
            3 - Os campos nao foram preenchidos completamente
            '''
         try:
             self.cursor()
-            if descricao and id_fornecedor and preco_uni and cod_barra:
+            if descricao and id_fornecedor and valor_venda and valor_custo and cod_barra:
                 if not self.produto_existe_cod_barra(cod_barra):
-                    sql = f'''INSERT INTO produto (codigo_de_barra ,descricao, id_fornecedor, preco_unitario) VALUES (?,?,?,?);'''
-                    self.cur.execute(sql,(cod_barra, descricao,id_fornecedor,preco_uni))
+                    sql = f'''INSERT INTO produto (codigo_de_barra ,descricao, id_fornecedor, valor_venda, valor_custo) VALUES (?,?,?,?,?);'''
+                    self.cur.execute(sql,(cod_barra, descricao,id_fornecedor,valor_venda, valor_custo))
                     self.con.commit()
                     return 1
                 return 2
@@ -30,11 +30,11 @@ class produtoDAO(DataBase):
             return True
         return False
 
-    def atualizar_produto(self, id:int, cod_barra:str, descricao:str, id_fornecedor:int, preco_un:float):
+    def atualizar_produto(self, id:int, descricao:str, valor_venda:float,valor_custo:float, id_fornecedor:int):
         try:
             self.cursor()
-            sql = "UPDATE produto SET descricao = ?, preco_unitario = ?, id_fornecedor = ? WHERE id = ?"
-            self.cur.execute(sql, (descricao, preco_un, id_fornecedor, id))
+            sql = "UPDATE produto SET descricao = ?, valor_venda = ?, valor_custo = ?, id_fornecedor = ? WHERE id = ?"
+            self.cur.execute(sql, (descricao, valor_venda, valor_custo, id_fornecedor, id))
             self.con.commit()
             return True
         except Exception as e:
@@ -76,7 +76,7 @@ class produtoDAO(DataBase):
     def select_all_produto(self):
         try:
             self.cursor()
-            sql = '''SELECT p.id, p.codigo_de_barra, p.descricao, f.nome, p.preco_unitario FROM produto as p 
+            sql = '''SELECT p.id, p.codigo_de_barra, p.descricao, f.nome, p.valor_venda, p.valor_custo FROM produto as p 
                      INNER JOIN fornecedor as f ON p.id_fornecedor = f.id'''
             return self.cur.execute(sql,).fetchall()
         except Exception as e:
@@ -86,7 +86,7 @@ class produtoDAO(DataBase):
     def select_produto_n_cad_em_estoque(self):
         try:
             self.cursor()
-            sql = '''SELECT p.id, p.codigo_de_barra, p.descricao, f.nome, p.preco_unitario FROM produto as p 
+            sql = '''SELECT p.id, p.codigo_de_barra, p.descricao, f.nome, p.valor_venda, p.valor_custo FROM produto as p 
                      INNER JOIN fornecedor as f ON p.id_fornecedor = f.id
                      WHERE p.em_estoque = 0;'''
             return self.cur.execute(sql,).fetchall()

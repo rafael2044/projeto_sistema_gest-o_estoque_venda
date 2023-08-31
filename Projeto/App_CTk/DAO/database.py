@@ -59,7 +59,8 @@ class DataBase:
                                 codigo_de_barra TEXT(13) CHECK(length(codigo_de_barra) = 13),
                                 descricao TEXT NOT NULL,
                                 id_fornecedor INTEGER DEFAULT 0 NOT NULL,
-                                preco_unitario REAL NOT NULL,
+                                valor_venda REAL NOT NULL,
+                                valor_custo REAL NOT NULL,
                                 em_estoque INTEGER DEFAULT 0 NOT NULL,
                                 FOREIGN KEY (id_fornecedor) REFERENCES fornecedor (id)
                                                             ON UPDATE CASCADE

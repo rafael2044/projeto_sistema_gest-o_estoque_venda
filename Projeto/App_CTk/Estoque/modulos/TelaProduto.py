@@ -23,7 +23,7 @@ class TelaProduto(CTkToplevel):
         
     def centralizar_janela(self):
         HEIGHT = 800
-        WEIDTH = 900
+        WEIDTH = 1050
         
         W_HEIGHT = self.winfo_screenheight()
         W_WEIDTH = self.winfo_screenwidth()
@@ -53,14 +53,15 @@ class TelaProduto(CTkToplevel):
         self.pesquisa = CTkEntry(self, placeholder_text='Nome do Produto', font=self.font_entry, height=40)
         
         
-        self.tv_tabela = Treeview(self, columns=('id', 'cod_barra', 'descricao', 'fornecedor', 'preco_un'),
+        self.tv_tabela = Treeview(self, columns=('id', 'cod_barra', 'descricao', 'fornecedor', 'valor_venda', 'valor_custo'),
                                   selectmode='browse', show='headings')
         self.tv_tabela.heading('#0', text='')
         self.tv_tabela.heading('id', text='ID')
         self.tv_tabela.heading('cod_barra', text='Cod. Barra')
         self.tv_tabela.heading('descricao', text='Descrição')
         self.tv_tabela.heading('fornecedor', text='Fornecedor')
-        self.tv_tabela.heading('preco_un', text='Preço Un')
+        self.tv_tabela.heading('valor_venda', text='Valor de venda')
+        self.tv_tabela.heading('valor_custo', text='Valor de custo')
         
         
         self.tv_tabela.column('#0', width=2, minwidth=2, stretch=True)
@@ -68,7 +69,8 @@ class TelaProduto(CTkToplevel):
         self.tv_tabela.column('cod_barra', width=175, stretch=True, minwidth=175)
         self.tv_tabela.column('descricao', width=300, stretch=True, minwidth=300)
         self.tv_tabela.column('fornecedor', width=200, stretch=True, minwidth=200)
-        self.tv_tabela.column('preco_un', width=150, stretch=True, minwidth=150)        
+        self.tv_tabela.column('valor_venda', width=150, stretch=True, minwidth=150)        
+        self.tv_tabela.column('valor_custo', width=150, stretch=True, minwidth=150)   
         
         self.bt_delete = CTkButton(f_bts_bottom, state='disabled', text='Deletar', font=('Segoe UI', 18, 'bold'), 
                                    image=CTkImage(Image.open(img_excluir), size=(32,32)),height=45,width=120,fg_color='#595457', 
@@ -145,25 +147,6 @@ class TelaProduto(CTkToplevel):
             self.bt_editar.configure(state='disabled')
             self.bt_editar.configure(fg_color='#595457')
             self.tv_tabela.selection_set()    
-        
-    def limpar_entrys(self):
-        self.cod_barra.delete(0, 'end')
-        self.descricao.delete(0, 'end')
-        self.preco_uni.delete(0, 'end')
-                        
-    def validar_codBarra(self, event):
-        text = self.cod_barra.get()
-        if text:
-            if text[-1] not in '1234567890' or len(text) > 13:
-                self.cod_barra.delete(len(text)-1, 'end')
-       
-    def validar_preco(self, event):
-        text = self.preco_uni.get()
-        if len(text) > 0:
-            index_end = len(text) - 1
-            
-            if text[-1] not in '1234567890,' or len(text) > 10:
-                self.preco_uni.delete(index_end, 'end')
  
 class CadProduto(CTkToplevel):
     
@@ -179,7 +162,7 @@ class CadProduto(CTkToplevel):
         self.protocol('WM_DELETE_WINDOW', self.destroy)
         
     def centralizar_janela(self):
-        HEIGHT = 500
+        HEIGHT = 550
         WEIDTH = 600
         
         W_HEIGHT = self.winfo_screenheight()
@@ -200,20 +183,22 @@ class CadProduto(CTkToplevel):
 
         self.descricao = CTkEntry(self, placeholder_text='Descrição do Produto...', width=550, font=self.font_entry, height=40)
     
-        self.preco_uni = CTkEntry(self, width=100, font=self.font_entry, placeholder_text='R$...', height=40)
-        
+        self.valor_venda = CTkEntry(self, width=100, font=self.font_entry, placeholder_text='R$...', height=40)
+        self.valor_custo = CTkEntry(self, width=100, font=self.font_entry, placeholder_text='R$...', height=40)
         self.fornecedor = CTkComboBox(self, values=self.carregar_fornecedores(), font=self.font_label, state='readonly', height=40, width=350)
         
         self.cod_barra.bind('<KeyPress>', self.validar_codBarra)
-        self.preco_uni.bind('<KeyPress>', self.validar_preco)
-        
+        self.valor_venda.bind('<KeyPress>', self.validar_valor_venda)
+        self.valor_custo.bind('<KeyPress>', self.validar_valor_custo)
         
         CTkLabel(self, text='Codigo de Barra', font=self.font_label).pack(padx=10, anchor='w', pady=10)
         self.cod_barra.pack(padx=10, anchor='w')
         CTkLabel(self, text='Descrição', font=self.font_label).pack(padx=10, anchor='w', pady=10)
         self.descricao.pack(padx=10, anchor='w')
-        CTkLabel(self, text='Preço Unitário', font=self.font_label).pack(padx=10, anchor='w', pady=10)
-        self.preco_uni.pack(padx=10, anchor='w')
+        CTkLabel(self, text='Valor de Venda', font=self.font_label).pack(padx=10, anchor='w', pady=10)
+        self.valor_venda.pack(padx=10, anchor='w')
+        CTkLabel(self, text='Valor de Custo', font=self.font_label).pack(padx=10, anchor='w', pady=10)
+        self.valor_custo.pack(padx=10, anchor='w')
         CTkLabel(self, text='Fornecedor', font=self.font_label).pack(anchor='w', padx=10, pady=10)
         self.fornecedor.pack(anchor='w', padx=10)
         
@@ -226,13 +211,14 @@ class CadProduto(CTkToplevel):
     def cadastrar_produto(self):
         cod_barra = self.cod_barra.get()
         descricao = self.descricao.get()
-        preco_un = float(self.preco_uni.get().replace(',', '.'))
+        valor_venda = float(self.valor_venda.get().replace(',', '.'))
+        valor_custo = float(self.valor_custo.get().replace(',', '.'))
         id_fornecedor = int(self.fornecedorDAO.select_id_fornecedor(self.fornecedor.get())[0])
         
-        match self.produtoDAO.insert_produto(cod_barra ,descricao , preco_un, id_fornecedor ):
+        match self.produtoDAO.insert_produto(cod_barra ,descricao , valor_venda, valor_custo, id_fornecedor ):
             case 1:
                 MensagemAlerta('Sucesso!', 'O produto foi cadastrado com sucesso!')
-                self.carregar_produtos()
+                self.master.carregar_produtos()
             case 2:
                 MensagemAlerta('Erro!', 'O produto já existe no estoque!')
             case 3:
@@ -253,13 +239,21 @@ class CadProduto(CTkToplevel):
             if text[-1] not in '1234567890' or len(text) > 13:
                 self.cod_barra.delete(len(text)-1, 'end')
        
-    def validar_preco(self, event):
-        text = self.preco_uni.get()
+    def validar_valor_venda(self, event):
+        text = self.valor_venda.get()
         if len(text) > 0:
             index_end = len(text) - 1
             
             if text[-1] not in '1234567890,' or len(text) > 10:
-                self.preco_uni.delete(index_end, 'end')
+                self.valor_venda.delete(index_end, 'end')
+             
+    def validar_valor_custo(self, event):
+        text = self.valor_custo.get()
+        if len(text) > 0:
+            index_end = len(text) - 1
+            
+            if text[-1] not in '1234567890,' or len(text) > 10:
+                self.valor_custo.delete(index_end, 'end')
                 
 class TelaEditarProduto(CTkToplevel):
     
@@ -276,7 +270,7 @@ class TelaEditarProduto(CTkToplevel):
         self.protocol('WM_DELETE_WINDOW', self.destroy)
         
     def centralizar_janela(self):
-        HEIGHT = 475
+        HEIGHT = 540
         WEIDTH = 600
         
         W_HEIGHT = self.winfo_screenheight()
@@ -304,17 +298,20 @@ class TelaEditarProduto(CTkToplevel):
         self.grid_rowconfigure(8, weight=0)
         self.grid_rowconfigure(9, weight=0)
         self.grid_rowconfigure(10, weight=0)
-        
+        self.grid_rowconfigure(11, weight=0)
+        self.grid_rowconfigure(12, weight=0)
         
         self.id_produto = CTkEntry(self, width=75, font=self.font_entry, height=40)
         self.cod_barra = CTkEntry(self, placeholder_text='Codigo de Barra...', width=150, font=self.font_entry, height=40)
         self.descricao = CTkEntry(self, placeholder_text='Descrição do Produto...', width=550, font=self.font_entry, height=40)
-        self.preco_uni = CTkEntry(self, width=100, font=self.font_entry, placeholder_text='R$...', height=40)
+        self.valor_venda = CTkEntry(self, width=100, font=self.font_entry, placeholder_text='R$...', height=40)
+        self.valor_custo = CTkEntry(self, width=100, font=self.font_entry, placeholder_text='R$...', height=40)
         self.fornecedor = CTkComboBox(self, values=self.carregar_fornecedores(), font=self.font_label, state='readonly', height=40, width=350)
 
 
         self.cod_barra.bind('<KeyPress>', self.validar_codBarra)
-        self.preco_uni.bind('<KeyPress>', self.validar_preco)
+        self.valor_venda.bind('<KeyPress>', self.validar_valor_venda)
+        self.valor_custo.bind('<KeyPress>', self.validar_valor_custo)
         
         CTkLabel(self, text='ID', font=self.font_label).grid(column=0, row=0, sticky='w', padx=10, pady=5)
         self.id_produto.grid(column=0, row=1, sticky='w', padx=10)
@@ -322,15 +319,17 @@ class TelaEditarProduto(CTkToplevel):
         self.cod_barra.grid(column=0, row=3, sticky='w', padx=10)
         CTkLabel(self, text='Descrição', font=self.font_label).grid(column=0, row=4, sticky='w', padx=10, pady=5)
         self.descricao.grid(column=0, row=5, sticky='w', padx=10)
-        CTkLabel(self, text='Preço Unitário', font=self.font_label).grid(column=0, row=6, sticky='w', padx=10, pady=5)
-        self.preco_uni.grid(column=0, row=7, sticky='w', padx=10)
-        CTkLabel(self, text='Fornecedor', font=self.font_label).grid(column=0, row=8, sticky='w', padx=10, pady=5)
-        self.fornecedor.grid(column=0, row=9, sticky='w', padx=10)
+        CTkLabel(self, text='Valor de Venda', font=self.font_label).grid(column=0, row=6, sticky='w', padx=10, pady=5)
+        self.valor_venda.grid(column=0, row=7, sticky='w', padx=10)
+        CTkLabel(self, text='Valor de Custo', font=self.font_label).grid(column=0, row=8, sticky='w', padx=10, pady=5)
+        self.valor_custo.grid(column=0, row=9, sticky='w', padx=10)
+        CTkLabel(self, text='Fornecedor', font=self.font_label).grid(column=0, row=10, sticky='w', padx=10, pady=5)
+        self.fornecedor.grid(column=0, row=11, sticky='w', padx=10)
         
         CTkButton(self, text='Salvar Alterações', font=self.font_button, height=40, command=self.atualizar_produto, image=CTkImage(Image.open(img_cadastrar), size=(32,32)),
-                  compound='left').grid(column=0, row=10, padx=10, pady=15, sticky='w')
+                  compound='left').grid(column=0, row=12, padx=10, pady=15, sticky='w')
         CTkButton(self, text='Cancelar', font=self.font_button, height=40, command=self.destroy, image=CTkImage(Image.open(img_sair), size=(32,32)),
-                  compound='left').grid(column=0, row=10, padx=(0,100), pady=5, sticky='e')
+                  compound='left').grid(column=0, row=12, padx=(0,100), pady=5, sticky='e')
         
         self.carregar_dados()
     def carregar_fornecedores(self):
@@ -345,7 +344,8 @@ class TelaEditarProduto(CTkToplevel):
         self.id_produto.insert(0, self.dados[0])
         self.cod_barra.insert(0, self.dados[1])
         self.descricao.insert(0, self.dados[2])
-        self.preco_uni.insert(0, self.dados[4])
+        self.valor_venda.insert(0, self.dados[4])
+        self.valor_custo.insert(0, self.dados[5])
         self.fornecedor.set(self.dados[3])
         
         self.id_produto.configure(state='disabled')
@@ -353,7 +353,8 @@ class TelaEditarProduto(CTkToplevel):
     
     def atualizar_produto(self):
         self.dados[2] = self.descricao.get()
-        self.dados[4] = float(self.preco_uni.get().replace(',', '.'))
+        self.dados[4] = float(self.valor_venda.get().replace(',', '.'))
+        self.dados[5] = float(self.valor_custo.get().replace(',', '.'))
         self.dados[3] = int(self.fornecedorDAO.select_id_fornecedor(self.fornecedor.get())[0])
         
         if self.produtoDAO.atualizar_produto(*self.dados):
@@ -369,10 +370,18 @@ class TelaEditarProduto(CTkToplevel):
             if text[-1] not in '1234567890' or len(text) > 13:
                 self.cod_barra.delete(len(text)-1, 'end')
        
-    def validar_preco(self, event):
-        text = self.preco_uni.get()
+    def validar_valor_venda(self, event):
+        text = self.valor_venda.get()
         if len(text) > 0:
             index_end = len(text) - 1
             
             if text[-1] not in '1234567890,' or len(text) > 10:
-                self.preco_uni.delete(index_end, 'end')
+                self.valor_venda.delete(index_end, 'end')
+             
+    def validar_valor_custo(self, event):
+        text = self.valor_custo.get()
+        if len(text) > 0:
+            index_end = len(text) - 1
+            
+            if text[-1] not in '1234567890,' or len(text) > 10:
+                self.valor_custo.delete(index_end, 'end')

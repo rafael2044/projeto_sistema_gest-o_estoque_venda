@@ -59,13 +59,14 @@ class TelaPrincipal(CTk):
         
         self.usuario = CTkLabel(f_info, text=' '*10, font=('Segoe UI', 12, 'bold'))
         
-        self.tv_tabela = Treeview(self, columns=('id', 'cod_barra', 'descricao', 'preco_un', 'fornecedor','quant_min', 'quant_atual', 'quant_max'),
+        self.tv_tabela = Treeview(self, columns=('id', 'cod_barra', 'descricao', 'valor_venda', 'valor_custo', 'fornecedor','quant_min', 'quant_atual', 'quant_max'),
                                   selectmode='browse', show='headings')
         self.tv_tabela.heading('#0', text='')
         self.tv_tabela.heading('id', text='ID')
         self.tv_tabela.heading('cod_barra', text='Cod. Barra')
         self.tv_tabela.heading('descricao', text='Descrição')
-        self.tv_tabela.heading('preco_un', text='Preço Unitário')
+        self.tv_tabela.heading('valor_venda', text='Valor de Venda')
+        self.tv_tabela.heading('valor_custo', text='Valor de Custo')
         self.tv_tabela.heading('fornecedor', text='Fornecedor')
         self.tv_tabela.heading('quant_min', text='Quant. Min')
         self.tv_tabela.heading('quant_atual', text='Quant. Atual')
@@ -74,7 +75,8 @@ class TelaPrincipal(CTk):
         self.tv_tabela.column('id', width=50, stretch=True, minwidth=50, anchor='center')
         self.tv_tabela.column('cod_barra', width=175, stretch=True, minwidth=175, anchor='center')
         self.tv_tabela.column('descricao', width=500, stretch=False, minwidth=450)
-        self.tv_tabela.column('preco_un', width=150, stretch=True, minwidth=150, anchor='center')
+        self.tv_tabela.column('valor_venda', width=150, stretch=True, minwidth=150, anchor='center')
+        self.tv_tabela.column('valor_custo', width=150, stretch=True, minwidth=150, anchor='center')
         self.tv_tabela.column('fornecedor', width=200, stretch=False, minwidth=175 )
         self.tv_tabela.column('quant_min', width=100, stretch= True, minwidth=100, anchor='center')
         self.tv_tabela.column('quant_atual', width=115, stretch=True, minwidth=115, anchor='center')
