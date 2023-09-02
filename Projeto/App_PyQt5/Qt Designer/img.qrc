@@ -1,7 +1,0 @@
-<RCC>
-  <qresource prefix="newPrefix">
-    <file>Icons/add_categoria.png</file>
-    <file>Icons/add_medida.png</file>
-    <file>Icons/add_produto.png</file>
-  </qresource>
-</RCC>
